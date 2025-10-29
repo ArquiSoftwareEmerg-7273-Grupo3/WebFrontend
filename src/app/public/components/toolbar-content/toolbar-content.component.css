@@ -1,0 +1,231 @@
+.toolbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #429f95;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  scroll-behavior: smooth;
+
+
+  .toolbar-content {
+    max-width: 1300px;
+    padding: 0.5rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin: 0 auto;
+    height: 70px;
+  }
+
+  .logo img {
+    height: 60px; 
+    width: 170px;
+    object-fit: contain;
+    cursor: pointer;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin: 0 2rem;
+
+    a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      transition: all 0.3s ease-in-out;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.5rem;
+      opacity: 0.9;
+      min-width: 80px;
+
+      .material-symbols-outlined {
+        font-size: 1.5rem;
+        margin-bottom: 4px;
+      }
+
+      &:hover {
+        opacity: 1;
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  .icons {
+    display: flex;
+    gap: 0.8rem;
+
+    .circle{
+      border-radius: 50%;
+    }
+
+    .square{
+      border-radius: 10px;
+    }
+
+    .icon-button {
+      background: white;
+      border: none;
+      width: 45px;
+      height: 45px;
+
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+
+
+      transition: transform 0.3s ease-in-out;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      .material-symbols-outlined {
+        color: #429f95;
+        font-size: 25px;
+      }
+    }
+  }
+
+  .burger {
+    background-color: white;
+    border: none;
+    width: 48px;
+    border-radius: 10px;
+    height: 48px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+
+    .material-symbols-outlined {
+      color: #429F95;
+      font-size: 24px;
+    }
+  }
+
+  .burger-menu {
+    position: absolute;
+    top: 90px;
+    right: 1rem;
+    background-color: #429f95;
+    padding: 1.3rem;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    gap: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1001;
+
+    a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-align: center;
+      transition: all 0.3s ease-in-out;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      padding: 0.8rem;
+      opacity: 0.9;
+      border-radius: 8px;
+      gap: 1rem;
+
+      .material-symbols-outlined {
+        font-size: 1.5rem;
+      }
+
+      &:hover {
+        opacity: 1;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+    }
+    .icon-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      gap: 1rem;
+    }
+
+    .test-button {
+      background-color: white;
+      color: #429f95;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: bold;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease-in-out;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+    }
+    .circle{
+      border-radius: 50%;
+    }
+    .burger-icon {
+      background-color: white;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+
+      transition: transform 0.3s ease-in-out;
+
+      &:hover {
+        transform: scale(1.05);
+      }
+
+      .material-symbols-outlined {
+        color: #429f95;
+        font-size: 28px;
+      }
+    }
+  }
+
+
+  @media (max-width: 768px) {
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    display: none;
+
+    &.open {
+      display: flex;
+      margin-top: 1rem;
+    }
+  }
+
+  .burger {
+    display: block;
+  }
+
+  .icons {
+    display: none;
+  }
+}
+}

@@ -1,0 +1,110 @@
+.profile-wrapper {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 1rem; /* espacio lateral responsivo */
+}
+
+.profile-container {
+  background-color: #429f95;
+  padding: 1.5rem 1rem;
+  border-radius: 24px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 2rem;
+  margin-top: 100px;
+}
+
+.cyan{
+  color: #429F95;
+}
+
+.profile-photo {
+  width: 180px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 16px;
+  border: 4px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.profile-name {
+  font-size: 1.8rem;
+  color: white;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+.profile-role {
+  font-size: 1.2rem;
+  color: white;
+  margin: 0rem;
+}
+
+.important-container {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+@media (max-width: 1024px) {
+  .important-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .important-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cards-container {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 1.5rem;
+  box-sizing: border-box;
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(3, 1fr); /* Por defecto: 3 columnas */
+}
+
+@media (max-width: 1024px) {
+  .cards-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 800px) {
+  .cards-container {
+    grid-template-columns: 1fr;
+  }
+}
+.logout-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.logout-button {
+  background-color: #429f95; /* cyan */
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: #317d74; /* un tono más oscuro al pasar */
+}

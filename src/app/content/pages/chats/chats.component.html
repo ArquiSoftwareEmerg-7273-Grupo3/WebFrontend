@@ -1,0 +1,32 @@
+<div class="chat-title-wrapper">
+  <h1 class="chat-title">Mis <br> <span class="highlight">Mensajes</span></h1>
+</div>
+<div class="chat-container">
+  <div class="chat-wrapper">
+    <div class="sidebar">
+      <h2>Últimos chats</h2>
+      <div class="chat-list">
+        <div class="chat-user" *ngFor="let user of users" (click)="selectUser(user.id)">
+          <button class="icon-button circle">
+            <span class="material-symbols-outlined">person</span>
+          </button>
+          <span>{{ user.name }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="chat-box">
+      <div class="chat-header">
+        <button class="icon-button circle">
+          <span class="material-symbols-outlined">person</span>
+        </button>
+        <span class="username">{{ selectedUser?.name }}</span>
+      </div>
+      <div class="chat-messages">
+        <!-- Aquí irán los mensajes -->
+      </div>
+      <div class="chat-input">
+        <input type="text" placeholder="Escribir....">
+      </div>
+    </div>
+  </div>
+</div>

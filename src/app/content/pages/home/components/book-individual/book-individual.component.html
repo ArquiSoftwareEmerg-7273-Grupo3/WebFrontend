@@ -1,0 +1,95 @@
+<div class="all-title">
+  <div style="display: flex; justify-content: flex-start; width: 100%; max-width: 1100px; margin-top: 20px">
+    <button class="back-button" (click)="goBack(); scrollToTop()">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+  </div>
+  <div class="all-content">
+    <h1>{{ title }}</h1>
+    <hr>
+    <div class="individual-content">
+      <div class="main-column">
+        <img [src]="imageSrc" alt="Project Image" class="project-image" />
+        <p class="project-description">{{ description }}</p>
+
+        <div class="rating-box">
+          <h3>Promedio de Calificaciones</h3>
+          <hr />
+          <div class="average-rating">
+            <span class="avg-value">{{ averageRating }}</span>
+            <ng-container [ngSwitch]="getStarType(averageRating)">
+              <svg *ngSwitchCase="'half'" class="star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 9.24l-7.19-.62L12 2 9.19 8.63
+           2 9.24l5.46 4.73L5.82 21 12 17.27
+           18.18 21l-1.64-7.03L22 9.24z" fill="#ccc" stroke="#ccc" stroke-width="1.2" />
+                <path d="M22 9.24l-7.19-.62L12 2 9.19 8.63
+           2 9.24l5.46 4.73L5.82 21 12 17.27
+           18.18 21l-1.64-7.03L22 9.24z" fill="#f9c802" stroke="#ccc" stroke-width="1.2" clip-path="url(#half-clip)" />
+                <defs>
+                  <clipPath id="half-clip">
+                    <rect x="0" y="0" width="12" height="24" />
+                  </clipPath>
+                </defs>
+              </svg>
+              <svg *ngSwitchDefault class="star" viewBox="0 0 24 24" fill="#f9c802" stroke="#ccc" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24z"/>
+              </svg>
+            </ng-container>
+          </div>
+          <h3>Calificaciones Recientes</h3>
+          <hr />
+          <div *ngFor="let review of reviews">
+            <div class="stars">
+              <ng-container *ngFor="let star of getStarArray(review.rating)">
+                <ng-container [ngSwitch]="star">
+                  <svg *ngSwitchCase="'full'" class="star" viewBox="0 0 24 24" fill="#f9c802" stroke="#ccc" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                  </svg>
+                  <svg *ngSwitchCase="'half'" class="star" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 9.24l-7.19-.62L12 2 9.19 8.63
+       2 9.24l5.46 4.73L5.82 21 12 17.27
+       18.18 21l-1.64-7.03L22 9.24z" fill="#ccc" stroke="#ccc" stroke-width="1.2" />
+                    <path d="M22 9.24l-7.19-.62L12 2 9.19 8.63
+       2 9.24l5.46 4.73L5.82 21 12 17.27
+       18.18 21l-1.64-7.03L22 9.24z" fill="#f9c802" stroke="#ccc" stroke-width="1.2" clip-path="url(#half-clip)" />
+                    <defs>
+                      <clipPath id="half-clip">
+                        <rect x="0" y="0" width="12" height="24" />
+                      </clipPath>
+                    </defs>
+                  </svg>
+                  <svg *ngSwitchDefault class="star" viewBox="0 0 24 24" fill="#ccc" stroke="#ccc" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24z"/>
+                  </svg>
+                </ng-container>
+              </ng-container>
+            </div>
+            <p class="review-user">{{ review.user }}</p>
+            <p class="review-comment">{{ review.comment }}</p>
+            <hr />
+          </div>
+
+          <h3>¿Deseas calificar este libro?</h3>
+          <hr />
+          <div class="stars selectable">
+            <ng-container *ngFor="let i of [1,2,3,4,5]">
+              <svg (click)="selectRating(i)" [class.selected]="i <= selectedRating" class="star" viewBox="0 0 24 24" fill="#ccc" stroke="#ccc" stroke-width="1.2" xmlns="http://www.w3.org/2000/svg">
+                <path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24z" />
+              </svg>
+            </ng-container>
+          </div>
+          <textarea [(ngModel)]="newComment" placeholder="Deja tu comentario*"></textarea>
+          <div class="send-container">
+            <button class="send-button">Enviar</button>
+          </div>
+        </div>
+      </div>
+      <div class="side-column">
+        <img [src]="authorPhoto" alt="Author Photo" class="author-photo" />
+        <h3 class="author-name">{{ author }}</h3>
+        <p class="publish-date">Publicado: {{ publishDate }}</p>
+        <button class="view-profile" [routerLink]="['/information/writer', authorId]">Ver perfil</button>
+      </div>
+    </div>
+  </div>
+</div>

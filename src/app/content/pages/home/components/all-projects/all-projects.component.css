@@ -1,0 +1,116 @@
+.all-title {
+  margin-top: 70px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  box-sizing: border-box;
+  width: 100%;
+
+  .cyan {
+    color: #429F95;
+  }
+
+  .back-button {
+    background-color: white;
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+
+  .back-button .material-symbols-outlined {
+    font-size: 24px;
+    color: #1E1E1E;
+  }
+
+  .all-content {
+    max-width: 1100px;
+    padding-bottom: 40px;
+    width: 100%;
+    p {
+      text-align: center;
+      padding-top: 10px;
+    }
+
+    .search-wrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      margin: 1rem auto;
+      width: 100%;
+      max-width: 1000px;
+      margin-top: 40px;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 3rem 0.75rem 1rem;
+      font-size: 16px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      background-color: white;
+      color: #1E1E1E;
+      outline: none;
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 1rem;
+      color: #1E1E1E;
+      font-size: 24px;
+    }
+
+    .reset-button {
+      background-color: #429F95;
+      color: white;
+      padding: 0.6rem 1.5rem;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 1.5rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .reset-button:hover {
+      background-color: #317d74;
+    }
+
+    .cards-container {
+      max-width: 1100px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem;
+      box-sizing: border-box;
+      display: grid;
+      gap: 1.5rem;
+      grid-template-columns: repeat(3, 1fr); /* Por defecto: 3 columnas */
+    }
+
+    @media (max-width: 1024px) {
+      .cards-container {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 800px) {
+      .cards-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+
+  }
+}

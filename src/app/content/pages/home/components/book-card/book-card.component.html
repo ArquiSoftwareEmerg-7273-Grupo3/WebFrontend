@@ -1,0 +1,7 @@
+<div class="book-card" [ngStyle]="{ 'background-image': 'url(' + image + ')' }" (click)="goToBook(); scrollToTop()">
+  <div class="overlay"></div>
+  <div class="text">
+    <h3 class="book-title">{{ title }}</h3>
+    <p class="book-author">De: {{ author }}</p>
+  </div>
+</div>

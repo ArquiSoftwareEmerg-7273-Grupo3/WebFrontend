@@ -1,0 +1,28 @@
+<div class="container">
+
+  <button class="back-button" (click)="goBack()">
+    <span class="material-symbols-outlined">arrow_back</span>
+  </button>
+
+  <h1>Nuevo <br> <span class="cyan">Proyecto</span></h1>
+
+  <div class="form-card">
+    <div class="form-content">
+      <div class="form-left">
+        <input type="text" placeholder="Título" [(ngModel)]="title" />
+        <textarea placeholder="Descripción" [(ngModel)]="description"></textarea>
+      </div>
+
+      <div class="form-right">
+        <div class="upload-wrapper">
+          <input type="text" placeholder="Subir Imagen" [(ngModel)]="image" />
+          <span class="material-symbols-outlined upload-icon">upload</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="button-wrapper">
+      <button (click)="createProject()">Crear Proyecto</button>
+    </div>
+  </div>
+</div>

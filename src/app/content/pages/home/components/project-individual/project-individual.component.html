@@ -1,0 +1,24 @@
+<div class="all-title">
+  <div style="display: flex; justify-content: flex-start; width: 100%; max-width: 1100px; margin-top: 20px">
+    <button class="back-button" (click)="goBack(); scrollToTop()">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+  </div>
+  <div class="all-content">
+    <h1>{{ title }}</h1>
+    <hr>
+    <div class="individual-content">
+      <div class="main-column">
+        <img [src]="imageSrc" alt="Project Image" class="project-image" />
+        <p class="project-description">{{ description }}</p>
+        <button class="apply-button">Postularse</button>
+      </div>
+      <div class="side-column">
+        <img [src]="authorPhoto" alt="Author Photo" class="author-photo" />
+        <h3 class="author-name">{{ author }}</h3>
+        <p class="publish-date">Publicado: {{ publishDate }}</p>
+        <button class="view-profile" [routerLink]="['/information/writer', authorId]">Ver perfil</button>
+      </div>
+    </div>
+  </div>
+</div>

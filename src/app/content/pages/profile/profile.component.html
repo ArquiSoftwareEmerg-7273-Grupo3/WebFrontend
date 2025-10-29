@@ -1,0 +1,54 @@
+<div class="profile-wrapper">
+  <div class="profile-container">
+    <img [src]="profile.photo" alt="Profile Photo" class="profile-photo" />
+    <h2 class="profile-name">{{ profile.name }}</h2>
+    <p class="profile-role">{{ getSubscriptionLabel(profile.subscription) }}</p>
+  </div>
+  <h1>Mis<span class="cyan"> ilustraciones</span></h1>
+  <hr>
+  <div class="important-container">
+    <app-illustration-profile
+      *ngFor="let illustration of illustrations"
+      [id]="illustration.id"
+      [title]="illustration.title"
+      [author]="illustration.author"
+      [image]="illustration.image"
+      [rating]="illustration.rating"
+    ></app-illustration-profile>
+    <!-- Eso es lo que verá el escritor
+    <app-book-profile
+      *ngFor="let illustration of illustrations"
+      [id]="illustration.id"
+      [title]="illustration.title"
+      [author]="illustration.author"
+      [image]="illustration.image"
+      [rating]="illustration.rating"
+    ></app-book-profile>
+    -->
+
+  </div>
+  <br>
+  <h1>Mis<span class="cyan"> portafolios</span></h1>
+  <hr>
+  <div class="cards-container">
+    <app-portfolio-profile
+      *ngFor="let project of projects2"
+      [id]="project.id"
+      [imageSrc]="project.imageSrc"
+      [title]="project.title"
+    ></app-portfolio-profile>
+    <!-- Esto es lo que verá el escritor
+    <app-project-profile
+      *ngFor="let project of projects2"
+      [id]="project.id"
+      [imageSrc]="project.imageSrc"
+      [title]="project.title"
+    ></app-project-profile>
+    -->
+
+  </div>
+  <br>
+  <div class="logout-container">
+    <button class="logout-button" (click)="logout()">Cerrar sesión</button>
+  </div>
+</div>

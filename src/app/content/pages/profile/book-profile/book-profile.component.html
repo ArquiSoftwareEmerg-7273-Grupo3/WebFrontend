@@ -1,0 +1,73 @@
+<div class="book-card" [ngStyle]="{ 'background-image': 'url(' + image + ')' }" (click)="goToBook()">
+  <div class="overlay"></div>
+  <div class="text">
+    <h3 class="book-title">{{ title }}</h3>
+  </div>
+</div>
+
+<div class="rating-stars">
+  <ng-container *ngFor="let star of getStarArray(); let i = index">
+    <ng-container [ngSwitch]="getStarType(i)">
+
+      <svg
+        *ngSwitchCase="'full'"
+        class="star"
+        viewBox="0 0 24 24"
+        fill="#f9c802"
+        stroke="#ccc"
+        stroke-width="1.2"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+      </svg>
+
+      <svg
+        *ngSwitchCase="'half'"
+        class="star"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <!-- Estrella completa en gris (fondo) -->
+        <path
+          d="M22 9.24l-7.19-.62L12 2 9.19 8.63
+       2 9.24l5.46 4.73L5.82 21 12 17.27
+       18.18 21l-1.64-7.03L22 9.24z"
+          fill="#ccc"
+          stroke="#ccc"
+          stroke-width="1.2"
+        />
+
+        <path
+          d="M22 9.24l-7.19-.62L12 2 9.19 8.63
+       2 9.24l5.46 4.73L5.82 21 12 17.27
+       18.18 21l-1.64-7.03L22 9.24z"
+          fill="#f9c802"
+          stroke="#ccc"
+          stroke-width="1.2"
+          clip-path="url(#half-clip)"
+        />
+
+        <!-- Clip para solo mitad izquierda -->
+        <defs>
+          <clipPath id="half-clip">
+            <rect x="0" y="0" width="12" height="24" />
+          </clipPath>
+        </defs>
+      </svg>
+
+      <svg
+        *ngSwitchDefault
+        class="star"
+        viewBox="0 0 24 24"
+        fill="#ccc"
+        stroke="#ccc"
+        stroke-width="1.2"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M22 9.24l-7.19-.62L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24z"/>
+      </svg>
+
+    </ng-container>
+  </ng-container>
+</div>
+

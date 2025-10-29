@@ -1,0 +1,101 @@
+
+<div class="signup-container">
+  <div class="signup-left">
+    <img src="https://raw.githubusercontent.com/diegooo01/HidraNet/refs/heads/main/public/brand-logo/art-collab-logo.png" alt="ArtCollab Logo" class="logo" />
+  </div>
+  <div class="signup-right">
+    <form [formGroup]="form">
+      <div class="login-box">
+        <h2>Registrarse</h2>
+
+        <!-- Paso 1: Datos básicos -->
+        <div *ngIf="step === 1">
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" placeholder="Nombre*" formControlName="firstName" required />
+            </div>
+            <div class="form-group">
+              <input type="text" placeholder="Apellido*" formControlName="lastName" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" placeholder="Correo electrónico*" formControlName="username" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña*" formControlName="password" />
+              <span class="material-symbols-outlined icon" (click)="togglePasswordVisibility()">
+                {{ showPassword ? 'visibility_off' : 'visibility' }}
+              </span>
+            </div>
+          </div>
+          <div class="redirect-link">
+            ¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión</a>
+          </div>
+          <button class="login-button" type="button" (click)="goToNextStep()">Siguiente</button>
+        </div>
+
+        <!-- Paso 2: Ubicación -->
+        <div *ngIf="step === 2">
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" placeholder="Ubicación*" formControlName="ubicacion" required />
+            </div>
+          </div>
+          <button class="login-button" type="button" (click)="goToNextStep()">Siguiente</button>
+        </div>
+
+        <!-- Paso 3: Más datos -->
+        <div *ngIf="step === 3">
+          <div class="form-row">
+            <div class="form-group">
+              <input type="date" placeholder="Fecha de nacimiento*" formControlName="fechaNacimiento" required />
+            </div>
+            <div class="form-group">
+              <input type="tel" placeholder="Teléfono*" formControlName="telefono" required />
+            </div>
+          </div>
+          <!-- Redes Sociales - Full width -->
+          <div class="form-group full-width">
+            <div class="social-networks-section">
+              <h3>Redes sociales</h3>
+              <div class="social-selector">
+                <select (change)="onAddSocialNetwork($event)">
+                  <option value="">Seleccionar red social</option>
+                  <option *ngFor="let social of availableSocialNetworks" [value]="social.id">
+                    {{social.name}}
+                  </option>
+                </select>
+              </div>
+              <div class="selected-networks">
+                <div *ngFor="let social of selectedNetworks" class="social-link-row">
+                  <div class="social-icon-container">
+                    <i [class]="social.icon" class="social-icon"></i>
+                    {{social.name}}
+                  </div>
+                  <div class="social-input-container">
+                    <input type="url" 
+                           [placeholder]="'Link de ' + social.name" 
+                           [formControlName]="social.id + 'Link'"
+                           class="social-input" />
+                    <button type="button" class="remove-social" (click)="removeSocialNetwork(social.id)">
+                      ×
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Descripción - Full width -->
+          <div class="form-group full-width">
+            <textarea rows="4" placeholder="Descripción*" formControlName="descripcion" class="description-input"></textarea>
+          </div>
+          <button class="login-button" type="button" (click)="onSubmitFinal()">Finalizar Registro</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

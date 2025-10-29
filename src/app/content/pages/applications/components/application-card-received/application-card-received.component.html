@@ -1,0 +1,23 @@
+<div class="card">
+  <div class="image-wrapper">
+    <img [src]="imageSrc" alt="Project image" />
+  </div>
+  <div class="info">
+    <div class="header">
+      <h2 class="title">Postulante: {{ author }}</h2>
+      <span class="date">Fecha de Postulación: {{ dateApplication }}</span>
+    </div>
+
+    <!-- NUEVO: Título del proyecto -->
+    <div class="project-title">
+      <strong>Proyecto:</strong> {{ title }}
+    </div>
+
+    <div class="author-status">
+      <div class="buttons">
+        <button class="accept-button" (click)="acceptApplication()">Aceptar</button>
+        <button class="reject-button" (click)="rejectApplication()">Rechazar</button>
+      </div>
+    </div>
+  </div>
+</div>

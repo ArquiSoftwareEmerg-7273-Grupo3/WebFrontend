@@ -1,0 +1,292 @@
+
+body, html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.signup-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+.signup-left {
+  flex: 1;
+  background: url('https://raw.githubusercontent.com/diegooo01/HidraNet/refs/heads/main/public/brand-logo/background.png') no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  min-width: 40%;
+  justify-content: center;
+}
+
+.signup-left .logo {
+  max-width: 320px;
+  height: auto;
+  width: 100%;
+}
+
+.signup-right {
+  flex: 1.5;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  overflow: hidden;
+}
+
+.signup-right::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url('https://raw.githubusercontent.com/diegooo01/HidraNet/refs/heads/main/public/brand-logo/background.png') no-repeat center center/cover;
+  z-index: 1;
+}
+
+.signup-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(248, 245, 235, 0.85); /* Color principal de la app con opacidad */
+  z-index: 2;
+}
+
+/* Aseguramos que el contenido esté por encima de las capas de fondo */
+.signup-right > * {
+  position: relative;
+  z-index: 3;
+}
+
+.login-box {
+  background-color: #fff;
+  margin-bottom: 20px;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 700px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  color: #357a73;
+}
+
+.form-row {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.form-group {
+  position: relative;
+  flex: 1;
+  box-sizing: border-box;
+}
+
+.form-group.full-width {
+  flex: 0 0 100%;
+  width: 100%;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 0.6rem 2rem 0.6rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border 0.2s;
+  box-sizing: border-box;
+}
+
+.form-group textarea.description-input {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 120px;
+  padding: 0.6rem 0.75rem;
+}
+
+.form-group input:focus {
+  border-color: #357a73;
+}
+
+.icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #777;
+  cursor: pointer;
+}
+
+.redirect-link {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.redirect-link a {
+  color: #357a73;
+  text-decoration: none;
+}
+
+.redirect-link a:hover {
+  text-decoration: underline;
+}
+
+.login-button {
+  margin-top: 1rem;
+  background-color: #357a73;
+  color: #fff;
+  padding: 0.75rem;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.login-button:hover {
+  background-color: #2e6a64;
+}
+
+/* Estilos para la sección de redes sociales */
+.social-networks-section {
+  background: #f8f9fa;
+  padding: 1rem;
+  border-radius: 8px;
+  margin-bottom: 0.75rem;
+}
+
+.social-networks-section h3 {
+  color: #357a73;
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.social-selector select {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  background-color: white;
+  cursor: pointer;
+}
+
+.selected-networks {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.social-link-row {
+  display: flex;
+  align-items: center;
+  padding: 0.4rem;
+  background: white;
+  border-radius: 4px;
+  border: 1px solid #eee;
+  margin-right: 0.4rem;
+}
+
+.social-icon-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0 0.75rem;
+  font-weight: 500;
+  color: #444;
+  width: 120px;
+}
+
+.social-icon {
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fa-youtube { color: #FF0000; }
+.fa-x-twitter { color: #000000; }
+.fa-facebook { color: #4267B2; }
+.fa-linkedin { color: #0077b5; }
+
+.social-input-container {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0; /* Permite que el contenedor se encoja si es necesario */
+}
+
+.social-input {
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  min-width: 0; /* Permite que el input se encoja si es necesario */
+}
+
+.social-input:focus {
+  border-color: #357a73;
+  outline: none;
+}
+
+.remove-social {
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  transition: color 0.2s;
+}
+
+.remove-social:hover {
+  color: #dc3545;
+}
+
+.suscripcion-selector {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.roles {
+  display: flex;
+  gap: 2rem;
+}
+
+.roles label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.1rem;
+  color: #357a73;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.roles input[type='radio'] {
+  width: 20px;
+  height: 20px;
+  accent-color: #357a73;
+  cursor: pointer;
+}

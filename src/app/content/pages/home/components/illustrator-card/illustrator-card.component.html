@@ -1,0 +1,14 @@
+<div class="writer-card" (click)="goToIllustrator(); scrollToTop()">
+  <div class="background-color" [ngStyle]="{ 'background-color': backgroundColor }"></div>
+
+  <div class="photo-wrapper">
+    <img [src]="photo" alt="Illustrator photo" />
+  </div>
+
+  <div class="writer-info">
+    <span class="writer-name">
+      {{ author }}
+      <span *ngIf="suscription === 1 || suscription === 2" class="star">★</span>
+    </span>
+  </div>
+</div>

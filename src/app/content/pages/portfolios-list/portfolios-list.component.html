@@ -1,0 +1,23 @@
+<div class="home-title">
+  <div class="home-content">
+    <h1>Mis <br><span class="cyan">Portafolios</span></h1>
+    <p>
+      En esta sección podrás crear portafolios y subir tus ilustraciones como a ti mejor te parezca. ¡Deja que tu creatividad fluya!
+    </p>
+  </div>
+
+  <div class="cards-container">
+    <app-portfolio-card-writer
+      *ngFor="let portfolio of portfolios"
+      [id]="portfolio.id"
+      [imageSrc]="portfolio.imageSrc"
+      [date]="portfolio.date"
+      [title]="portfolio.title"
+      (viewMoreClicked)="goToPortfolio($event)">
+    </app-portfolio-card-writer>
+  </div>
+  <button class="floating-button" (click)="goToCreatePortfolio()">
+    <span class="material-symbols-outlined">add</span>
+  </button>
+
+</div>

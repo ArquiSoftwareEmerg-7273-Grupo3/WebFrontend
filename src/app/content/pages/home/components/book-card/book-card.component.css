@@ -1,0 +1,43 @@
+.book-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 3 / 4; /* rectángulo vertical */
+  background-size: cover;
+  background-position: center;
+  border-radius: 12px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+}
+
+.overlay {
+  position: absolute;
+  bottom: 0;
+  height: 40%;
+  width: 100%;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.7), transparent);
+}
+
+.text {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  color: white;
+  z-index: 2;
+}
+
+.book-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.book-author {
+  font-size: 1rem;
+  margin: 0.25rem 0 0;
+}

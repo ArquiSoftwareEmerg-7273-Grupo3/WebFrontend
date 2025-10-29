@@ -1,0 +1,67 @@
+.writer-card {
+  width: 100%;
+  aspect-ratio: 4 / 3; /* relación rectangular, adaptable */
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+  background: white;
+}
+
+.writer-card:hover {
+  transform: translateY(-4px);
+}
+
+.background-color {
+  height: 50%;
+  width: 100%;
+}
+
+.photo-wrapper {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 0.5em;
+  border-radius: 1em;
+  width: 30%; /* dinámico: 30% del ancho de la tarjeta */
+  aspect-ratio: 1 / 1; /* mantiene cuadrado */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  z-index: 2;
+  min-width: 90px;
+  max-width: 150px;
+}
+
+.photo-wrapper img {
+  width: 100%;
+  height: 100%;
+  border-radius: 0.75em;
+  object-fit: cover;
+}
+
+
+.writer-info {
+  background: white;
+  text-align: center;
+  padding-bottom: 1rem;
+  padding-top: 80px;
+}
+
+.writer-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #000;
+}
+
+.star {
+  color: #f9c802;
+  margin-left: 6px;
+}

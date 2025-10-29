@@ -1,0 +1,33 @@
+<div class="all-title">
+  <div style="display: flex; justify-content: flex-start; width: 100%; max-width: 1100px; margin-top: 20px">
+    <button class="back-button" (click)="goBack(); scrollToTop()">
+      <span class="material-symbols-outlined">arrow_back</span>
+    </button>
+  </div>
+  <div class="all-content">
+    <h1>Explora todos los <span class="cyan">proyectos </span>disponibles para ti...</h1>
+    <hr>
+    <div class="search-wrapper">
+      <input
+        type="text"
+        [(ngModel)]="searchQuery"
+        (keydown.enter)="filterProjects()"
+        placeholder="Busca aquí (por autor o título)"
+        class="search-input"
+      />
+      <span class="material-symbols-outlined search-icon">search</span>
+    </div>
+    <div style="display: flex; justify-content: center; margin-top: 30px;">
+      <button class="reset-button" (click)="resetSearch()">Restablecer búsqueda</button>
+    </div>
+    <div class="cards-container">
+      <app-project-card
+        *ngFor="let project of filteredProjects"
+        [id]="project.id"
+        [imageSrc]="project.imageSrc"
+        [author]="project.author"
+        [title]="project.title"
+      ></app-project-card>
+    </div>
+  </div>
+</div>

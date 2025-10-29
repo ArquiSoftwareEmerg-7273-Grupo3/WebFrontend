@@ -1,0 +1,24 @@
+<div class="application-title">
+  <div class="application-content">
+    <h1>Mis <span class="cyan"> postulaciones</span></h1>
+    <!--
+    <h1>Postulaciones<span class="cyan"> recibidas</span></h1>
+    -->
+    <hr>
+  </div>
+
+  <div class="application-container" >
+    <app-application-card
+      *ngFor="let project of projects"
+      [title]="project.title"
+      [author]="project.author"
+      [dateApplication]="project.applicationDate"
+      [imageSrc]="project.imageSrc"
+      [state]="project.state"
+      [id]="project.id">
+    </app-application-card>
+    <!--
+    Postulaciones recibidas
+    -->
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="card" [ngClass]="{ 'rejected': state === 'Rechazado' }" (click)="goToProject()">
+  <div class="image-wrapper">
+    <img [src]="imageSrc" alt="Project image" />
+  </div>
+  <div class="info">
+    <div class="header">
+      <h2 class="title">{{ title }}</h2>
+      <span class="date">Fecha de Postulación: {{ dateApplication }}</span>
+    </div>
+    <div class="author-status">
+      <div class="author-icon">
+        <button class="icon-button circle">
+          <span class="material-symbols-outlined">person</span>
+        </button>
+        <span class="author">{{ author }}</span>
+      </div>
+      <span class="status">Estado: {{ state }}</span>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,155 @@
+<header class="toolbar">
+  <div class="toolbar-content">
+    <div class="logo">
+      <a [routerLink]="['/home']" (click)="closeMenu(); scrollToTop()">
+        <img src="https://raw.githubusercontent.com/diegooo01/HidraNet/refs/heads/main/public/brand-logo/art-collab-logo.png" alt="ArtCollab Logo" width="170" height="60" />
+      </a>
+    </div>
+
+
+    <nav class="nav-links">
+      <!-- Enlaces para usuarios sin rol -->
+      <ng-container *ngIf="isNoRole">
+        <a [routerLink]="['/home']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">home</span>
+          <br />
+          <span>Inicio</span>
+        </a>
+        <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">notifications</span>
+          <br />
+          <span>Notificaciones</span>
+        </a>
+        <a [routerLink]="['/business']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">business</span>
+          <br />
+          <span>Negocios</span>
+        </a>
+      </ng-container>
+
+      <!-- Enlaces para ilustradores -->
+      <ng-container *ngIf="isIllustrator">
+        <a [routerLink]="['/home']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">home</span>
+          <span>Inicio</span>
+        </a>
+        <a [routerLink]="['/jobs']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">work</span>
+          <span>Empleos</span>
+        </a>
+        <a [routerLink]="['/gallery']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">palette</span>
+          <span>Mi Portafolio</span>
+        </a>
+        <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">notifications</span>
+          <span>Notificaciones</span>
+        </a>
+      </ng-container>
+
+      <!-- Enlaces para escritores -->
+      <ng-container *ngIf="isWriter">
+        <a [routerLink]="['/home']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">home</span>
+          <span>Inicio</span>
+        </a>
+        <a [routerLink]="['/my-jobs']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">edit_document</span>
+          <span>Mis Empleos</span>
+        </a>
+        <a [routerLink]="['/recomendations']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">stars</span>
+          <span>Recomendaciones</span>
+        </a>
+        <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+          <span class="material-symbols-outlined">notifications</span>
+          <span>Notificaciones</span>
+        </a>
+      </ng-container>
+    </nav>
+
+    <div class="icons">
+      <button class="icon-button square" [routerLink]="['/messages']" (click)="scrollToTop()">
+        <span class="material-symbols-outlined">chat_bubble</span>
+      </button>
+      <button class="icon-button circle" [routerLink]="['/profile']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">person</span>
+      </button>
+    </div>
+
+    <button class="burger square" (click)="toggleMenu()">
+      <span class="material-symbols-outlined">
+        {{ menuOpen ? 'close' : 'menu' }}
+      </span>
+    </button>
+  </div>
+
+  <div class="burger-menu" *ngIf="menuOpen">
+    <div class="icon-row">
+      <a class="burger-icon circle" [routerLink]="['/profile']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">person</span>
+      </a>
+      <!-- Botón para pruebas -->
+      <button class="test-button" (click)="switchRole()">
+        Rol actual: {{userRole}}
+      </button>
+    </div>
+
+    <!-- Enlaces para usuarios sin rol -->
+    <ng-container *ngIf="isNoRole">
+      <a [routerLink]="['/home']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">home</span>
+        <span>Inicio</span>
+      </a>
+      <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">notifications</span>
+        <span>Notificaciones</span>
+      </a>
+      <a [routerLink]="['/business']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">business</span>
+        <span>Negocios</span>
+      </a>
+    </ng-container>
+
+    <!-- Enlaces para ilustradores -->
+    <ng-container *ngIf="isIllustrator">
+      <a [routerLink]="['/home']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">home</span>
+        <span>Inicio</span>
+      </a>
+      <a [routerLink]="['/jobs']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">work</span>
+        <span>Empleos</span>
+      </a>
+      <a [routerLink]="['/gallery']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">palette</span>
+        <span>Mi Portafolio</span>
+      </a>
+      <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">notifications</span>
+        <span>Notificaciones</span>
+      </a>
+    </ng-container>
+
+    <!-- Enlaces para escritores -->
+    <ng-container *ngIf="isWriter">
+      <a [routerLink]="['/home']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">home</span>
+        <span>Inicio</span>
+      </a>
+      <a [routerLink]="['/my-jobs']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">edit_document</span>
+        <span>Mis Empleos</span>
+      </a>
+      <a [routerLink]="['/recomendations']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">stars</span>
+        <span>Recomendaciones</span>
+      </a>
+      <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+        <span class="material-symbols-outlined">notifications</span>
+        <span>Notificaciones</span>
+      </a>
+    </ng-container>
+  </div>
+
+</header>

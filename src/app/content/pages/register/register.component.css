@@ -1,0 +1,132 @@
+.login-page {
+  min-height: 100vh;
+  background: url('https://raw.githubusercontent.com/diegooo01/HidraNet/refs/heads/main/public/brand-logo/background.png') no-repeat center center/cover;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+}
+
+.logo-container {
+  margin-bottom: 1.5rem;
+
+  .logo {
+    max-width: 320px;
+    height: auto;
+    width: 100%;
+  }
+}
+
+.login-box {
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  text-align: center;
+  .role-selector {
+    margin-bottom: 1.5rem;
+    color: #357a73;
+    text-align: center;
+
+    p {
+      font-weight: 500;
+      margin-bottom: 0.75rem;
+      font-size: 1.1rem;
+    }
+
+    .roles {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 1.1rem;
+      color: #357a73;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    input[type='radio'] {
+      width: 20px;
+      height: 20px;
+      accent-color: #357a73;
+      cursor: pointer;
+    }
+  }
+
+}
+
+h2 {
+  margin-bottom: 1.5rem;
+  color: #357a73;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: 1.25rem;
+  width: 100%;
+  box-sizing: border-box;
+
+  input {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 1rem;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: border 0.2s;
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: #357a73;
+    }
+  }
+
+  .icon {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #777;
+    cursor: pointer;
+  }
+}
+
+.redirect-link {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+
+  a {
+    color: #357a73;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.login-button {
+  margin-top: 1rem;
+  background-color: #357a73;
+  color: #fff;
+  padding: 0.75rem;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.3s ease;
+
+  &:hover {
+    background-color: #2e6a64;
+  }
+}

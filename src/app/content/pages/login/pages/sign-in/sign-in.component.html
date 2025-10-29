@@ -1,0 +1,40 @@
+<form [formGroup]="form">
+  <div class="login-page">
+    <div class="logo-container">
+      <img
+        src="https://raw.githubusercontent.com/diegooo01/HidraNet/refs/heads/main/public/brand-logo/art-collab-logo.png"
+        alt="ArtCollab Logo"
+        class="logo"
+      />
+    </div>
+
+    <div class="login-box">
+      <h2>Iniciar sesión</h2>
+
+      <div class="form-group">
+        <input type="username" placeholder="Correo electrónico*" required formControlName="username" />
+        <span class="material-symbols-outlined icon">mail</span>
+      </div>
+
+      <div class="form-group">
+        <input
+          [type]="showPassword ? 'text' : 'password'"
+          placeholder="Contraseña*"
+          required formControlName="password"
+        />
+        <span
+          class="material-symbols-outlined icon"
+          (click)="togglePasswordVisibility()"
+        >
+          {{ showPassword ? 'visibility_off' : 'visibility' }}
+        </span>
+      </div>
+
+      <div class="redirect-link">
+        ¿No tienes una cuenta? <a routerLink="/register">Regístrate</a>
+      </div>
+
+      <button class="login-button" (click)="onSubmit()">Iniciar sesión</button>
+    </div>
+  </div>
+</form>
