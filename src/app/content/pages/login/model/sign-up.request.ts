@@ -1,3 +1,16 @@
-export class SignUpRequest {
-  constructor(public username: string, public password: string,public nombre: String,public apellido: String,public ubicacion: String,public fechaNacimiento:Date,public telefono:String,public redesSociales: { [key: string]: string }, public descripcion: string) {}
+export interface SignUpRequest {
+  username: string;
+  password: string;
+  ubicacion: string;
+  nombres: string;
+  apellidos: string;
+  telefono: string;
+  foto?: string;
+  descripcion: string;
+  fechaNacimiento: string; // formato "2025-10-29"
+  redesSociales: {
+    additionalProp1?: string;
+    additionalProp2?: string;
+    additionalProp3?: string;
+  };
 }

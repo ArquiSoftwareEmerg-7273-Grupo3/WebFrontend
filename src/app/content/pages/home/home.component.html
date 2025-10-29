@@ -1,22 +1,6 @@
 <div class="social-container">
-  <!-- Columna Izquierda - Usuar          <div class="post-media" *ngIf="post.images && post.images.length > 0">
-            <div class="media-grid" [ngClass]="'grid-' + (post.images.length > 4 ? 4 : post.images.length)" *ngIf="post.images.length <= 4">
-              <div class="media-item" *ngFor="let image of post.images; let i = index">
-                <img [src]="image" [alt]="'Imagen ' + (i + 1)" (click)="openMediaViewer(post.images || [], i)">
-              </div>
-            </div>
-            <div class="media-grid grid-4" *ngIf="post.images.length > 4">
-              <div class="media-item" *ngFor="let image of post.images.slice(0, 3); let i = index">
-                <img [src]="image" [alt]="'Imagen ' + (i + 1)">
-              </div>
-              <div class="media-item more-media" (click)="openMediaViewer(post.images, 3)">
-                <img [src]="post.images[3]" [alt]="'Imagen 4'">
-                <div class="more-overlay">
-                  <span>+{{post.images.length - 4}}</span>
-                </div>
-              </div>
-            </div>
-          </div>  <div class="sidebar left-sidebar">
+  <!-- Columna Izquierda - Usuarios sugeridos -->
+  <div class="sidebar left-sidebar">
     <div class="sidebar-section">
       <h3>Artistas Sugeridos</h3>
       <div class="suggested-users">

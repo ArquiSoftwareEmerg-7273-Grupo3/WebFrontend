@@ -1,3 +1,4 @@
-export class SignInRequest {
-  constructor(public username: string, public password: string) {}
+export interface SignInRequest {
+  username: string;
+  password: string;
 }

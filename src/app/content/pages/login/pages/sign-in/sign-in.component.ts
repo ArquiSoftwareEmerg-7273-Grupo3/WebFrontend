@@ -37,7 +37,7 @@ export class SignInComponent extends BaseFormComponent implements OnInit {
     if (this.form.invalid) return;
     let username = this.form.value.username;
     let password = this.form.value.password;
-    const signInRequest = new SignInRequest(username, password);
+    const signInRequest: SignInRequest = { username, password };
     this.submitted = true;
     this.authenticationService.signIn(signInRequest)
       .then(() => {

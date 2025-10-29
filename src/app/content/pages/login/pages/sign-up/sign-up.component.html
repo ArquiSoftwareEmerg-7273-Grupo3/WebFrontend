@@ -12,15 +12,15 @@
         <div *ngIf="step === 1">
           <div class="form-row">
             <div class="form-group">
-              <input type="text" placeholder="Nombre*" formControlName="firstName" required />
-            </div>
-            <div class="form-group">
-              <input type="text" placeholder="Apellido*" formControlName="lastName" required />
+              <input type="text" placeholder="Usuario*" formControlName="username" required />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
-              <input type="text" placeholder="Correo electrónico*" formControlName="username" required />
+              <input type="text" placeholder="Nombres*" formControlName="nombres" required />
+            </div>
+            <div class="form-group">
+              <input type="text" placeholder="Apellidos*" formControlName="apellidos" required />
             </div>
           </div>
           <div class="form-row">
@@ -47,52 +47,47 @@
           <button class="login-button" type="button" (click)="goToNextStep()">Siguiente</button>
         </div>
 
-        <!-- Paso 3: Más datos -->
+        <!-- Paso 3: Información de contacto -->
         <div *ngIf="step === 3">
           <div class="form-row">
             <div class="form-group">
-              <input type="date" placeholder="Fecha de nacimiento*" formControlName="fechaNacimiento" required />
-            </div>
-            <div class="form-group">
               <input type="tel" placeholder="Teléfono*" formControlName="telefono" required />
             </div>
+            <div class="form-group">
+              <input type="date" placeholder="Fecha de nacimiento*" formControlName="fechaNacimiento" required />
+            </div>
           </div>
-          <!-- Redes Sociales - Full width -->
+          <div class="form-row">
+            <div class="form-group">
+              <input type="text" placeholder="URL de foto (opcional)" formControlName="foto" />
+            </div>
+          </div>
+          <button class="login-button" type="button" (click)="goToNextStep()">Siguiente</button>
+        </div>
+
+        <!-- Paso 4: Redes sociales y descripción -->
+        <div *ngIf="step === 4">
+          <!-- Descripción -->
+          <div class="form-group full-width">
+            <textarea rows="4" placeholder="Descripción" formControlName="descripcion" class="description-input"></textarea>
+          </div>
+
+          <!-- Redes Sociales Simplificadas -->
           <div class="form-group full-width">
             <div class="social-networks-section">
-              <h3>Redes sociales</h3>
-              <div class="social-selector">
-                <select (change)="onAddSocialNetwork($event)">
-                  <option value="">Seleccionar red social</option>
-                  <option *ngFor="let social of availableSocialNetworks" [value]="social.id">
-                    {{social.name}}
-                  </option>
-                </select>
+              <h3>Redes sociales (Opcional)</h3>
+              <div class="form-group">
+                <input type="url" placeholder="Instagram" formControlName="additionalProp1" />
               </div>
-              <div class="selected-networks">
-                <div *ngFor="let social of selectedNetworks" class="social-link-row">
-                  <div class="social-icon-container">
-                    <i [class]="social.icon" class="social-icon"></i>
-                    {{social.name}}
-                  </div>
-                  <div class="social-input-container">
-                    <input type="url" 
-                           [placeholder]="'Link de ' + social.name" 
-                           [formControlName]="social.id + 'Link'"
-                           class="social-input" />
-                    <button type="button" class="remove-social" (click)="removeSocialNetwork(social.id)">
-                      ×
-                    </button>
-                  </div>
-                </div>
+              <div class="form-group">
+                <input type="url" placeholder="Twitter" formControlName="additionalProp2" />
+              </div>
+              <div class="form-group">
+                <input type="url" placeholder="LinkedIn" formControlName="additionalProp3" />
               </div>
             </div>
           </div>
 
-          <!-- Descripción - Full width -->
-          <div class="form-group full-width">
-            <textarea rows="4" placeholder="Descripción*" formControlName="descripcion" class="description-input"></textarea>
-          </div>
           <button class="login-button" type="button" (click)="onSubmitFinal()">Finalizar Registro</button>
         </div>
       </div>

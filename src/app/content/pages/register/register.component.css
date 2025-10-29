@@ -75,7 +75,7 @@ h2 {
   width: 100%;
   box-sizing: border-box;
 
-  input {
+  input, textarea {
     width: 100%;
     padding: 0.75rem 2.5rem 0.75rem 1rem;
     border: 1px solid #ccc;
@@ -84,6 +84,7 @@ h2 {
     outline: none;
     transition: border 0.2s;
     box-sizing: border-box;
+    resize: vertical;
 
     &:focus {
       border-color: #357a73;
@@ -128,5 +129,24 @@ h2 {
 
   &:hover {
     background-color: #2e6a64;
+  }
+}
+
+.social-section {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+
+  h3 {
+    margin: 0 0 1rem 0;
+    color: #357a73;
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .form-group {
+    margin-bottom: 0.75rem;
   }
 }

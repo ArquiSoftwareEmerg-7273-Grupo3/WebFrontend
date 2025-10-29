@@ -4,20 +4,19 @@ import {BehaviorSubject} from 'rxjs';
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {SignUpRequest} from '../model/sign-up.request';
-import {SignUpResponse} from '../model/sign-up.response';
 import {SignInRequest} from '../model/sign-in.request';
-import {SignInResponse} from '../model/sign-in.response';
+import {AuthResponse} from '../model/auth-response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  basePath: string = `${environment.baseUrl}`;
+  basePath: string = `${environment.baseUrlAuth}`;
   httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
   
   // Bandera para activar/desactivar el modo de simulación
-  private simulationMode: boolean = true;
+  private simulationMode: boolean = false;
 
   private signedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
   private signedInUserId: BehaviorSubject<number> = new BehaviorSubject<number>(0);
@@ -57,18 +56,16 @@ export class AuthenticationService {
         return;
       }
 
-      this.http.post<SignUpResponse>(`${this.basePath}/authentication/sign-up`, signUpRequest, this.httpOptions)
+      this.http.post(`${this.basePath}/api/v1/authentication/sign-up`, signUpRequest, this.httpOptions)
         .subscribe({
           next: (response) => {
-            this.signedInUserId.next(response.id);
-            console.log(`✔️ Signed Up as ${response.username}`);
+            console.log(`✔️ Usuario registrado exitosamente`);
             alert('Registro exitoso');
             this.router.navigate(['/sign-in']).then(() => resolve());
           },
           error: (error) => {
             console.error(`❌ Error while signing up: ${error.message}`);
             alert(`Error: ${error.message}`);
-            // No redirijas aquí o redirige solo si es necesario
             reject(error);
           }
         });
@@ -92,7 +89,7 @@ export class AuthenticationService {
         return;
       }
 
-      this.http.post<SignInResponse>(`${this.basePath}/authentication/sign-in`, signInRequest, this.httpOptions)
+      this.http.post<AuthResponse>(`${this.basePath}/api/v1/authentication/sign-in`, signInRequest, this.httpOptions)
         .subscribe({
           next: (response) => {
             this.signedIn.next(true);

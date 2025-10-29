@@ -25,16 +25,35 @@
     </div>
 
     <div class="form-group">
-      <input type="text" placeholder="Nombre*" [(ngModel)]="firstName" />
+      <input type="text" placeholder="Usuario*" [(ngModel)]="username" />
     </div>
 
     <div class="form-group">
-      <input type="text" placeholder="Apellido*" [(ngModel)]="lastName" />
+      <input type="text" placeholder="Nombres*" [(ngModel)]="nombres" />
     </div>
 
     <div class="form-group">
-      <input type="email" placeholder="Correo electrónico*" [(ngModel)]="email" />
-      <span class="material-symbols-outlined icon">mail</span>
+      <input type="text" placeholder="Apellidos*" [(ngModel)]="apellidos" />
+    </div>
+
+    <div class="form-group">
+      <input type="text" placeholder="Ubicación*" [(ngModel)]="ubicacion" />
+    </div>
+
+    <div class="form-group">
+      <input type="tel" placeholder="Teléfono*" [(ngModel)]="telefono" />
+    </div>
+
+    <div class="form-group">
+      <input type="date" placeholder="Fecha de nacimiento*" [(ngModel)]="fechaNacimiento" />
+    </div>
+
+    <div class="form-group">
+      <input type="text" placeholder="URL de foto (opcional)" [(ngModel)]="foto" />
+    </div>
+
+    <div class="form-group">
+      <textarea placeholder="Descripción" [(ngModel)]="descripcion" rows="3"></textarea>
     </div>
 
     <div class="form-group">
@@ -46,6 +65,20 @@
       <span class="material-symbols-outlined icon" (click)="togglePasswordVisibility()">
         {{ showPassword ? 'visibility_off' : 'visibility' }}
       </span>
+    </div>
+
+    <!-- Sección de redes sociales opcionales -->
+    <div class="social-section">
+      <h3>Redes Sociales (Opcional)</h3>
+      <div class="form-group">
+        <input type="text" placeholder="Instagram" [(ngModel)]="redesSociales.additionalProp1" />
+      </div>
+      <div class="form-group">
+        <input type="text" placeholder="Twitter" [(ngModel)]="redesSociales.additionalProp2" />
+      </div>
+      <div class="form-group">
+        <input type="text" placeholder="LinkedIn" [(ngModel)]="redesSociales.additionalProp3" />
+      </div>
     </div>
 
     <div class="redirect-link">

@@ -160,7 +160,7 @@ h2 {
   background-color: #2e6a64;
 }
 
-/* Estilos para la sección de redes sociales */
+/* Estilos para la sección de redes sociales simplificada */
 .social-networks-section {
   background: #f8f9fa;
   padding: 1rem;
@@ -173,6 +173,24 @@ h2 {
   margin-bottom: 0.75rem;
   font-size: 1rem;
   font-weight: 600;
+}
+
+.social-networks-section .form-group {
+  margin-bottom: 0.75rem;
+}
+
+.social-networks-section input[type="url"] {
+  width: 100%;
+  padding: 0.6rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: white;
+}
+
+.social-networks-section input[type="url"]:focus {
+  border-color: #357a73;
+  outline: none;
 }
 
 .social-selector select {
