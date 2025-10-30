@@ -14,7 +14,7 @@ export class AuthenticationService {
 
   basePath: string = `${environment.baseUrlAuth}`;
   httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
-  
+
   // Bandera para activar/desactivar el modo de simulación
   private simulationMode: boolean = false;
 

@@ -1,110 +1,154 @@
-.profile-wrapper {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 0 1rem; /* espacio lateral responsivo */
+.perfil-container {
+  max-width: 1000px;
+  margin: 5rem auto;
+  padding: 1rem;
 }
 
-.profile-container {
+.perfil-card {
   background-color: #429f95;
-  padding: 1.5rem 1rem;
-  border-radius: 24px;
-  text-align: center;
+  border-radius: 16px;
+  padding: 2rem;
   display: flex;
-  flex-direction: column;
   align-items: center;
-  margin-bottom: 2rem;
-  margin-top: 100px;
+  gap: 2rem;
+  color: white;
 }
 
-.cyan{
-  color: #429F95;
+.perfil-foto {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 3px solid white;
+  object-fit: cover;
 }
 
-.profile-photo {
-  width: 180px;
+.perfil-info h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.usuario {
+  font-size: 1rem;
+  margin: 0.3rem 0;
+}
+
+.ubicacion {
+  font-size: 0.95rem;
+  color: #e0f2f1;
+  margin-bottom: 0.8rem;
+}
+
+.descripcion {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+  color: #f3f7f7;
+}
+
+.alerta {
+  background: #fff3cd;
+  color: #5b4100;
+  border-radius: 8px;
+  padding: 0.6rem;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.btn-completar {
+  background: #ffffff;
+  color: #447973;
+  border: none;
+  border-radius: 20px;
+  padding: 0.5rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.btn-completar:hover {
+  background: #eef4f3;
+}
+.publicaciones-box {
+  margin: 1.5rem 0;
+  background: transparent;
+  border: 1px solid #429f95;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: none;
+}
+
+.publicaciones-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.publicaciones-header h3 {
+  font-size: 1.4rem;
+  color: #2f3f3d;
+  margin: 0;
+}
+
+.ordenar {
+  border: 1px solid #c9d7d6;
+  border-radius: 6px;
+  padding: 0.3rem 0.6rem;
+  background: #f7faf9;
+  color: #3a5452;
+  font-size: 0.9rem;
+}
+
+.publicaciones-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.publicacion {
+  background: #f6fbfa;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e1eceb;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.pub-imagen {
+  width: 100%;
   height: 180px;
   object-fit: cover;
-  border-radius: 16px;
-  border: 4px solid white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.profile-name {
-  font-size: 1.8rem;
-  color: white;
-  margin-top: 1rem;
-  font-weight: 600;
+.pub-detalles {
+  padding: 1rem;
 }
 
-.profile-role {
-  font-size: 1.2rem;
-  color: white;
-  margin: 0rem;
+.pub-detalles h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #2f3f3d;
 }
 
-.important-container {
-  max-width: 1100px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 1.5rem;
-  box-sizing: border-box;
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(4, 1fr);
+.pub-detalles p {
+  color: #555;
+  font-size: 0.9rem;
+  margin: 0.5rem 0;
 }
 
-@media (max-width: 1024px) {
-  .important-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.pub-meta {
+  font-size: 0.85rem;
+  color: #666;
 }
 
-@media (max-width: 800px) {
-  .important-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-.cards-container {
-  max-width: 1100px;
-  width: 100%;
-  margin: 0 auto;
-  padding: 1.5rem;
-  box-sizing: border-box;
-  display: grid;
-  gap: 1.5rem;
-  grid-template-columns: repeat(3, 1fr); /* Por defecto: 3 columnas */
-}
-
-@media (max-width: 1024px) {
-  .cards-container {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 800px) {
-  .cards-container {
-    grid-template-columns: 1fr;
-  }
-}
-.logout-container {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.logout-button {
-  background-color: #429f95; /* cyan */
-  color: white;
-  padding: 0.75rem 1.5rem;
+.btn-ver-mas {
+  display: block;
+  margin: 1.5rem auto 0;
+  background: none;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: bold;
+  color: black;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
-
-.logout-button:hover {
-  background-color: #317d74; /* un tono más oscuro al pasar */
+.btn-ver-mas:hover {
+  text-decoration: underline;
 }

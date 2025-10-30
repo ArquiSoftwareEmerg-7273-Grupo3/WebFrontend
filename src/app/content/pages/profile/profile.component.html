@@ -1,54 +1,47 @@
-<div class="profile-wrapper">
-  <div class="profile-container">
-    <img [src]="profile.photo" alt="Profile Photo" class="profile-photo" />
-    <h2 class="profile-name">{{ profile.name }}</h2>
-    <p class="profile-role">{{ getSubscriptionLabel(profile.subscription) }}</p>
-  </div>
-  <h1>Mis<span class="cyan"> ilustraciones</span></h1>
-  <hr>
-  <div class="important-container">
-    <app-illustration-profile
-      *ngFor="let illustration of illustrations"
-      [id]="illustration.id"
-      [title]="illustration.title"
-      [author]="illustration.author"
-      [image]="illustration.image"
-      [rating]="illustration.rating"
-    ></app-illustration-profile>
-    <!-- Eso es lo que verá el escritor
-    <app-book-profile
-      *ngFor="let illustration of illustrations"
-      [id]="illustration.id"
-      [title]="illustration.title"
-      [author]="illustration.author"
-      [image]="illustration.image"
-      [rating]="illustration.rating"
-    ></app-book-profile>
-    -->
+<section class="perfil-container">
+  <!-- Bloque principal -->
+  <div class="perfil-card">
+    <img [src]="perfil.foto" alt="Foto de {{ perfil.nombre }}" class="perfil-foto" />
 
-  </div>
-  <br>
-  <h1>Mis<span class="cyan"> portafolios</span></h1>
-  <hr>
-  <div class="cards-container">
-    <app-portfolio-profile
-      *ngFor="let project of projects2"
-      [id]="project.id"
-      [imageSrc]="project.imageSrc"
-      [title]="project.title"
-    ></app-portfolio-profile>
-    <!-- Esto es lo que verá el escritor
-    <app-project-profile
-      *ngFor="let project of projects2"
-      [id]="project.id"
-      [imageSrc]="project.imageSrc"
-      [title]="project.title"
-    ></app-project-profile>
-    -->
+    <div class="perfil-info">
+      <h2>{{ perfil.nombre }} {{ perfil.apellido }}</h2>
+      <p class="usuario"> &#64; {{ perfil.usuario }}</p>
+      <p class="ubicacion">📍 {{ perfil.ubicacion }}</p>
 
+      <p class="descripcion">
+        {{ perfil.descripcion }}
+      </p>
+
+      <div class="alerta">
+        Aviso: Si buscas empleo y quieres crear portafolios, completa tu perfil aquí
+      </div>
+
+      <button class="btn-completar">Completar</button>
+    </div>
   </div>
-  <br>
-  <div class="logout-container">
-    <button class="logout-button" (click)="logout()">Cerrar sesión</button>
+
+  <!-- Publicaciones -->
+  <div class="publicaciones-box">
+    <div class="publicaciones-header">
+      <h3>Mis publicaciones</h3>
+      <select class="ordenar">
+        <option>Más recientes</option>
+      </select>
+    </div>
+
+    <div class="publicaciones-grid">
+      <div class="publicacion" *ngFor="let pub of publicaciones">
+        <img [src]="pub.imagenUrl" [alt]="pub.titulo" class="pub-imagen" />
+        <div class="pub-detalles">
+          <h4>{{ pub.titulo }}</h4>
+          <p>{{ pub.descripcion }}</p>
+          <div class="pub-meta">
+            ⭐ {{ pub.likes }} · 💬 {{ pub.comentarios }} comentarios
+          < </div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-ver-mas">Mostrar todas las publicaciones →</button>
   </div>
-</div>
+</section>

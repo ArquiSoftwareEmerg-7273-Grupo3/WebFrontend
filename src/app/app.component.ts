@@ -6,11 +6,12 @@ import {filter} from 'rxjs';
 import {HttpClientModule} from '@angular/common/http';
 import {NgIf} from '@angular/common';
 import {OptionsService} from './public/services/options.service';
+import {BusinessMiniVentanaComponent} from './public/components/business-mini-ventana/business-mini-ventana.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToolbarContentComponent, HttpClientModule, NgIf],
+  imports: [RouterOutlet, ToolbarContentComponent, HttpClientModule, NgIf, BusinessMiniVentanaComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
