@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { JobsService, Job, JobFilters } from './services/jobs.service';
 
 @Component({
@@ -50,7 +51,7 @@ export class JobsComponent implements OnInit {
     { value: 'Remoto', label: 'Remoto' }
   ];
 
-  constructor(private jobsService: JobsService) {}
+  constructor(private jobsService: JobsService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadJobs();
@@ -180,6 +181,11 @@ export class JobsComponent implements OnInit {
 
   onFilterChange(): void {
     this.applyFilters();
+  }
+
+  // Método para ver detalles del trabajo
+  viewJobDetails(jobId: number): void {
+    this.router.navigate(['/jobs', jobId]);
   }
 
   // Método para aplicar al trabajo

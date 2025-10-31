@@ -1,0 +1,118 @@
+<div class="job-detail-container" *ngIf="!loading && job">
+  <!-- Header con botón de regreso -->
+  <div class="job-detail-header">
+    <button class="back-button" (click)="goBack()">
+      <span class="material-symbols-outlined">arrow_back</span>
+      Volver a trabajos
+    </button>
+  </div>
+
+  <!-- Información principal del trabajo -->
+  <div class="job-main-info">
+    <div class="job-image-large">
+      <img [src]="job.image" [alt]="job.title" />
+    </div>
+    
+    <div class="job-header-content">
+      <div class="job-badges">
+        <span *ngIf="job.featured" class="badge featured">Destacado</span>
+        <span *ngIf="job.urgent" class="badge urgent">Urgente</span>
+      </div>
+      
+      <h1 class="job-title">{{ job.title }}</h1>
+      <h2 class="job-company">{{ job.company }}</h2>
+      
+      <div class="job-meta">
+        <div class="meta-item">
+          <span class="material-symbols-outlined">location_on</span>
+          <span>{{ job.location }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="material-symbols-outlined">work</span>
+          <span>{{ getTypeLabel(job.type) }}</span>
+        </div>
+        <div class="meta-item">
+          <span class="material-symbols-outlined">category</span>
+          <span>{{ getCategoryLabel(job.category) }}</span>
+        </div>
+        <div class="meta-item" *ngIf="job.salary">
+          <span class="material-symbols-outlined">payments</span>
+          <span>{{ job.salary }}</span>
+        </div>
+      </div>
+
+      <div class="job-stats">
+        <div class="stat">
+          <span class="stat-number">{{ job.applicants }}</span>
+          <span class="stat-label">postulantes</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">{{ getDaysAgo(job.postedDate) }}</span>
+          <span class="stat-label">días publicado</span>
+        </div>
+      
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="action-buttons">
+        <button class="btn-apply" (click)="applyToJob()">
+          <span class="material-symbols-outlined">send</span>
+          Postularse ahora
+        </button>
+        <button class="btn-save" (click)="saveJob()">
+          <span class="material-symbols-outlined">bookmark</span>
+          Guardar
+        </button>
+        <button class="btn-share">
+          <span class="material-symbols-outlined">share</span>
+          Compartir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contenido detallado -->
+  <div class="job-content">
+    <div class="job-description">
+      <h3>Descripción del trabajo</h3>
+      <p>{{ job.description }}</p>
+    </div>
+
+    <div class="job-requirements">
+      <h3>Requisitos</h3>
+      <ul>
+        <li *ngFor="let requirement of job.requirements">{{ requirement }}</li>
+      </ul>
+    </div>
+
+    <div class="job-timeline">
+      <h3>Cronograma</h3>
+      <div class="timeline-item">
+        <span class="material-symbols-outlined">event</span>
+        <div>
+          <strong>Fecha de publicación:</strong>
+          <span>{{ job.postedDate | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <span class="material-symbols-outlined">schedule</span>
+        <div>
+          <strong>Fecha límite:</strong>
+          <span>{{ job.deadline | date:'dd/MM/yyyy' }}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estados de carga y error -->
+<div *ngIf="loading" class="loading-container">
+  <div class="spinner"></div>
+  <p>Cargando trabajo...</p>
+</div>
+
+<div *ngIf="error" class="error-message">
+  <span class="material-symbols-outlined">error</span>
+  <p>{{ error }}</p>
+  <button (click)="goBack()">Volver a trabajos</button>
+</div>

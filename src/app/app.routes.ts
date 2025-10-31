@@ -32,6 +32,7 @@ import {SignInComponent} from './content/pages/login/pages/sign-in/sign-in.compo
 import {SignUpComponent} from './content/pages/login/pages/sign-up/sign-up.component';
 import {authenticationGuard} from './content/pages/login/services/authentication.guard';
 import { JobsComponent } from './content/pages/jobs/jobs.component';
+import { JobDetailComponent } from './content/pages/jobs/job-detail/job-detail.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent,  canActivate: [authenticationGuard] },
@@ -58,6 +59,7 @@ export const routes: Routes = [
   { path: 'all-portfolios', component: AllPortfoliosComponent},
   { path: 'portfolios/information/:id/create-new-illustration', component: CreateIlustrationComponent },
   { path: 'jobs', component: JobsComponent },
+  { path: 'jobs/:id', component: JobDetailComponent },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];
