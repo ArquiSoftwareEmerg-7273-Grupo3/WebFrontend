@@ -1,0 +1,116 @@
+:host { display: block; width: 100%; }
+.wrap {
+  display: flex;
+  justify-content: center;
+  padding: 2.0rem 1rem;
+}
+
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.6rem;
+  box-shadow: 0 8px 30px rgba(18, 34, 31, 0.08);
+  border: 1px solid rgba(47,127,121,0.06);
+  box-sizing: border-box;
+}
+
+.title {
+  margin: 0 0 0.9rem 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #203231;
+  text-align: center;
+}
+
+.field {
+  position: relative;
+  margin: 0.6rem 0 0.4rem 0;
+}
+
+.field input {
+  width: 100%;
+  padding: 1.15rem 1rem 0.5rem 1rem; /* espacio para etiqueta flotante */
+  font-size: 1rem;
+  border-radius: 10px;
+  border: 1px solid #e6eceb;
+  background: linear-gradient(180deg, #ffffff, #fbffff);
+  outline: none;
+  transition: box-shadow .18s ease, border-color .18s ease;
+  box-sizing: border-box;
+}
+
+.field input:focus {
+  border-color: #2f7f79;
+  box-shadow: 0 6px 18px rgba(47,127,121,0.12);
+}
+
+.field label {
+  position: absolute;
+  left: 12px;
+  top: 14px;
+  color: #6b7c7a;
+  font-size: 0.95rem;
+  padding: 0 6px;
+  background: transparent;
+  pointer-events: none;
+  transition: transform 0.16s ease, top 0.16s ease, font-size 0.16s ease, color 0.16s ease;
+}
+
+/* floating label when input focused or has content */
+.field input:focus + label,
+.field input:not(:placeholder-shown) + label {
+  top: -8px;
+  transform: translateY(0);
+  font-size: 0.75rem;
+  color: #2f7f79;
+  background: #ffffff;
+}
+
+/* placeholder trick: set placeholder to space in template to allow :placeholder-shown check */
+.help {
+  margin-top: 0.45rem;
+  color: #cf3f3f;
+  font-size: 0.85rem;
+}
+
+.hint {
+  margin: 0.6rem 0 0.9rem 0;
+  color: #4b6b69;
+  font-size: 0.85rem;
+  text-align: center;
+  opacity: 0.9;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.6rem;
+}
+
+.btn {
+  background: linear-gradient(90deg,#2f7f79,#1f615f);
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 0.98rem;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(47,127,121,0.14);
+  transition: transform .08s ease, opacity .12s ease;
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn:not(:disabled):active { transform: translateY(1px); }
+@media (max-width: 420px) {
+  .card { padding: 1.1rem; border-radius: 10px; }
+  .title { font-size: 1rem; }
+}

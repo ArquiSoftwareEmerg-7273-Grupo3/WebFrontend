@@ -3,13 +3,15 @@ import { NgIf, NgOptimizedImage } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../content/pages/login/services/authentication.service';
 import { BusinessMiniService } from '../../services/business-mini.service';
+import {BusinessMiniVentanaComponent} from '../business-mini-ventana/business-mini-ventana.component';
 
 @Component({
   selector: 'app-toolbar-content',
   standalone: true,
   imports: [
     NgIf,
-    RouterLink
+    RouterLink,
+    BusinessMiniVentanaComponent
   ],
   templateUrl: './toolbar-content.component.html',
   styleUrl: './toolbar-content.component.css'
@@ -39,16 +41,12 @@ export class ToolbarContentComponent {
 
   openBusinessMiniVentana(event: MouseEvent) {
     event.stopPropagation();
-    // obtener coordenadas para posicionar justo debajo del elemento clickeado
     const target = event.currentTarget as HTMLElement || (event.target as HTMLElement);
     const rect = target.getBoundingClientRect();
     const width = 650;
-    // Centrar la mini-ventana respecto al elemento clickeado y evitar que salga de la pantalla
     let x = rect.left + (rect.width - width) / 2 + window.scrollX;
     x = Math.min(Math.max(x, 8), window.innerWidth - width - 8);
-
-    // aumentar el offset vertical para "bajar" la ventana
-    const verticalOffset = 14; // incrementar este valor para bajarla más
+    const verticalOffset = 14;
     const y = rect.bottom + window.scrollY + verticalOffset;
 
     console.log('Business mini coords', { x, y, width });

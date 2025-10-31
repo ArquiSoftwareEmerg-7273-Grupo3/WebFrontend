@@ -31,12 +31,16 @@ import {
 import {SignInComponent} from './content/pages/login/pages/sign-in/sign-in.component';
 import {SignUpComponent} from './content/pages/login/pages/sign-up/sign-up.component';
 import {authenticationGuard} from './content/pages/login/services/authentication.guard';
+import {IlustradorFormComponent} from './content/pages/registration-forms/ilustrador-form/ilustrador-form.component';
+import {EscritorFormComponent} from './content/pages/registration-forms/escritor-form/escritor-form.component';
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent,  canActivate: [authenticationGuard] },
   { path: 'login', component: SignInComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [authenticationGuard]},
   { path: 'register', component: SignUpComponent},
+  { path: 'register/illustrator', component: IlustradorFormComponent, canActivate: [authenticationGuard]},
+  { path: 'register/writer', component: EscritorFormComponent, canActivate: [authenticationGuard]},
   { path: 'messages', component: ChatsComponent, canActivate: [authenticationGuard] },
   { path: 'projects/create-new-project', component: CreateProjectComponent, canActivate: [authenticationGuard] },
   { path: 'information/project/:id', component: ProjectIndividualComponent, canActivate: [authenticationGuard] },

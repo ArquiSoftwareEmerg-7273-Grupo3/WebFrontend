@@ -65,10 +65,14 @@ export class ProfileComponent implements OnInit {
     }
   ];
 
-  constructor(private popupService: PopupRegistroIlustradorService) {}
+  constructor(private popupService: PopupRegistroIlustradorService, private router: Router) {}
 
   ngOnInit() {
     this.popupService.openPopup();
+  }
+
+  goToIlustradorForm() {
+    this.router.navigate(['register/illustrator']);
   }
 
   /**
