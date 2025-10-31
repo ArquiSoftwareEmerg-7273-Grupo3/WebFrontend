@@ -19,18 +19,22 @@ export class EscritorFormComponent {
   form: FormGroup;
 
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private profileRegistrationService: ProfileRegistrationService
   ) {
-    this.form = this.formBuilder.group({
-      razonSocial: ['', Validators.required],
-      ruc: ['', [Validators.required, Validators.pattern('^[0-9]{11}$')]],
-      nombreComercial: ['', Validators.required],
-      sitioWeb: ['', Validators.pattern('https?://.+')],
+    this.form = this.fb.group({
+      razonSocial: [''],
+      ruc: ['', [Validators.pattern(/^\d{8,11}$/)]],
+      nombreComercial: [''],
+      sitioWeb: ['', Validators.pattern(/^(https?:\/\/)?([\w\-]+\.)+[\w\-]+(\/.*)?$/i)],
       logo: [''],
-      ubicacionEmpresa: ['', Validators.required],
-      tipoEmpresa: ['', Validators.required],
+      ubicacionEmpresa: [''],
+      tipoEmpresa: ['']
     });
+  }
+
+  get f() {
+    return this.form.controls;
   }
 
   onSubmit() {
@@ -47,13 +51,12 @@ export class EscritorFormComponent {
       e.sitioWeb,
       e.logo,
       e.ubicacionEmpresa,
-      e.tipoEmpresa,
+      e.tipoEmpresa
     );
 
     this.profileRegistrationService.registerEscritor(escritor).subscribe({
       next: () => {
         alert('Registro de escritor exitoso');
-
       },
       error: (err) => {
         console.error('Error al registrar escritor', err);

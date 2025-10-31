@@ -3,7 +3,7 @@
     <h3 class="title">Activa tu perfil de ilustrador</h3>
 
     <div class="field">
-      <input id="nombre" formControlName="nombreArtistico" type="text" placeholder="Nombre Artístico" required/>
+      <input id="nombre" formControlName="nombreArtistico" type="text" required/>
       <label for="nombre">Nombre artístico</label>
       <div class="help" *ngIf="form.get('nombreArtistico')?.touched && form.get('nombreArtistico')?.invalid">El nombre es obligatorio</div>
     </div>

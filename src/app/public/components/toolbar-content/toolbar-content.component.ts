@@ -4,8 +4,10 @@ import { NgIf, NgOptimizedImage } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../content/pages/login/services/authentication.service';
 import { BusinessMiniService } from '../../services/business-mini.service';
-import {BusinessMiniVentanaComponent} from '../business-mini-ventana/business-mini-ventana.component';
-
+import { BusinessMiniVentanaComponent} from '../business-mini-ventana/business-mini-ventana.component';
+import { UserInfoResponse} from '../../../content/pages/login/model/user-info.response';
+import { UserRoleUtils} from '../../../content/pages/login/services/user-role.utils';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-toolbar-content',
@@ -22,7 +24,6 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
   menuOpen = false;
 
   miniVentanaOpen = false;
-  userRole: string = 'noRole'; // Valor inicial para pruebas
 
   // Variable para cambiar roles fácilmente durante pruebas
   availableRoles = ['noRole', 'illustrator', 'writer'];
@@ -59,14 +60,6 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
     console.log('Business mini coords', { x, y, width });
     this.businessMiniService.toggle({ x, y });
   }
-
-  // Método para cambiar roles durante pruebas
-  switchRole() {
-    this.currentRoleIndex = (this.currentRoleIndex + 1) % this.availableRoles.length;
-    this.userRole = this.availableRoles[this.currentRoleIndex];
-    this.cdr.detectChanges();
-    private authService: AuthenticationService
-  ) {}
 
   ngOnInit() {
     // Suscribirse a los cambios de rol del usuario
@@ -173,7 +166,7 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
   closeMenu() {
     this.menuOpen = false;
   }
-  
+
   logout() {
     this.authService.signOut();
   }

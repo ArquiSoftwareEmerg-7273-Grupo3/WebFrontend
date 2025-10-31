@@ -56,4 +56,8 @@ export class BusinessMiniVentanaComponent implements OnInit, OnDestroy {
 
   // evitar que clicks internos cierren la ventana
   stop(ev: MouseEvent) { ev.stopPropagation(); }
+
+  goToEscritorForm() {
+    this.router.navigate(['register/writer']);
+  }
 }

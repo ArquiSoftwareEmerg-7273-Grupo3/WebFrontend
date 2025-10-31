@@ -6,6 +6,11 @@ export class Usuario {
       public ubicacion: string,
       public foto: string,
       public descripcion: string,
+      public redesSociales: {
+        additionalProp1: string;
+        additionalProp2: string;
+        additionalProp3: string;
+      },
   ) {
   }
 }
