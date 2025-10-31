@@ -13,6 +13,7 @@ import {Usuario} from './model/usuario.entity';
 import {map, Observable, shareReplay, switchMap} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {PopupRegistroIlustradorService} from './services/popup-registro-ilustrador.service';
+import {UserInfoResponse} from '../login/model/user-info.response';
 
 @Component({
   selector: 'app-profile',
@@ -24,18 +25,20 @@ import {PopupRegistroIlustradorService} from './services/popup-registro-ilustrad
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent implements OnInit {
-  //perfil$!: Observable<Usuario>;
 
-  // Datos temporales
   perfil: Usuario = {
-    usuario: 'romeosantos',
-    nombre: 'Romeo',
-    apellido: 'Santos',
-    ubicacion: 'Lima, Perú',
-    descripcion:
-      'Ilustrador y diseñador de arte digital. Me enfoco en piezas monocromáticas con trazos finos y textura.',
-    foto: 'https://i.pinimg.com/736x/e5/91/dc/e591dc82326cc4c86578e3eeecced792.jpg',
-  };
+    usuario: '',
+    nombre: '',
+    apellido: '',
+    ubicacion: '',
+    descripcion: '',
+    foto: '',
+    redesSociales: {
+      additionalProp1: '',
+      additionalProp2: '',
+      additionalProp3: ''
+    }
+  }
 
   // publicaciones simuladas
   publicaciones = [
@@ -65,31 +68,38 @@ export class ProfileComponent implements OnInit {
     }
   ];
 
-  constructor(private popupService: PopupRegistroIlustradorService, private router: Router) {}
+  constructor(
+    private popupService: PopupRegistroIlustradorService,
+    private router: Router,
+    private authService: AuthenticationService
+  ) {
+  }
 
   ngOnInit() {
     this.popupService.openPopup();
+
+    // obtener información del usuario y mapearla a `perfil`
+    this.authService.getUserInformation()
+      .then((user: UserInfoResponse | null) => {
+        if (!user) return;
+        // Mapear propiedades defensivamente (ajusta nombres según tu API)
+        this.perfil.usuario = user.username;
+        this.perfil.nombre = user.nombres;
+        this.perfil.apellido = user.apellidos;
+        this.perfil.ubicacion = user.ubicacion;
+        this.perfil.descripcion = user.descripcion;
+        this.perfil.foto = user.foto ?? 'https://i.pinimg.com/736x/e5/91/dc/e591dc82326cc4c86578e3eeecced792.jpg';
+        this.perfil.redesSociales.additionalProp1 = user.redesSociales.additionalProp1 ?? '';
+        this.perfil.redesSociales.additionalProp2 = user.redesSociales.additionalProp2 ?? '';
+        this.perfil.redesSociales.additionalProp3 = user.redesSociales.additionalProp3 ?? '';
+      })
+      .catch(err => {
+        console.warn('No se pudo cargar la información del usuario en profile:', err);
+      });
   }
 
   goToIlustradorForm() {
     this.router.navigate(['register/illustrator']);
   }
 
-  /**
-  constructor(private http: HttpClient, private route: ActivatedRoute) {
-    // Se obtiene el id de la URL y se carga el perfil desde el backend
-    this.perfil$ = this.route.paramMap.pipe(
-      switchMap(params => {
-        const id = params.get('id');
-        return this.http.get<Usuario>(`http://localhost:8000/api/usuarios/1/`);
-      }),
-      // Valores de respaldo para evitar errores
-      map(perfil => ({
-        fotoUrl: '/assets/avatar-placeholder.png',
-        ...perfil,
-      })),
-      shareReplay(1)
-    );
-  }
-    **/
 }
