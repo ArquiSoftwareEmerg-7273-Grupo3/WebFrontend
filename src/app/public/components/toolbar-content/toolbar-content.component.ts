@@ -1,9 +1,11 @@
-import {Component, HostListener, Input, ChangeDetectorRef, ElementRef} from '@angular/core';
+
+import {Component, HostListener, Input, ChangeDetectorRef, ElementRef, OnInit, OnDestroy} from '@angular/core';
 import { NgIf, NgOptimizedImage } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../content/pages/login/services/authentication.service';
 import { BusinessMiniService } from '../../services/business-mini.service';
 import {BusinessMiniVentanaComponent} from '../business-mini-ventana/business-mini-ventana.component';
+
 
 @Component({
   selector: 'app-toolbar-content',
@@ -16,14 +18,19 @@ import {BusinessMiniVentanaComponent} from '../business-mini-ventana/business-mi
   templateUrl: './toolbar-content.component.html',
   styleUrl: './toolbar-content.component.css'
 })
-export class ToolbarContentComponent {
+export class ToolbarContentComponent implements OnInit, OnDestroy {
   menuOpen = false;
+
   miniVentanaOpen = false;
   userRole: string = 'noRole'; // Valor inicial para pruebas
 
   // Variable para cambiar roles fácilmente durante pruebas
   availableRoles = ['noRole', 'illustrator', 'writer'];
   currentRoleIndex = 0;
+
+  userRole: string = 'GENERAL';
+  userInfo: UserInfoResponse | null = null;
+  private subscriptions: Subscription[] = [];
 
   constructor(
     private router: Router,
@@ -58,22 +65,101 @@ export class ToolbarContentComponent {
     this.currentRoleIndex = (this.currentRoleIndex + 1) % this.availableRoles.length;
     this.userRole = this.availableRoles[this.currentRoleIndex];
     this.cdr.detectChanges();
+    private authService: AuthenticationService
+  ) {}
+
+  ngOnInit() {
+    // Suscribirse a los cambios de rol del usuario
+    const roleSubscription = this.authService.currentRole.subscribe(role => {
+      this.userRole = this.mapBackendRoleToFrontend(role);
+      this.cdr.detectChanges();
+    });
+
+    // Suscribirse a la información completa del usuario
+    const userInfoSubscription = this.authService.userInformation.subscribe(userInfo => {
+      this.userInfo = userInfo;
+      if (userInfo) {
+        const role = UserRoleUtils.getUserRole(userInfo);
+        this.userRole = this.mapBackendRoleToFrontend(role);
+      }
+      this.cdr.detectChanges();
+    });
+
+    this.subscriptions.push(roleSubscription, userInfoSubscription);
+
+    // Cargar información del usuario si está autenticado
+    this.loadUserInfo();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.forEach(sub => sub.unsubscribe());
+  }
+
+  private mapBackendRoleToFrontend(backendRole: string): string {
+    switch (backendRole.toUpperCase()) {
+      case 'ILLUSTRATOR':
+      case 'ILUSTRADOR':
+        return 'ILUSTRADOR';
+      case 'WRITER':
+      case 'ESCRITOR':
+        return 'ESCRITOR';
+      case 'ADMIN':
+        return 'ADMIN';
+      case 'USER':
+        return 'user';
+      default:
+        return 'GENERAL';
+    }
+  }
+
+  get userBiografia(): string {
+    return this.userInfo ? UserRoleUtils.getUserBiography(this.userInfo) : '';
+  }
+
+  get hasSuscripcion(): boolean {
+    return this.userInfo ? UserRoleUtils.hasPremiumSubscription(this.userInfo) : false;
+  }
+
+  get userName(): string {
+    return this.userInfo ? UserRoleUtils.getUserDisplayName(this.userInfo) : '';
+  }
+
+  get userPhoto(): string {
+    return this.userInfo?.foto || 'assets/images/default-avatar.png';
+  }
+
+  get isUserIllustrator(): boolean {
+    return this.userInfo ? UserRoleUtils.isIllustrator(this.userInfo) : false;
+  }
+
+  get isUserWriter(): boolean {
+    return this.userInfo ? UserRoleUtils.isWriter(this.userInfo) : false;
+  }
+
+  private loadUserInfo() {
+    this.authService.getUserInformation()
+      .then(userInfo => {
+        console.log('✔️ Información del usuario cargada en toolbar:', userInfo);
+      })
+      .catch(error => {
+        console.warn('No se pudo cargar la información del usuario:', error);
+      });
   }
 
   get isIllustrator(): boolean {
-    return this.userRole === 'illustrator';
+    return this.userRole === 'ILUSTRADOR';
   }
 
   get isWriter(): boolean {
-    return this.userRole === 'writer';
+    return this.userRole === 'ESCRITOR';
   }
 
   get isAdmin(): boolean {
-    return this.userRole === 'admin';
+    return this.userRole === 'ADMIN';
   }
 
   get isNoRole(): boolean {
-    return this.userRole === 'noRole';
+    return this.userRole === 'GENERAL';
   }
 
   scrollToTop() {
@@ -87,5 +173,15 @@ export class ToolbarContentComponent {
   closeMenu() {
     this.menuOpen = false;
   }
+  
+  logout() {
+    this.authService.signOut();
+  }
 
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    if (event.target.innerWidth > 768 && this.menuOpen) {
+      this.menuOpen = false;
+    }
+  }
 }

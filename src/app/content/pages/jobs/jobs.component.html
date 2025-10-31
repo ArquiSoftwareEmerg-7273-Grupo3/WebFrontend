@@ -1,0 +1,157 @@
+<div class="jobs-container">
+  <!-- Header -->
+  <div class="jobs-header">
+    <div class="header-content">
+      <h1>Oportunidades Laborales</h1>
+      <p>Encuentra el proyecto perfecto para ti</p>
+    </div>
+  </div>
+
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-container">
+      <!-- Search Bar -->
+      <div class="search-bar">
+        <div class="search-input-container">
+          <span class="material-symbols-outlined">search</span>
+          <input 
+            type="text" 
+            placeholder="Buscar trabajos, empresas o palabras clave..."
+            [(ngModel)]="searchTerm"
+            (input)="onFilterChange()"
+            class="search-input">
+        </div>
+      </div>
+
+      <!-- Filter Dropdowns -->
+      <div class="filters-row">
+        <div class="filter-group">
+          <select [(ngModel)]="selectedCategory" (change)="onFilterChange()" class="filter-select">
+            <option *ngFor="let category of categories" [value]="category.value">
+              {{category.label}}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <select [(ngModel)]="selectedType" (change)="onFilterChange()" class="filter-select">
+            <option *ngFor="let type of jobTypes" [value]="type.value">
+              {{type.label}}
+            </option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <select [(ngModel)]="selectedLocation" (change)="onFilterChange()" class="filter-select">
+            <option *ngFor="let location of locations" [value]="location.value">
+              {{location.label}}
+            </option>
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Header -->
+  <div class="results-header">
+    <span class="results-count">{{filteredJobs.length}} trabajos encontrados</span>
+    <div class="view-options">
+      <span class="material-symbols-outlined active">view_list</span>
+      <span class="material-symbols-outlined">grid_view</span>
+    </div>
+  </div>
+
+  <!-- Jobs List -->
+  <div class="jobs-list">
+    <div *ngFor="let job of filteredJobs" class="job-card" [class.featured]="job.featured" [class.urgent]="job.urgent">
+      
+      <!-- Featured/Urgent Badge -->
+      <div class="job-badges">
+        <span *ngIf="job.featured" class="badge featured">Destacado</span>
+        <span *ngIf="job.urgent" class="badge urgent">Urgente</span>
+      </div>
+
+      <div class="job-card-header">
+        <div class="job-image">
+          <img [src]="job.image" [alt]="job.title" />
+        </div>
+        
+        <div class="job-main-info">
+          <div class="job-title-section">
+            <h3 class="job-title">{{job.title}}</h3>
+            <button class="save-btn" (click)="saveJob(job.id)">
+              <span class="material-symbols-outlined">bookmark_border</span>
+            </button>
+          </div>
+          
+          <div class="company-info">
+            <span class="company-name">{{job.company}}</span>
+            <span class="job-location">
+              <span class="material-symbols-outlined">location_on</span>
+              {{job.location}}
+            </span>
+          </div>
+          
+          <div class="job-meta">
+            <span class="job-type">{{getTypeLabel(job.type)}}</span>
+            <span class="job-category">{{getCategoryLabel(job.category)}}</span>
+            <span class="salary" *ngIf="job.salary">{{job.salary}}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="job-description">
+        <p>{{job.description}}</p>
+      </div>
+
+      <div class="job-requirements" *ngIf="job.requirements.length > 0">
+        <h4>Requisitos principales:</h4>
+        <ul>
+          <li *ngFor="let req of job.requirements.slice(0, 3)">{{req}}</li>
+        </ul>
+      </div>
+
+      <div class="job-footer">
+        <div class="job-stats">
+          <span class="posted-date">
+            <span class="material-symbols-outlined">schedule</span>
+            Publicado hace {{getDaysAgo(job.postedDate)}} días
+          </span>
+          <span class="applicants">
+            <span class="material-symbols-outlined">group</span>
+            {{job.applicants}} postulantes
+          </span>
+          <span class="deadline" [class.urgent-deadline]="getDaysRemaining(job.deadline) <= 3">
+            <span class="material-symbols-outlined">event</span>
+            {{getDaysRemaining(job.deadline)}} días restantes
+          </span>
+        </div>
+
+        <div class="job-actions">
+          <button class="btn-secondary">Ver detalles</button>
+          <button class="btn-primary" (click)="applyToJob(job.id)">
+            <span class="material-symbols-outlined">send</span>
+            Postularme
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- No Results -->
+  <div *ngIf="filteredJobs.length === 0" class="no-results">
+    <div class="no-results-content">
+      <span class="material-symbols-outlined">work_off</span>
+      <h3>No se encontraron trabajos</h3>
+      <p>Intenta ajustar tus filtros o buscar términos diferentes</p>
+      <button class="btn-primary" (click)="selectedCategory = ''; selectedType = ''; selectedLocation = ''; searchTerm = ''; onFilterChange()">
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
+
+  <!-- Load More Button -->
+  <div class="load-more" *ngIf="filteredJobs.length > 0">
+    <button class="btn-outline">Cargar más trabajos</button>
+  </div>
+</div>
