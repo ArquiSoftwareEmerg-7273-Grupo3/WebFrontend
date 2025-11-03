@@ -1,48 +1,116 @@
 <section class="perfil-container">
-  <!-- Bloque principal -->
   <div class="perfil-card">
-    <img [src]="perfil.foto" alt="Foto de {{ perfil.nombre }}" class="perfil-foto" />
+    <div class="perfil-avatar-wrap">
+      <img
+        [src]="perfil.foto"
+        alt="Foto de {{ perfil.nombre }} {{ perfil.apellido }}"
+        class="perfil-foto"
+      />
+    </div>
 
     <div class="perfil-info">
-      <h2>{{ perfil.nombre }} {{ perfil.apellido }}</h2>
-      <p class="usuario"> &#64; {{ perfil.usuario }}</p>
-      <p class="ubicacion">📍 {{ perfil.ubicacion }}</p>
+      <div class="perfil-header">
+        <h2 class="perfil-nombre">{{ perfil.nombre }} {{ perfil.apellido }}</h2>
+        <span class="rol-chip" [attr.data-rol]="perfil.rol">{{ perfil.rol }}</span>
+      </div>
+
+      <p class="usuario" aria-label="Usuario">
+        &#64;{{ perfil.usuario }}
+      </p>
+
+      <p class="ubicacion" *ngIf="perfil.ubicacion" aria-label="Ubicación">
+        <i class="i-pin" aria-hidden="true">📍</i> {{ perfil.ubicacion }}
+      </p>
 
       <p class="descripcion">
         {{ perfil.descripcion }}
       </p>
 
-      <div class="alerta">
-        Aviso: Si buscas empleo y quieres crear portafolios, completa tu perfil aquí
+      <!-- Redes sociales (máx. 3) -->
+      <div class="perfil-redes" *ngIf="perfil?.redesSociales">
+        <a
+          *ngIf="perfil.redesSociales.additionalProp1"
+          class="red-item"
+          [href]="perfil.redesSociales.additionalProp1"
+          target="_blank" rel="noopener noreferrer"
+          [title]="perfil.redesSociales.additionalProp1"
+        >
+          <svg class="red-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10.59 13.41a1 1 0 0 0 1.41 0l6.3-6.3a2 2 0 1 0-2.83-2.83l-1.8 1.8 1.41 1.41 1.8-1.8a.5.5 0 1 1 .71.71l-6.3 6.3a1 1 0 0 0 0 1.41l-6.3 6.3a2 2 0 1 0 2.83 2.83l6.3-6.3z"/>
+          </svg>
+          <span class="sr-only">Red 1</span>
+        </a>
+        <a
+          *ngIf="perfil.redesSociales.additionalProp2"
+          class="red-item"
+          [href]="perfil.redesSociales.additionalProp2"
+          target="_blank" rel="noopener noreferrer"
+          [title]="perfil.redesSociales.additionalProp2"
+        >
+          <svg class="red-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10.59 13.41a1 1 0 0 0 1.41 0l6.3-6.3a2 2 0 1 0-2.83-2.83l-1.8 1.8 1.41 1.41 1.8-1.8a.5.5 0 1 1 .71.71l-6.3 6.3a1 1 0 0 0 0 1.41l-6.3 6.3a2 2 0 1 0 2.83 2.83l6.3-6.3z"/>
+          </svg>
+          <span class="sr-only">Red 2</span>
+        </a>
+        <a
+          *ngIf="perfil.redesSociales.additionalProp3"
+          class="red-item"
+          [href]="perfil.redesSociales.additionalProp3"
+          target="_blank" rel="noopener noreferrer"
+          [title]="perfil.redesSociales.additionalProp3"
+        >
+          <svg class="red-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10.59 13.41a1 1 0 0 0 1.41 0l6.3-6.3a2 2 0 1 0-2.83-2.83l-1.8 1.8 1.41 1.41 1.8-1.8a.5.5 0 1 1 .71.71l-6.3 6.3a1 1 0 0 0 0 1.41l-6.3 6.3a2 2 0 1 0 2.83 2.83l6.3-6.3z"/>
+          </svg>
+          <span class="sr-only">Red 3</span>
+        </a>
       </div>
 
-      <button class="btn-completar" (click)="goToIlustradorForm()">Completar</button>
+      <!-- Aviso para rol GENERAL -->
+      <div *ngIf="perfil.rol == 'GENERAL'">
+        <div class="alerta" role="note">
+          Aviso: Si buscas empleo y quieres crear portafolios, completa tu perfil aquí
+        </div>
+
+        <button class="btn-completar" (click)="goToIlustradorForm()">
+          Completar
+        </button>
+      </div>
     </div>
   </div>
+
 
   <!-- Publicaciones -->
   <div class="publicaciones-box">
     <div class="publicaciones-header">
       <h3>Mis publicaciones</h3>
-      <select class="ordenar">
+      <select class="ordenar" aria-label="Ordenar publicaciones">
         <option>Más recientes</option>
       </select>
     </div>
 
     <div class="publicaciones-grid">
       <div class="publicacion" *ngFor="let pub of publicaciones">
-        <img [src]="pub.imagenUrl" [alt]="pub.titulo" class="pub-imagen" />
+        <img
+          [src]="pub.imagenUrl"
+          [alt]="pub.titulo"
+          class="pub-imagen"
+          loading="lazy"
+        />
         <div class="pub-detalles">
-          <h4>{{ pub.titulo }}</h4>
-          <p>{{ pub.descripcion }}</p>
+          <h4 class="pub-titulo" title="{{ pub.titulo }}">{{ pub.titulo }}</h4>
+          <p class="pub-descripcion">
+            {{ pub.descripcion }}
+          </p>
           <div class="pub-meta">
             ⭐ {{ pub.likes }} · 💬 {{ pub.comentarios }} comentarios
-            < </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <button class="btn-ver-mas">Mostrar todas las publicaciones →</button>
+    <button class="btn-ver-mas" type="button">
+      Mostrar todas las publicaciones →
+    </button>
   </div>
 </section>
-

@@ -11,6 +11,7 @@ export class Usuario {
         additionalProp2: string;
         additionalProp3: string;
       },
+      public rol: string,
   ) {
   }
 }

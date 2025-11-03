@@ -15,10 +15,11 @@ export interface UserInfoResponse {
     additionalProp2?: string;
     additionalProp3?: string;
   };
-  
+  roleName: string;
+
   // Información específica de Ilustrador (puede ser null si es escritor)
   ilustrador?: IlustradorInfo | null;
-  
+
   // Información específica de Escritor (puede ser null si es ilustrador)
   escritor?: EscritorInfo | null;
 }

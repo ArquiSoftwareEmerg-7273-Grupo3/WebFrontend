@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {IllustrationProfileComponent} from './illustration-profile/illustration-profile.component';
-import {AsyncPipe, NgForOf, NgIf} from '@angular/common';
+import {AsyncPipe, KeyValuePipe, NgClass, NgForOf, NgIf, SlicePipe} from '@angular/common';
 import {ProjectCardComponent} from '../home/components/project-card/project-card.component';
 import {PortfolioCardComponent} from '../home/components/portfolio-card/portfolio-card.component';
 import {PortfolioProfileComponent} from './portfolio-profile/portfolio-profile.component';
@@ -14,6 +14,7 @@ import {map, Observable, shareReplay, switchMap} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {PopupRegistroIlustradorService} from './services/popup-registro-ilustrador.service';
 import {UserInfoResponse} from '../login/model/user-info.response';
+import {UserRoleUtils} from '../login/services/user-role.utils';
 
 @Component({
   selector: 'app-profile',
@@ -21,6 +22,7 @@ import {UserInfoResponse} from '../login/model/user-info.response';
   standalone: true,
   imports: [
     NgForOf,
+    NgIf
   ],
   styleUrl: './profile.component.css'
 })
@@ -37,7 +39,8 @@ export class ProfileComponent implements OnInit {
       additionalProp1: '',
       additionalProp2: '',
       additionalProp3: ''
-    }
+    },
+    rol: '',
   }
 
   // publicaciones simuladas
@@ -75,14 +78,17 @@ export class ProfileComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
-    this.popupService.openPopup();
+  async ngOnInit() {
+    try {
+      const user: UserInfoResponse | null = await this.authService.getUserInformation();
 
-    // obtener información del usuario y mapearla a `perfil`
-    this.authService.getUserInformation()
-      .then((user: UserInfoResponse | null) => {
-        if (!user) return;
-        // Mapear propiedades defensivamente (ajusta nombres según tu API)
+      const role = user ? UserRoleUtils.getUserRole(user) : 'GENERAL';
+      if (role === 'GENERAL') {
+        this.popupService.openPopup();
+      }
+
+      if (!user) return;
+
         this.perfil.usuario = user.username;
         this.perfil.nombre = user.nombres;
         this.perfil.apellido = user.apellidos;
@@ -92,10 +98,19 @@ export class ProfileComponent implements OnInit {
         this.perfil.redesSociales.additionalProp1 = user.redesSociales.additionalProp1 ?? '';
         this.perfil.redesSociales.additionalProp2 = user.redesSociales.additionalProp2 ?? '';
         this.perfil.redesSociales.additionalProp3 = user.redesSociales.additionalProp3 ?? '';
-      })
-      .catch(err => {
-        console.warn('No se pudo cargar la información del usuario en profile:', err);
-      });
+        this.perfil.rol = user.roleName;
+
+        if (role === 'ILLUSTRATOR') {
+          this.perfil.rol = 'Ilustrador';
+        } else if (role === 'WRITER') {
+          this.perfil.rol = 'Escritor';
+        } else {
+          this.perfil.rol = '';
+        }
+
+      } catch(err) {
+        console.warn('No se pudo cargar la información del usuario en el perfil:', err);
+      }
   }
 
   goToIlustradorForm() {
