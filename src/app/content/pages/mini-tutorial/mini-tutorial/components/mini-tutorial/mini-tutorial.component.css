@@ -1,0 +1,39 @@
+.mt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  pointer-events: auto;
+}
+.mt-highlight {
+  position: absolute;
+  border-radius: 10px;
+  transition: all 240ms ease;
+  box-shadow: 0 0 0 9999px rgba(0,0,0,0.7);
+  border: 2px solid rgba(255,255,255,0.18);
+  will-change: top,left,width,height;
+  pointer-events: none;
+}
+.mt-panel {
+  position: absolute;
+  max-width: 320px;
+  background: white;
+  color: #0b2a29;
+  border-radius: 10px;
+  padding: 12px 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  transition: transform .16s ease, opacity .16s ease;
+  z-index: 1210;
+}
+.mt-title { margin: 0 0 6px; font-weight: 700; font-size: 1rem; }
+.mt-desc { margin: 0 0 10px; font-size: 0.92rem; color: #334; }
+.mt-actions { display:flex; gap:8px; justify-content:flex-end; }
+.mt-btn {
+  background: #2f7f79;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.mt-btn[disabled] { opacity: .5; cursor: not-allowed; }

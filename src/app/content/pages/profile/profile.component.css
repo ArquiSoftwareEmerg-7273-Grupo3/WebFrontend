@@ -199,37 +199,6 @@
   margin: .4rem 0 1rem;
 }
 
-.red-item {
-  display: inline-flex;
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  align-items: center;
-  justify-content: center;
-  background: rgba(255,255,255,.12);
-  border: 1px solid rgba(255,255,255,.22);
-  backdrop-filter: blur(6px);
-  text-decoration: none;
-  transition: transform .15s ease, background .2s ease, border-color .2s ease;
-}
-
-.red-item:hover {
-  transform: translateY(-2px);
-  background: rgba(255,255,255,.22);
-  border-color: rgba(255,255,255,.36);
-}
-
-.red-icon {
-  font-size: 1.1rem;
-  color: #ffffff;
-}
-
-.sr-only {
-  position: absolute;
-  width: 1px; height: 1px; padding: 0; margin: -1px;
-  overflow: hidden; clip: rect(0,0,1px,1px); white-space: nowrap; border: 0;
-}
-
 .alerta {
   background: #fff3cd;
   color: #5b4100;
@@ -261,7 +230,55 @@
   color: #3a5452;
   font-size: .92rem;
 }
+.perfil-redes {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  margin-top: 10px;
+}
 
+.red-item-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.red-title {
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  color: #ffffff;
+}
+
+/* Ícono */
+.red-item {
+  display: inline-flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #f5f7f9;
+  text-decoration: none;
+  font-size: 20px;
+  color: #0b2a29;
+  transition: .2s ease;
+}
+
+.red-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+}
+
+/* Colores por red */
+.red-item.instagram:hover { color: #E4405F; }
+.red-item.twitter:hover   { color: #1DA1F2; }
+.red-item.linkedin:hover  { color: #0A66C2; }
+
+.red-icon{
+  font-size: 20px;
+}
 
 @media (max-width: 720px) {
   .perfil-card {

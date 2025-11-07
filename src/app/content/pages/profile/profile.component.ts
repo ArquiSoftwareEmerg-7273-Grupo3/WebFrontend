@@ -1,17 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {IllustrationProfileComponent} from './illustration-profile/illustration-profile.component';
 import {AsyncPipe, KeyValuePipe, NgClass, NgForOf, NgIf, SlicePipe} from '@angular/common';
-import {ProjectCardComponent} from '../home/components/project-card/project-card.component';
-import {PortfolioCardComponent} from '../home/components/portfolio-card/portfolio-card.component';
-import {PortfolioProfileComponent} from './portfolio-profile/portfolio-profile.component';
-import {BookProfileComponent} from './book-profile/book-profile.component';
-import {ProjectProfileComponent} from './project-profile/project-profile.component';
 import {ActivatedRoute, Router} from '@angular/router';
-import {UsuarioService} from './services/usuario.service';
 import {AuthenticationService} from '../login/services/authentication.service';
 import {Usuario} from './model/usuario.entity';
-import {map, Observable, shareReplay, switchMap} from 'rxjs';
-import {HttpClient} from '@angular/common/http';
 import {PopupRegistroIlustradorService} from './services/popup-registro-ilustrador.service';
 import {UserInfoResponse} from '../login/model/user-info.response';
 import {UserRoleUtils} from '../login/services/user-role.utils';
@@ -105,7 +96,7 @@ export class ProfileComponent implements OnInit {
         } else if (role === 'WRITER') {
           this.perfil.rol = 'Escritor';
         } else {
-          this.perfil.rol = '';
+          this.perfil.rol = 'Usuario';
         }
 
       } catch(err) {

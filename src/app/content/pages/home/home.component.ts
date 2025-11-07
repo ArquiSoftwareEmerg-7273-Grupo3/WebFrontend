@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { NgClass } from '@angular/common';
+import {MiniTutorialService} from '../mini-tutorial/mini-tutorial/services/mini-tutorial.service';
+import {Subscription} from 'rxjs';
 
 interface Post {
   id: number;
@@ -56,18 +58,19 @@ type MediaViewerOptions = {
   imports: [
     CommonModule,
     FormsModule,
-    NgClass
+    NgClass,
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
+  private subs = new Subscription();
   posts: Post[] = [];
   newPostContent: string = '';
   commentTexts: { [key: number]: string } = {};
   userPhoto: string = 'assets/images/default-avatar.png';
   userName: string = 'Usuario Actual';
-  
+
   // Variables para el modal
   selectedPost: Post | null = null;
   currentImageIndex: number = 0;
@@ -102,8 +105,7 @@ export class HomeComponent {
     }
   ];
 
-  constructor() {
-    // Datos de ejemplo con múltiples imágenes y comentarios
+  constructor(private miniTutorialService: MiniTutorialService) {
     this.posts = [
       {
         id: 1,
@@ -151,7 +153,20 @@ export class HomeComponent {
   }
 
   ngOnInit(): void {
-    // Aquí se cargarían los posts desde el servicio
+
+    //const seen = localStorage.getItem(STORAGE_KEY) === '1';
+    //     if (!seen) {
+    //       this.miniTutorialService.start(steps);
+    //       console.log("Mostrando mini tutorial");
+    //
+    //       // cuando el overlay se cierra guardamos la marca para no volver a mostrarlo
+    //       const sub = this.miniTutorialService.isOpen$.subscribe(open => {
+    //         if (!open) {
+    //           try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* fallbacks si storage no disponible */ }
+    //         }
+    //       });
+    //       this.subs.add(sub);
+    //     }
   }
 
   createPost() {
@@ -234,7 +249,7 @@ export class HomeComponent {
     if (options.event) {
       options.event.stopPropagation();
     }
-    
+
     this.selectedPost = options.post;
     this.currentImageIndex = options.index;
     document.body.style.overflow = 'hidden';
@@ -276,4 +291,9 @@ export class HomeComponent {
     post.comments.push(newComment);
     this.commentTexts[post.id] = '';
   }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
 }

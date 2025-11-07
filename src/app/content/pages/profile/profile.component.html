@@ -26,61 +26,60 @@
         {{ perfil.descripcion }}
       </p>
 
-      <!-- Redes sociales (máx. 3) -->
       <div class="perfil-redes" *ngIf="perfil?.redesSociales">
-        <a
-          *ngIf="perfil.redesSociales.additionalProp1"
-          class="red-item"
-          [href]="perfil.redesSociales.additionalProp1"
-          target="_blank" rel="noopener noreferrer"
-          [title]="perfil.redesSociales.additionalProp1"
-        >
-          <svg class="red-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M10.59 13.41a1 1 0 0 0 1.41 0l6.3-6.3a2 2 0 1 0-2.83-2.83l-1.8 1.8 1.41 1.41 1.8-1.8a.5.5 0 1 1 .71.71l-6.3 6.3a1 1 0 0 0 0 1.41l-6.3 6.3a2 2 0 1 0 2.83 2.83l6.3-6.3z"/>
-          </svg>
-          <span class="sr-only">Red 1</span>
-        </a>
-        <a
-          *ngIf="perfil.redesSociales.additionalProp2"
-          class="red-item"
-          [href]="perfil.redesSociales.additionalProp2"
-          target="_blank" rel="noopener noreferrer"
-          [title]="perfil.redesSociales.additionalProp2"
-        >
-          <svg class="red-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M10.59 13.41a1 1 0 0 0 1.41 0l6.3-6.3a2 2 0 1 0-2.83-2.83l-1.8 1.8 1.41 1.41 1.8-1.8a.5.5 0 1 1 .71.71l-6.3 6.3a1 1 0 0 0 0 1.41l-6.3 6.3a2 2 0 1 0 2.83 2.83l6.3-6.3z"/>
-          </svg>
-          <span class="sr-only">Red 2</span>
-        </a>
-        <a
-          *ngIf="perfil.redesSociales.additionalProp3"
-          class="red-item"
-          [href]="perfil.redesSociales.additionalProp3"
-          target="_blank" rel="noopener noreferrer"
-          [title]="perfil.redesSociales.additionalProp3"
-        >
-          <svg class="red-icon" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M10.59 13.41a1 1 0 0 0 1.41 0l6.3-6.3a2 2 0 1 0-2.83-2.83l-1.8 1.8 1.41 1.41 1.8-1.8a.5.5 0 1 1 .71.71l-6.3 6.3a1 1 0 0 0 0 1.41l-6.3 6.3a2 2 0 1 0 2.83 2.83l6.3-6.3z"/>
-          </svg>
-          <span class="sr-only">Red 3</span>
-        </a>
+        <!-- Instagram -->
+        <div class="red-item-wrap" *ngIf="perfil.redesSociales.additionalProp1">
+          <span class="red-title">Instagram</span>
+          <a
+            class="red-item instagram"
+            [href]="perfil.redesSociales.additionalProp1"
+            target="_blank" rel="noopener noreferrer"
+            [title]="perfil.redesSociales.additionalProp1"
+            aria-label="Instagram"
+          >
+            <i class="fab fa-instagram red-icon"></i>
+          </a>
+        </div>
+
+        <!-- Twitter/X -->
+        <div class="red-item-wrap" *ngIf="perfil.redesSociales.additionalProp2">
+          <span class="red-title">Twitter</span>
+          <a
+            class="red-item twitter"
+            [href]="perfil.redesSociales.additionalProp2"
+            target="_blank" rel="noopener noreferrer"
+            [title]="perfil.redesSociales.additionalProp2"
+            aria-label="Twitter"
+          >
+            <i class="fab fa-x-twitter red-icon"></i>
+            <!-- si no tienes FA6, cambia a: <i class="fab fa-twitter red-icon"></i> -->
+          </a>
+        </div>
+
+        <!-- LinkedIn -->
+        <div class="red-item-wrap" *ngIf="perfil.redesSociales.additionalProp3">
+          <span class="red-title">LinkedIn</span>
+          <a
+            class="red-item linkedin"
+            [href]="perfil.redesSociales.additionalProp3"
+            target="_blank" rel="noopener noreferrer"
+            [title]="perfil.redesSociales.additionalProp3"
+            aria-label="LinkedIn"
+          >
+            <i class="fab fa-linkedin-in red-icon"></i>
+          </a>
+        </div>
       </div>
 
       <!-- Aviso para rol GENERAL -->
-      <div *ngIf="perfil.rol == 'GENERAL'">
-        <div class="alerta" role="note">
-          Aviso: Si buscas empleo y quieres crear portafolios, completa tu perfil aquí
-        </div>
-
-        <button class="btn-completar" (click)="goToIlustradorForm()">
-          Completar
-        </button>
+      <div *ngIf="perfil?.rol === 'Usuario'">
+        <div class="alerta" role="note"> Aviso: Si buscas empleo y quieres crear portafolios, completa tu perfil aquí </div>
+        <button class="btn-completar" data-test="btn-completar" (click)="goToIlustradorForm()"> Completar </button>
       </div>
     </div>
   </div>
 
-
-  <!-- Publicaciones -->
+      <!-- Publicaciones -->
   <div class="publicaciones-box">
     <div class="publicaciones-header">
       <h3>Mis publicaciones</h3>

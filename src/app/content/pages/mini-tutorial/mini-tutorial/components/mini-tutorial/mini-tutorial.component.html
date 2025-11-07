@@ -1,0 +1,23 @@
+<div *ngIf="isOpen && current" class="mt-overlay" (click)="stop()">
+  <div
+    class="mt-highlight"
+    [ngStyle]="highlightStyle"
+    (click)="$event.stopPropagation()"
+    aria-hidden="true"
+  ></div>
+
+  <div
+    class="mt-panel"
+    [ngStyle]="panelStyle"
+    (click)="$event.stopPropagation()"
+    role="dialog" aria-modal="true"
+  >
+    <h3 class="mt-title">{{ current?.title }}</h3>
+    <p class="mt-desc" *ngIf="current?.description">{{ current?.description }}</p>
+    <div class="mt-actions">
+      <button class="mt-btn" (click)="prev()" [disabled]="atFirst">Anterior</button>
+      <button class="mt-btn" (click)="next()" *ngIf="!atLast">Siguiente</button>
+      <button class="mt-btn" (click)="stop()">Cerrar</button>
+    </div>
+  </div>
+</div>

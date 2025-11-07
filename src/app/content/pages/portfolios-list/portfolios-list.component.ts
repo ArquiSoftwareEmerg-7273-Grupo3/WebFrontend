@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, HostListener} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {Router} from '@angular/router';
 import {PortfolioCardComponent} from '../home/components/portfolio-card/portfolio-card.component';
@@ -25,7 +25,8 @@ export class PortfoliosListComponent {
       date: '10/05/2025',
       applicationDate: '12/05/2025',
       imageSrc: 'https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-how-to-draw-a-portrait-using-pencils-image_2676967.jpg',
-      description: 'Este proyecto trata sobre crear cuentos ilustrados con animales fantásticos que enseñen valores a los niños. A través de personajes mágicos y situaciones sorprendentes, se busca estimular la creatividad y la imaginación infantil. Además, se abordarán temas como la empatía, el respeto por la diversidad y la importancia de la amistad en un formato lúdico y educativo que permitirá a los niños aprender mientras se divierten.'
+      description: 'Este proyecto trata sobre crear cuentos ilustrados con animales fantásticos que enseñen valores a los niños. A través de personajes mágicos y situaciones sorprendentes, se busca estimular la creatividad y la imaginación infantil. Además, se abordarán temas como la empatía, el respeto por la diversidad y la importancia de la amistad en un formato lúdico y educativo que permitirá a los niños aprender mientras se divierten.',
+      showMenu: false,
     },
     {
       id: 2,
@@ -49,12 +50,36 @@ export class PortfoliosListComponent {
 
   constructor(private router: Router) {}
 
+  /**toggleMenu(p: portfolios, event?: MouseEvent) {
+    event?.stopPropagation(); // evita que el HostListener cierre inmediatamente
+    // Cierra otros menús
+    this.portfolios.forEach(x => {
+      if (x !== p) x.showMenu = false;
+    });
+    // Alterna el actual
+    p.showMenu = !p.showMenu;
+  }**/
+
+  /** Cierra todos los menús al hacer clic fuera (documento) */
+  @HostListener('document:click')
+  closeAllMenus() {
+    this.portfolios.forEach(p => (p.showMenu = false));
+  }
+
   goToPortfolio(id: number) {
     this.router.navigate(['/portfolios/information', id]);
   }
 
   goToCreatePortfolio() {
     this.router.navigate(['/portfolios/create-new-portfolio']);
+  }
+
+  editPortfolio(id: number) {
+    alert('Funcionalidad de edición de portafolio en desarrollo.');
+  }
+
+  deletePortfolio(id: number) {
+    alert('Funcionalidad de eliminación de portafolio en desarrollo.');
   }
 
 }
