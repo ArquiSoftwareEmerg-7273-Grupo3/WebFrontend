@@ -3,7 +3,7 @@ import {HomeComponent} from './content/pages/home/home.component';
 import {ChatsComponent} from './content/pages/chats/chats.component';
 import {ApplicationsComponent} from './content/pages/applications/applications.component';
 import {CreateProjectComponent} from './content/pages/create-project/create-project.component';
-import {PortfoliosListComponent} from './content/pages/portfolios-list/portfolios-list.component';
+import {PortfoliosListComponent} from './content/pages/portfolios/portfolios-list/portfolios-list.component';
 import {CreatePortfolioComponent} from './content/pages/create-portfolio/create-portfolio.component';
 import {PortfoliosComponent} from './content/pages/portfolios/portfolios.component';
 import {CreateIlustrationComponent} from './content/pages/portfolios/create-ilustration/create-ilustration.component';
@@ -36,21 +36,23 @@ import {IlustradorFormComponent} from './content/pages/registration-forms/ilustr
 import {EscritorFormComponent} from './content/pages/registration-forms/escritor-form/escritor-form.component';
 
 import { JobsComponent } from './content/pages/jobs/jobs.component';
-
+import {EditPortfolioComponent} from './content/pages/portfolios/edit-portfolio/edit-portfolio.component';
+//canActivate: [authenticationGuard]
 export const routes: Routes = [
-  { path: 'home', component: HomeComponent,  canActivate: [authenticationGuard] },
+  { path: 'home', component: HomeComponent },
   { path: 'login', component: SignInComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [authenticationGuard]},
   { path: 'register', component: SignUpComponent},
   { path: 'register/illustrator', component: IlustradorFormComponent, canActivate: [authenticationGuard]},
   { path: 'register/writer', component: EscritorFormComponent, canActivate: [authenticationGuard]},
   { path: 'messages', component: ChatsComponent, canActivate: [authenticationGuard] },
-  { path: 'projects/create-new-project', component: CreateProjectComponent, canActivate: [authenticationGuard] },
-  { path: 'information/project/:id', component: ProjectIndividualComponent, canActivate: [authenticationGuard] },
+  { path: 'projects/create-new-project', component: CreateProjectComponent },
+  { path: 'information/project/:id', component: ProjectIndividualComponent },
   { path: 'applications', component: ApplicationsComponent, canActivate: [authenticationGuard] },
-  { path: 'portfolios', component: PortfoliosListComponent, canActivate: [authenticationGuard] },
+  { path: 'portfolios', component: PortfoliosListComponent },
   { path: 'portfolios/create-new-portfolio', component: CreatePortfolioComponent, canActivate: [authenticationGuard] },
   { path: 'portfolios/information/:id', component: PortfoliosComponent },
+  { path: 'portfolios/edit', component: EditPortfolioComponent },
   { path: 'information/writer/:id', component: WriterIndividualComponent },
   { path: 'information/illustrator/:id', component: IllustratorIndividualComponent },
   { path: 'information/illustration/:id', component: IllustrationIndividualComponent },

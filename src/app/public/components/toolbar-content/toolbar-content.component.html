@@ -38,7 +38,7 @@
           <span class="material-symbols-outlined">work</span>
           <span>Empleos</span>
         </a>
-        <a [routerLink]="['/gallery']" (click)="closeMenu(); scrollToTop()">
+        <a [routerLink]="['/gallery']" (click)="goToPortfolio()">
           <span class="material-symbols-outlined">palette</span>
           <span>Mi Portafolio</span>
         </a>
@@ -90,7 +90,7 @@
       <a class="burger-icon circle" [routerLink]="['/profile']" (click)="closeMenu(); scrollToTop()">
         <span class="material-symbols-outlined">person</span>
       </a>
-      
+
     </div>
 
     <!-- Enlaces para usuarios sin rol -->

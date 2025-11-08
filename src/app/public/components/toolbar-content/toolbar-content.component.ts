@@ -177,4 +177,8 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
       this.menuOpen = false;
     }
   }
+
+  goToPortfolio() {
+    this.router.navigate(['/portfolios']);
+  }
 }

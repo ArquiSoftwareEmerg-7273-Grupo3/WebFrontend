@@ -1,9 +1,7 @@
 <div class="home-title">
   <!-- Summary Panel -->
   <section class="summary-panel">
-    <div class="summary-media">
-      <div class="avatar-skeleton" aria-hidden="true"></div>
-    </div>
+    <div class="summary-media"></div>
 
     <div class="summary-body">
       <h1 class="summary-title">
@@ -13,41 +11,42 @@
         En esta sección podrás crear portafolios y subir tus ilustraciones como a ti mejor te parezca.
         ¡Deja que tu creatividad fluya!
       </p>
-      <div class="summary-meta">
-        <span class="chip">Portafolios</span>
-        <span class="dot" aria-hidden="true">•</span>
-        <span class="chip">Ilustración</span>
-        <span class="dot" aria-hidden="true">•</span>
-        <span class="chip chip-outline">Creatividad</span>
-      </div>
     </div>
   </section>
 
   <!-- Tarjetas -->
   <div class="cards-container">
-    <div class="card-shell" *ngFor="let portfolio of portfolios">
-      <!-- Menú de tres puntos -->
-      <div class="menu-container">
-        <span class="material-symbols-outlined menu-icon">more_vert</span>
-        <div class="menu-dropdown" *ngIf="portfolio.showMenu">
-          <button (click)="editPortfolio(portfolio.id)">Editar</button>
-          <button (click)="deletePortfolio(portfolio.id)">Eliminar</button>
+      <div class="card-shell" *ngFor="let portfolio of portfolios">
+        <div class="menu-container">
+          <div class="icon-btn" (click)="toggleMenu(portfolio, $event)" aria-label="Abrir menú">
+            <span class="material-symbols-outlined menu-icon">more_vert</span>
+          </div>
+
+          <div class="menu-dropdown" *ngIf="portfolio.showMenu" (click)="$event.stopPropagation()">
+            <button (click)="goToEditPortolio(); $event.stopPropagation()">Editar</button>
+            <button (click)="deletePortfolio(portfolio.id); $event.stopPropagation()">Eliminar</button>
+          </div>
         </div>
-      </div>
 
       <!-- Componente existente -->
       <app-portfolio-card-writer
         [id]="portfolio.id"
         [imageSrc]="portfolio.imageSrc"
-        [date]="portfolio.date"
         [title]="portfolio.title"
         (viewMoreClicked)="goToPortfolio($event)">
       </app-portfolio-card-writer>
     </div>
   </div>
+  <app-edit-portfolio *ngIf="selectedPortfolio as sp"
+                      [portfolio]="sp"
+                      [categories]="categories || []"
+                      (save)="savePortfolio($event)"
+                      (cancel)="closeEdit()">
+  </app-edit-portfolio>
 
   <!-- Botón flotante -->
   <button class="floating-button" (click)="goToCreatePortfolio()">
     <span class="material-symbols-outlined">add</span>
   </button>
 </div>
+
