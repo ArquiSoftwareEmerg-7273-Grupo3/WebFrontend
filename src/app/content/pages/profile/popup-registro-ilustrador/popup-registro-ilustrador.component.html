@@ -1,0 +1,40 @@
+<div class="dialog-header centered">
+  <h2 mat-dialog-title class="dialog-title">Registrate como ilustrador</h2>
+  <button mat-button type="button" class="btn-outline" (click)="closeDialog()">Cancelar</button>
+</div>
+
+<div mat-dialog-content class="dialog-grid">
+  <aside class="left">
+    <div class="brand">
+      <svg class="brand-icon" width="48" height="48" viewBox="0 0 24 24" fill="none" aria-hidden>
+        <circle cx="12" cy="12" r="11" stroke="#2f7f79" stroke-width="1.5" fill="#e9fbfa"></circle>
+        <path d="M7 12l3 3 7-7" stroke="#2f7f79" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <div>
+        <h3 class="brand-title">Únete a la comunidad</h3>
+        <p class="brand-sub">Recibe oportunidades, muestra tu portafolio y conéctate con clientes</p>
+      </div>
+    </div>
+
+    <ul class="benefits">
+      <li><strong>Funcionalidades</strong> Acceder a empleos y muestra tus trabajos artísticos</li>
+      <li><strong>Herramientas</strong> para gestionar encargos y oportunidades</li>
+    </ul>
+
+    <p class="note">Completa el formulario a la derecha para activar tu perfil de ilustrador.</p>
+  </aside>
+
+  <section class="right">
+    <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+      <input class="input" formControlName="nombreArtistico" type="text" placeholder="Nombre Artístico" required />
+
+      <label class="checkbox">
+        <input type="checkbox" name="terms" /> Deseo recibir recomendaciones y oportunidades
+      </label>
+
+      <div class="actions">
+        <button mat-button color="color" class="btn-primary">Enviar</button>
+      </div>
+    </form>
+  </section>
+</div>

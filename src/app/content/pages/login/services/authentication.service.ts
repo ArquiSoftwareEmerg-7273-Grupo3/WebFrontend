@@ -15,7 +15,7 @@ export class AuthenticationService {
 
   basePath: string = `${environment.baseUrlAuth}`;
   httpOptions = {headers: new HttpHeaders({'Content-Type': 'application/json'})};
-  
+
   // Bandera para activar/desactivar el modo de simulación
 
   private signedIn: BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
@@ -42,13 +42,13 @@ export class AuthenticationService {
   get currentRole(){
     return this.signedInRole.asObservable();
   }
-  
+
   get userInformation(){
     return this.userInfo.asObservable();
   }
 
   // Método para activar/desactivar el modo de simulación
-  
+
 
   // Verificar si hay autenticación almacenada
   private checkStoredAuth() {
@@ -68,7 +68,7 @@ export class AuthenticationService {
           next: (response) => {
             console.log('✔️ Información del usuario obtenida:', response);
             this.userInfo.next(response);
-            
+
             // Determinar el rol basado en la información específica presente
             const role = this.determineUserRole(response);
             this.signedInRole.next(role);
@@ -78,9 +78,16 @@ export class AuthenticationService {
           },
           error: (error) => {
             console.error('❌ Error al obtener la información del usuario:', error);
-            // Si hay error al obtener info del usuario, limpiar la sesión
-            this.signOut();
-            reject(error);
+            if (error.status === 401) {
+              console.warn('Token inválido -> cerrando sesión.');
+              this.signOut();
+              reject(error);
+              return;
+            }
+            // Para otros errores, no cerrar sesión automáticamente; marcar userInfo null
+            this.userInfo.next(null);
+            // isSignedIn no se cambia aquí para evitar logout inesperado por fallos temporales
+            resolve(null);
           }
         });
     });
@@ -122,7 +129,7 @@ export class AuthenticationService {
 
   signIn(signInRequest: SignInRequest) : Promise<void> {
     return new Promise((resolve, reject) => {
-  
+
       this.http.post<AuthResponse>(`${this.basePath}/api/v1/authentication/sign-in`, signInRequest, this.httpOptions)
         .subscribe({
           next: (response) => {
@@ -132,7 +139,7 @@ export class AuthenticationService {
             this.signedInUsername.next(response.username);
             localStorage.setItem('token', response.token);
             console.log(`✔️ Signed In as ${response.username} with token: ${response.token}`);
-            
+
             // Cargar información completa del usuario
             this.loadUserInformation()
               .then(() => {
@@ -155,6 +162,10 @@ export class AuthenticationService {
     });
   }
 
+  getUserInfo$() {
+    return this.userInfo.asObservable();
+  }
+
   signOut() {
     this.signedIn.next(false);
     this.signedInUserId.next(0);
@@ -165,5 +176,5 @@ export class AuthenticationService {
     this.router.navigate(['/login']).then();
   }
 
- 
+
 }

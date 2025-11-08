@@ -1,0 +1,49 @@
+<form class="wrap" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <div class="card">
+    <h3 class="title">Activa tu perfil de empresa / escritor</h3>
+
+    <div class="field">
+      <input id="razonSocial" formControlName="razonSocial" type="text" placeholder=" " required />
+      <label for="razonSocial">Razón Social</label>
+      <div class="help" *ngIf="this.f['razonSocial'].touched && this.f['razonSocial'].invalid">La razón social es obligatoria</div>
+    </div>
+
+    <div class="field">
+      <input id="ruc" formControlName="ruc" type="text" placeholder=" " />
+      <label for="ruc">RUC (solo números)</label>
+      <div class="help" *ngIf="this.f['ruc'].touched && this.f['ruc'].invalid">RUC inválido (8-11 dígitos)</div>
+    </div>
+
+    <div class="field">
+      <input id="nombreComercial" formControlName="nombreComercial" type="text" placeholder=" " />
+      <label for="nombreComercial">Nombre comercial</label>
+    </div>
+
+    <div class="field">
+      <input id="sitioWeb" formControlName="sitioWeb" type="url" placeholder=" " />
+      <label for="sitioWeb">Sitio web</label>
+      <div class="help" *ngIf="this.f['sitioWeb'].touched && this.f['sitioWeb'].invalid">URL inválida</div>
+    </div>
+
+    <div class="field">
+      <input id="logo" formControlName="logo" type="text" placeholder=" " />
+      <label for="logo">URL del logo</label>
+    </div>
+
+    <div class="field">
+      <input id="ubicacionEmpresa" formControlName="ubicacionEmpresa" type="text" placeholder=" " />
+      <label for="ubicacionEmpresa">Ubicación</label>
+    </div>
+
+    <div class="field">
+      <input id="tipoEmpresa" formControlName="tipoEmpresa" type="text" placeholder=" " />
+      <label for="tipoEmpresa">Tipo de empresa</label>
+    </div>
+
+    <p class="hint">Completa los datos para activar el perfil de escritor</p>
+
+    <div class="actions">
+      <button type="submit" [disabled]="form.invalid" class="btn">Enviar</button>
+    </div>
+  </div>
+</form>

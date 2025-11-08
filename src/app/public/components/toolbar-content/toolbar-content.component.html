@@ -20,11 +20,12 @@
           <br />
           <span>Notificaciones</span>
         </a>
-        <a [routerLink]="['/business']" (click)="closeMenu(); scrollToTop()">
+        <a (click)="openBusinessMiniVentana($event)">
           <span class="material-symbols-outlined">business</span>
           <br />
           <span>Negocios</span>
         </a>
+        <app-business-mini-ventana></app-business-mini-ventana>
       </ng-container>
 
       <!-- Enlaces para ilustradores -->
@@ -37,7 +38,7 @@
           <span class="material-symbols-outlined">work</span>
           <span>Empleos</span>
         </a>
-        <a [routerLink]="['/gallery']" (click)="closeMenu(); scrollToTop()">
+        <a [routerLink]="['/gallery']" (click)="goToPortfolio()">
           <span class="material-symbols-outlined">palette</span>
           <span>Mi Portafolio</span>
         </a>
@@ -89,7 +90,7 @@
       <a class="burger-icon circle" [routerLink]="['/profile']" (click)="closeMenu(); scrollToTop()">
         <span class="material-symbols-outlined">person</span>
       </a>
-      
+
     </div>
 
     <!-- Enlaces para usuarios sin rol -->

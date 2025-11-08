@@ -1,10 +1,11 @@
 export class Escritor {
   constructor(
-    public firstName : string,
-    public lastName : string,
-    public biografia : string,
-    public foto: string,
-    public redes : string,
-    public suscripcion: number,
-    public userId: number) {}
+    public razonSocial: string,
+    public ruc: string,
+    public nombreComercial: string,
+    public sitioWeb: string,
+    public logo: string,
+    public ubicacionEmpresa: string,
+    public tipoEmpresa: string,
+    ) {}
 }

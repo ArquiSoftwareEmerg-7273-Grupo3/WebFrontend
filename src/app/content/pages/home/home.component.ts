@@ -1,21 +1,73 @@
-import { Component } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { NgClass } from '@angular/common';
+import {MiniTutorialService} from '../mini-tutorial/mini-tutorial/services/mini-tutorial.service';
+import {Subscription} from 'rxjs';
+import { AuthenticationService } from '../login/services/authentication.service';
+import { UserInfoResponse } from '../login/model/user-info.response';
+import { SocialFeedService, FeedPost } from './services/social-feed.service';
+import { Post as ApiPost } from './services/posts.service';
+import { Comments } from './services/comments.service';
+import { UsersService, UserProfile } from './services/users.service';
 
-interface Post {
+// Interface para la respuesta de la API que incluye paginación
+interface PostsResponse {
+  content: ApiPostResponse[];
+  pageable: {
+    pageNumber: number;
+    pageSize: number;
+    sort: {
+      empty: boolean;
+      unsorted: boolean;
+      sorted: boolean;
+    };
+    offset: number;
+    paged: boolean;
+    unpaged: boolean;
+  };
+  last: boolean;
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
+  sort: {
+    empty: boolean;
+    unsorted: boolean;
+    sorted: boolean;
+  };
+  first: boolean;
+  numberOfElements: number;
+  empty: boolean;
+}
+
+// Interface para cada post en la respuesta de la API
+interface ApiPostResponse {
   id: number;
   authorId: number;
-  authorName: string;
-  authorPhoto: string;
   content: string;
+  tags: string[];
+  createdAt: string;
+  updatedAt: string;
+  active: boolean;
+  reactionsCount: number;
+  commentsCount: number;
+  repostsCount: number;
+  viewsCount: number;
+  hasMedia: boolean;
+  engagementRate: number;
+}
+
+// Interface extendida para compatibilidad con el template actual
+interface DisplayPost extends ApiPostResponse {
+  authorName?: string;
+  authorPhoto?: string;
   images?: string[];
-  likes: number;
-  isLiked: boolean;
-  comments: Comment[];
-  rating: number;
-  showComments: boolean;
-  createdAt: Date;
+  likes?: number;
+  isLiked?: boolean;
+  comments?: DisplayComment[];
+  rating?: number;
+  showComments?: boolean;
+  createdAtDate?: Date;
   visibility?: 'public' | 'private' | 'followers';
 }
 
@@ -33,7 +85,7 @@ interface Event {
   date: Date;
 }
 
-interface Comment {
+interface DisplayComment {
   id: number;
   authorId: number;
   authorName: string;
@@ -44,11 +96,7 @@ interface Comment {
   likes?: number;
 }
 
-type MediaViewerOptions = {
-  post: Post;
-  index: number;
-  event?: MouseEvent;
-};
+// MediaViewerOptions removido - funcionalidad de imágenes temporalmente deshabilitada
 
 @Component({
   selector: 'app-social-feed',
@@ -56,21 +104,26 @@ type MediaViewerOptions = {
   imports: [
     CommonModule,
     FormsModule,
-    NgClass
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent {
-  posts: Post[] = [];
+export class HomeComponent implements OnInit, OnDestroy {
+  private subs = new Subscription();
+  posts: DisplayPost[] = [];
   newPostContent: string = '';
   commentTexts: { [key: number]: string } = {};
   userPhoto: string = 'assets/images/default-avatar.png';
   userName: string = 'Usuario Actual';
   
+  // Variables para el estado de carga
+  isLoadingPosts = false;
+  
+  // Información del usuario actual
+  currentUser: UserInfoResponse | null = null;
+
   // Variables para el modal
-  selectedPost: Post | null = null;
-  currentImageIndex: number = 0;
+  selectedPost: DisplayPost | null = null;
 
   suggestedUsers: User[] = [
     {
@@ -102,90 +155,258 @@ export class HomeComponent {
     }
   ];
 
-  constructor() {
-    // Datos de ejemplo con múltiples imágenes y comentarios
-    this.posts = [
-      {
-        id: 1,
-        authorId: 1,
-        authorName: 'María López',
-        authorPhoto: 'assets/images/users/maria.jpg',
-        content: '¡Acabo de terminar mi última serie de ilustraciones! ¿Qué les parece? Me inspiré en la naturaleza y los colores del otoño para crear esta colección. Cada pieza representa un momento diferente del día y cómo la luz natural afecta los colores del paisaje. #Ilustración #Arte #Naturaleza',
-        images: [
-          'assets/images/posts/illustration1.jpg',
-          'assets/images/posts/illustration2.jpg',
-          'assets/images/posts/illustration3.jpg',
-          'assets/images/posts/illustration4.jpg',
-          'assets/images/posts/illustration5.jpg'
-        ],
-        likes: 24,
-        isLiked: false,
-        rating: 4.5,
-        showComments: false,
-        comments: [
-          {
-            id: 1,
-            authorId: 2,
-            authorName: 'Carlos Ruiz',
-            authorPhoto: 'assets/images/users/carlos.jpg',
-            content: '¡Me encanta el uso del color en cada pieza! Especialmente en la tercera ilustración, la luz del atardecer está perfectamente capturada.',
-            createdAt: new Date(),
-            isLiked: false,
-            likes: 3
-          },
-          {
-            id: 2,
-            authorId: 3,
-            authorName: 'Ana García',
-            authorPhoto: 'assets/images/users/ana.jpg',
-            content: 'La evolución de tu estilo es increíble. ¿Qué técnicas usaste para lograr esos efectos de luz?',
-            createdAt: new Date(),
-            isLiked: true,
-            likes: 5
-          }
-        ],
-        createdAt: new Date(),
-        visibility: 'public'
-      }
-    ];
+  constructor(
+    private miniTutorialService: MiniTutorialService,
+    private authService: AuthenticationService,
+    private socialFeedService: SocialFeedService,
+    private usersService: UsersService
+  ) {
+    // Los datos ahora se cargarán desde el servicio
+    this.posts = [];
   }
 
   ngOnInit(): void {
-    // Aquí se cargarían los posts desde el servicio
+    // Cargar información del usuario actual
+    this.loadUserInfo();
+    
+    // Cargar posts del feed
+    this.loadFeed();
+
+    //const seen = localStorage.getItem(STORAGE_KEY) === '1';
+    //     if (!seen) {
+    //       this.miniTutorialService.start(steps);
+    //       console.log("Mostrando mini tutorial");
+    //
+    //       // cuando el overlay se cierra guardamos la marca para no volver a mostrarlo
+    //       const sub = this.miniTutorialService.isOpen$.subscribe(open => {
+    //         if (!open) {
+    //           try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* fallbacks si storage no disponible */ }
+    //         }
+    //       });
+    //       this.subs.add(sub);
+    //     }
   }
 
-  createPost() {
+  private loadFeed(): void {
+    this.isLoadingPosts = true;
+    
+    // Asegurar que tenemos información del usuario antes de cargar posts
+    if (!this.currentUser) {
+      console.log('Esperando información del usuario...');
+      // Si no hay usuario, esperar un poco antes de intentar cargar
+      setTimeout(() => this.loadFeed(), 500);
+      return;
+    }
+    
+    // Usar el servicio de posts directamente para obtener todos los posts con paginación
+    const feedSub = this.socialFeedService['postsService'].getPosts(0, 10).subscribe({
+      next: (response: any) => {
+        console.log('Respuesta del API:', response);
+        
+        // Verificar si la respuesta es paginada o un array directo
+        let posts: any[];
+        if (response && response.content && Array.isArray(response.content)) {
+          // Respuesta paginada
+          posts = response.content;
+        } else if (Array.isArray(response)) {
+          // Array directo
+          posts = response;
+        } else {
+          console.error('Formato de respuesta inesperado:', response);
+          posts = [];
+        }
+        
+        // Primero crear posts con datos básicos
+        const basicPosts: DisplayPost[] = posts.map(post => {
+          const now = new Date();
+          return {
+            // Campos base de ApiPostResponse
+            id: post.id,
+            authorId: post.author_id || post.authorId || 0, // Usar el authorId real de la DB
+            content: post.content,
+            tags: post.tags || [],
+            createdAt: post.created_at || post.createdAt || now.toISOString(),
+            updatedAt: post.updated_at || post.updatedAt || now.toISOString(),
+            active: post.active !== undefined ? post.active : true,
+            reactionsCount: post.reactions_count || post.reactionsCount || 0,
+            commentsCount: post.comments_count || post.commentsCount || 0,
+            repostsCount: post.reposts_count || post.repostsCount || 0,
+            viewsCount: post.views_count || post.viewsCount || 0,
+            hasMedia: post.has_media || post.hasMedia || false,
+            engagementRate: post.engagement_rate || post.engagementRate || 0,
+            
+            // Campos temporales - se actualizarán con datos reales del autor
+            authorName: 'Cargando...',
+            authorPhoto: 'assets/images/default-avatar.png',
+            images: [],
+            likes: post.reactions_count || post.reactionsCount || 0,
+            isLiked: false,
+            comments: [],
+            rating: post.engagement_rate || post.engagementRate || 0,
+            showComments: false,
+            createdAtDate: new Date(post.created_at || post.createdAt || now),
+            visibility: 'public'
+          } as DisplayPost;
+        });
+
+        // Asignar posts básicos inmediatamente para mostrar el contenido
+        this.posts = basicPosts;
+        this.isLoadingPosts = false;
+        console.log('Posts cargados desde API:', this.posts);
+
+        // Ahora obtener información de los autores
+        this.loadAuthorsInfo(basicPosts);
+      },
+      error: (error) => {
+        console.error('Error al cargar posts desde API:', error);
+        this.isLoadingPosts = false;
+        // En caso de error, mantener posts vacío
+        this.posts = [];
+      }
+    });
+    
+    this.subs.add(feedSub);
+  }
+
+  private loadUserInfo(): void {
+    // Suscribirse a la información del usuario
+    const userInfoSub = this.authService.userInformation.subscribe(userInfo => {
+      if (userInfo) {
+        this.currentUser = userInfo;
+        this.userName = `${userInfo.nombres} ${userInfo.apellidos}`;
+        this.userPhoto = userInfo.foto || 'assets/images/default-avatar.png';
+        
+        console.log('Información del usuario cargada:', userInfo);
+      }
+    });
+    this.subs.add(userInfoSub);
+
+    // Si no hay información del usuario, intentar cargarla
+    if (!this.currentUser) {
+      this.authService.loadUserInformation().catch(error => {
+        console.error('Error al cargar información del usuario:', error);
+      });
+    }
+  }
+
+  private loadAuthorsInfo(posts: DisplayPost[]): void {
+    // Obtener IDs únicos de autores
+    const authorIds = [...new Set(posts.map(post => post.authorId).filter(id => id && id > 0))];
+    
+    if (authorIds.length === 0) return;
+
+    console.log('Cargando información de autores:', authorIds);
+
+    // Cargar información de cada autor
+    authorIds.forEach(authorId => {
+      const authorSub = this.usersService.getUserById(authorId).subscribe({
+        next: (authorProfile: UserProfile) => {
+          console.log(`Información del autor ${authorId}:`, authorProfile);
+          
+          // Actualizar todos los posts de este autor
+          this.posts = this.posts.map(post => {
+            if (post.authorId === authorId) {
+              return {
+                ...post,
+                authorName: `${authorProfile.nombres} ${authorProfile.apellidos}`,
+                authorPhoto: authorProfile.foto || 'assets/images/default-avatar.png'
+              };
+            }
+            return post;
+          });
+        },
+        error: (error) => {
+          console.error(`Error al cargar información del autor ${authorId}:`, error);
+          
+          // Usar información por defecto en caso de error
+          this.posts = this.posts.map(post => {
+            if (post.authorId === authorId) {
+              return {
+                ...post,
+                authorName: `Usuario ${authorId}`,
+                authorPhoto: 'assets/images/default-avatar.png'
+              };
+            }
+            return post;
+          });
+        }
+      });
+      
+      this.subs.add(authorSub);
+    });
+  }
+
+  createPost(): void {
     if (!this.newPostContent.trim()) return;
 
-    const newPost: Post = {
-      id: this.posts.length + 1,
-      authorId: 1,
-      authorName: this.userName,
-      authorPhoto: this.userPhoto,
-      content: this.newPostContent,
-      likes: 0,
-      isLiked: false,
-      rating: 0,
-      showComments: false,
-      comments: [],
-      createdAt: new Date(),
-      visibility: 'public'
-    };
-
-    this.posts.unshift(newPost);
-    this.newPostContent = '';
+    const createSub = this.socialFeedService.createPost(this.newPostContent.trim()).subscribe({
+      next: (newPost) => {
+        // Convertir el post nuevo a DisplayPost y agregarlo al feed
+        const now = new Date().toISOString();
+        const displayPost: DisplayPost = {
+          // Campos base requeridos de ApiPostResponse
+          id: newPost.id,
+          authorId: this.currentUser?.id || 0,
+          content: newPost.content,
+          tags: newPost.tags || [],
+          createdAt: now,
+          updatedAt: now,
+          active: true,
+          reactionsCount: 0,
+          commentsCount: 0,
+          repostsCount: 0,
+          viewsCount: 0,
+          hasMedia: false,
+          engagementRate: 0,
+          
+          // Campos adicionales para el template
+          authorName: this.userName,
+          authorPhoto: this.userPhoto,
+          images: [],
+          likes: 0,
+          isLiked: false,
+          comments: [],
+          rating: 0,
+          showComments: false,
+          createdAtDate: new Date(now),
+          visibility: 'public'
+        };
+        
+        this.posts.unshift(displayPost);
+        this.newPostContent = '';
+        console.log('Post creado exitosamente:', newPost);
+      },
+      error: (error) => {
+        console.error('Error al crear post:', error);
+        // Aquí podrías mostrar un mensaje de error al usuario
+      }
+    });
+    
+    this.subs.add(createSub);
   }
 
-  likePost(post: Post) {
-    if (post.isLiked) {
-      post.likes--;
-    } else {
-      post.likes++;
-    }
-    post.isLiked = !post.isLiked;
+  likePost(post: DisplayPost): void {
+    const likeSub = this.socialFeedService.likePost(post.id).subscribe({
+      next: () => {
+        // Actualizar el estado local del post
+        if (post.isLiked) {
+          post.likes = (post.likes || 1) - 1;
+        } else {
+          post.likes = (post.likes || 0) + 1;
+        }
+        post.isLiked = !post.isLiked;
+        console.log('Like actualizado para post:', post.id);
+      },
+      error: (error) => {
+        console.error('Error al dar like al post:', error);
+      }
+    });
+    
+    this.subs.add(likeSub);
   }
 
-  likeComment(comment: Comment) {
+  likeComment(comment: DisplayComment): void {
+    // Por ahora mantener lógica local, más tarde se puede implementar con el servicio
     if (!comment.isLiked) {
       comment.likes = (comment.likes || 0) + 1;
     } else {
@@ -194,9 +415,18 @@ export class HomeComponent {
     comment.isLiked = !comment.isLiked;
   }
 
-  sharePost(post: Post) {
-    // Implementar lógica de compartir
-    console.log('Compartiendo post:', post.id);
+  sharePost(post: DisplayPost): void {
+    const shareSub = this.socialFeedService.repostPost(post.id).subscribe({
+      next: () => {
+        console.log('Post compartido exitosamente:', post.id);
+        // Aquí podrías mostrar un mensaje de éxito al usuario
+      },
+      error: (error) => {
+        console.error('Error al compartir post:', error);
+      }
+    });
+    
+    this.subs.add(shareSub);
   }
 
   followUser(userId: number) {
@@ -205,75 +435,124 @@ export class HomeComponent {
   }
 
   // Métodos para el modal
-  openPostDetail(post: Post) {
+  openPostDetail(post: DisplayPost): void {
     this.selectedPost = post;
-    this.currentImageIndex = 0;
     document.body.style.overflow = 'hidden';
+    
+    // Incrementar contador de vistas
+    this.socialFeedService.viewPost(post.id).subscribe({
+      next: () => console.log('Vista registrada para post:', post.id),
+      error: (error) => console.error('Error al registrar vista:', error)
+    });
   }
 
-  closePostDetail(event: MouseEvent) {
+  closePostDetail(event: MouseEvent): void {
     if (event.target === event.currentTarget) {
       this.selectedPost = null;
       document.body.style.overflow = '';
     }
   }
 
-  prevImage() {
-    if (this.currentImageIndex > 0) {
-      this.currentImageIndex--;
-    }
-  }
+  // Métodos de imágenes temporalmente removidos para evitar errores de compilación
 
-  nextImage() {
-    if (this.selectedPost?.images && this.currentImageIndex < this.selectedPost.images.length - 1) {
-      this.currentImageIndex++;
-    }
-  }
-
-  openMediaViewer(options: MediaViewerOptions): void {
-    if (options.event) {
-      options.event.stopPropagation();
-    }
-    
-    this.selectedPost = options.post;
-    this.currentImageIndex = options.index;
-    document.body.style.overflow = 'hidden';
-  }
-
-  showPostOptions(event: MouseEvent, post: Post) {
+  showPostOptions(event: MouseEvent, post: DisplayPost): void {
     event.stopPropagation();
     // Implementar menú de opciones del post
     console.log('Mostrando opciones del post:', post.id);
   }
 
-  showLikes(post: Post) {
+  showLikes(post: DisplayPost): void {
     // Implementar modal de personas que dieron like
     console.log('Mostrando likes del post:', post.id);
   }
 
-  focusComment(post: Post) {
+  focusComment(post: DisplayPost): void {
     const commentInput = document.querySelector(`#comment-input-${post.id}`) as HTMLInputElement;
     if (commentInput) {
       commentInput.focus();
     }
   }
 
-  submitComment(post: Post) {
+  submitComment(post: DisplayPost): void {
     const commentContent = this.commentTexts[post.id];
     if (!commentContent?.trim()) return;
 
-    const newComment: Comment = {
-      id: post.comments.length + 1,
-      authorId: 1,
-      authorName: this.userName,
-      authorPhoto: this.userPhoto,
-      content: commentContent.trim(),
-      createdAt: new Date(),
-      isLiked: false,
-      likes: 0
-    };
+    const commentSub = this.socialFeedService.commentOnPost(post.id, commentContent.trim()).subscribe({
+      next: (newComment) => {
+        // Convertir Comments a DisplayComment y agregarlo al post
+        const displayComment: DisplayComment = {
+          id: newComment.id,
+          authorId: this.currentUser?.id || 0,
+          authorName: this.userName,
+          authorPhoto: this.userPhoto,
+          content: newComment.content,
+          createdAt: new Date(),
+          isLiked: false,
+          likes: 0
+        };
 
-    post.comments.push(newComment);
-    this.commentTexts[post.id] = '';
+        if (!post.comments) {
+          post.comments = [];
+        }
+        post.comments.push(displayComment);
+        this.commentTexts[post.id] = '';
+        console.log('Comentario creado exitosamente:', newComment);
+      },
+      error: (error) => {
+        console.error('Error al crear comentario:', error);
+      }
+    });
+    
+    this.subs.add(commentSub);
   }
+
+  // Obtener información del rol del usuario
+  getUserRole(): string {
+    if (!this.currentUser) return 'Usuario';
+    
+    if (this.currentUser.ilustrador) {
+      return 'Ilustrador';
+    } else if (this.currentUser.escritor) {
+      return 'Escritor';
+    }
+    
+    return this.currentUser.roleName || 'Usuario';
+  }
+
+  // Obtener nombre completo del usuario
+  getFullUserName(): string {
+    if (!this.currentUser) return this.userName;
+    
+    return `${this.currentUser.nombres} ${this.currentUser.apellidos}`;
+  }
+
+  // Obtener descripción del usuario
+  getUserDescription(): string {
+    return this.currentUser?.descripcion || 'Sin descripción';
+  }
+
+  // Método para refrescar el feed
+  refreshFeed(): void {
+    this.loadFeed();
+  }
+
+  // Método para obtener posts trending
+  loadTrendingPosts(): void {
+    const trendingSub = this.socialFeedService.getTrendingPosts().subscribe({
+      next: (trendingPosts) => {
+        console.log('Posts trending cargados:', trendingPosts);
+        // Aquí podrías mostrar los trending posts en una sección especial
+      },
+      error: (error) => {
+        console.error('Error al cargar posts trending:', error);
+      }
+    });
+    
+    this.subs.add(trendingSub);
+  }
+
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
 }

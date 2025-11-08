@@ -130,6 +130,28 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* Avatares circulares */
+.avatar, .post-avatar, .user-avatar, .comment-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #f0f0f0;
+  background-color: #f8f9fa;
+}
+
+/* Avatar principal del post */
+.post-avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
+/* Avatar del creador de post */
+.create-post .avatar {
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+}
+
 .post-header {
   display: flex;
   align-items: center;
@@ -197,6 +219,7 @@
     &.truncated {
       display: -webkit-box;
       -webkit-line-clamp: 3;
+      line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }

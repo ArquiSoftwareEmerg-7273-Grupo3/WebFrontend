@@ -8,7 +8,7 @@ import {catchError, Observable, retry, throwError} from 'rxjs';
 })
 export class BaseService<T> {
 
-  basePath: string = `${environment.baseUrl}`;
+  basePath: string = `${environment}`;
   resourceEndpoint: string = '/resources';
 
   httpOptions ={
@@ -17,7 +17,7 @@ export class BaseService<T> {
     })
   }
 
-  constructor(private http: HttpClient){
+  constructor(protected http: HttpClient){
   }
   handleError(error: HttpErrorResponse) {
     if(error.error instanceof ErrorEvent) {

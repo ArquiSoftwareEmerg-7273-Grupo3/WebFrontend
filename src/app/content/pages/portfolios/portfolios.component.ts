@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Location, NgForOf} from '@angular/common';
+import {Portfolio} from './model/portfolio.entity';
 
 @Component({
   selector: 'app-portfolios',
@@ -16,13 +17,10 @@ export class PortfoliosComponent {
   portfolio: any;
   galleryItem: any;
 
-  portfolios = [
+  portfolios: Portfolio[] = [
     {
       id: 1,
       title: 'Retratos',
-      author: 'María López',
-      date: '10/05/2025',
-      applicationDate: '12/05/2025',
       imageSrc: 'https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-how-to-draw-a-portrait-using-pencils-image_2676967.jpg',
       description: 'Retratos hechos en mis tiempos libres. Me gusta variar siempre los estilos que uso para darle un detalle único a cada obra.',
       galleryItems: [
@@ -46,9 +44,6 @@ export class PortfoliosComponent {
     {
       id: 2,
       title: 'Acuarelas',
-      author: 'Carlos Pérez',
-      date: '11/05/2025',
-      applicationDate: '12/05/2025',
       imageSrc: 'https://www.massalagros.com/wp-content/uploads/2022/04/pintar-con-acuarela.jpg',
       description: 'En este portafolio mostraré ilustraciones realizadas con acuarela, en las cuales exploré historias sobre la amistad para fomentar la empatía y la solidaridad en la infancia. A través de narraciones emotivas y personajes entrañables, los niños descubrirán el valor del compañerismo, el trabajo en equipo y la importancia de apoyarse mutuamente. Cada cuento estará diseñado para provocar reflexión y diálogo tanto en casa como en el aula.',
       galleryItems: [
@@ -72,9 +67,6 @@ export class PortfoliosComponent {
     {
       id: 3,
       title: 'Ilustraciones personalizadas',
-      author: 'Lucía Fernández',
-      date: '12/05/2025',
-      applicationDate: '12/05/2025',
       imageSrc: 'https://thumbs.dreamstime.com/b/esbozando-guiones-gr%C3%A1ficos-detallados-para-el-proyecto-de-v%C3%ADdeo-animado-cierre-un-animaci%C3%B3n-con-dibujos-mano-artista-la-331329054.jpg',
       description: 'Este portafolio tiene como objetivo mostrar ilustraciones personalizadas que promuevan la inclusión y el respeto por las diferencias. A través de relatos protagonizados por niños y niñas de diferentes culturas, capacidades y contextos, se busca construir una visión más abierta y comprensiva del mundo. El enfoque será pedagógico y emocional, incorporando actividades complementarias para padres y educadores.',
       galleryItems: [

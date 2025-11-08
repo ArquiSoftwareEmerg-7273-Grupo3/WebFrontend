@@ -1,0 +1,17 @@
+<form class="wrap" [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+  <div class="card">
+    <h3 class="title">Activa tu perfil de ilustrador</h3>
+
+    <div class="field">
+      <input id="nombre" formControlName="nombreArtistico" type="text" required/>
+      <label for="nombre">Nombre artístico</label>
+      <div class="help" *ngIf="form.get('nombreArtistico')?.touched && form.get('nombreArtistico')?.invalid">El nombre es obligatorio</div>
+    </div>
+
+    <p class="hint">Haz que tu nombre destaque — será visible en búsquedas y oportunidades.</p>
+
+    <div class="actions">
+      <button type="submit" [disabled]="form.invalid" class="btn">Enviar</button>
+    </div>
+  </div>
+</form>
