@@ -1,0 +1,79 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.card {
+  width: 95%;
+  max-width: 400px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  padding: 30px;
+}
+
+mat-card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  max-width: 350px;
+  margin: 0 auto;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 30px;
+}
+
+.error {
+  color: #b00020;
+  margin-top: 10px;
+}
+
+.user-form input[type="text"],
+.user-form input[type="email"] {
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 14px;
+  transition: border-color 0.3s ease;
+}
+
+@media (max-width: 1200px) {
+  .form-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Quitar transparencia del panel de selección */
+.cdk-overlay-pane .mat-mdc-select-panel {
+  background-color: #ffffff !important;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.25) !important;
+}
+
+/* Opciones */
+.mat-mdc-option {
+  color: #000 !important;
+  background-color: #ffffff !important;
+}
+
+

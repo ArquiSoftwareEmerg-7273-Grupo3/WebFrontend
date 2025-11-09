@@ -1,0 +1,41 @@
+<app-sidebar-component></app-sidebar-component>
+<div class="container">
+  <mat-card class="card" *ngIf="form">
+    <mat-card-title>{{ editingId ? 'Editar' : 'Crear' }} Usuario</mat-card-title>
+    <mat-card-content class="card-content">
+      <form [formGroup]="form" (ngSubmit)="submit()" class="user-form">
+        <div class="form-row">
+          <strong>Ingresa tu Nombre</strong>
+          <input type="text" formControlName="name" required/>
+
+          <strong>Contacto - Email</strong>
+          <input type="email" formControlName="email" required/>
+
+          <strong>Ingresa el Rol</strong>
+            <mat-form-field appearance="fill" class="role-select">
+              <mat-label>Rol</mat-label>
+              <mat-select formControlName="role" required>
+                <mat-option value="illustrator">Illustrator</mat-option>
+                <mat-option value="writer">Writer</mat-option>
+                <mat-option value="admin">Admin</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+          <strong>Ingresa el Portafolio</strong>
+          <input type="text" formControlName="portfolio" required/>
+
+            <div class="form-actions">
+              <button mat-raised-button color="primary" type="submit" [disabled]="saving">
+                {{ saving ? 'Guardando...' : 'Guardar' }}
+              </button>
+              <mat-button-toggle-group formControlName="status" aria-label="Toggle Status">
+                <mat-button-toggle value="active">Activo</mat-button-toggle>
+                <mat-button-toggle value="inactive">Inactivo</mat-button-toggle>
+              </mat-button-toggle-group>
+            </div>
+
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

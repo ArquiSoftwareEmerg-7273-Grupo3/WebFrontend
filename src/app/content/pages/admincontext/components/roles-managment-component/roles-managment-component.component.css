@@ -1,0 +1,85 @@
+/*  */
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+mat-card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px; /* separación entre tarjetas */
+  justify-content: center;
+  align-items: flex-start;
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 0;
+  padding: 24px;
+  max-width: 360px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #fff;
+}
+
+/* ajuste responsivo*/
+@media (min-width: 1200px) {
+  .card {
+    max-width: 420px;
+  }
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  color: #fff;
+  margin-left: 0;
+}
+
+.btn {
+  padding: 8px 12px;
+  background: #429f95;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.btn-action {
+  background: #429f95;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Quitar transparencia del panel de selección */
+.cdk-overlay-pane .mat-mdc-select-panel {
+  background-color: #ffffff !important;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.25) !important;
+}
+
+/* Opciones */
+.mat-mdc-option {
+  color: #000 !important;
+  background-color: #ffffff !important;
+}

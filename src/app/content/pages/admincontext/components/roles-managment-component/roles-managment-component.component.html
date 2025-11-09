@@ -1,0 +1,43 @@
+<app-sidebar-component></app-sidebar-component>
+<div class="container">
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title>Gestión de Roles</mat-card-title>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form"
+            (ngSubmit)="changeRole()"
+            class="role-form"
+            role="form">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Usuario</mat-label>
+          <mat-select formControlName="userId">
+            <mat-option value="">-- Seleccionar --</mat-option>
+            <mat-option *ngFor="let u of users" [value]="u.id">
+              {{ u.name }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Nuevo Rol</mat-label>
+          <mat-select formControlName="role">
+            <mat-option value="illustrator">Illustrator</mat-option>
+            <mat-option value="writer">Writer</mat-option>
+            <mat-option value="admin">Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="form-actions">
+          <button type="submit"
+                  mat-raised-button
+                  color="primary"
+                  [disabled]="saving">
+            {{ saving ? 'Guardando...' : 'Guardar Cambios' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

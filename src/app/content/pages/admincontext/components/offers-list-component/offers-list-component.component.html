@@ -1,0 +1,61 @@
+<app-sidebar-component></app-sidebar-component>
+<div class="container">
+  <mat-card class="card">
+    <h2>Moderación de Ofertas Laborales</h2>
+
+    <div *ngIf="loading">Cargando...</div>
+    <div *ngIf="!loading && error" class="error">{{ error }}</div>
+
+    <div *ngIf="!loading && !allData.length">No hay ofertas pendientes.</div>
+
+    <div *ngIf="!loading && allData.length">
+      <table mat-table [dataSource]="pagedData" matSort (matSortChange)="onSort($event)" class="mat-elevation-z8">
+
+        <!-- Title Column -->
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Título</th>
+          <td mat-cell *matCellDef="let o">{{ o.title }}</td>
+        </ng-container>
+
+        <!-- Author Column -->
+        <ng-container matColumnDef="authorId">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Autor</th>
+          <td mat-cell *matCellDef="let o">{{ o.authorId }}</td>
+        </ng-container>
+
+        <!-- Created At Column -->
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+          <td mat-cell *matCellDef="let o">{{ o.createdAt | date:'short' }}</td>
+        </ng-container>
+
+        <!-- Status Column -->
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+          <td mat-cell *matCellDef="let o">{{ o.status }}</td>
+        </ng-container>
+
+        <!-- Actions Column -->
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef>Acciones</th>
+          <td mat-cell *matCellDef="let o">
+            <button mat-button color="primary" (click)="flag(o)">Marcar</button>
+            <button mat-button color="warn" (click)="remove(o)">Eliminar</button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator
+        [length]="allData.length"
+        [pageSize]="pageSize"
+        [pageIndex]="pageIndex"
+        [pageSizeOptions]="[5,10,25]"
+        showFirstLastButtons
+        (page)="onPage($event)">
+      </mat-paginator>
+    </div>
+  </mat-card>
+</div>

@@ -1,0 +1,57 @@
+<app-sidebar-component></app-sidebar-component>
+<div class="container">
+  <mat-card class="card" role="region" aria-label="Panel de Reportes">
+    <h2>Panel de Reportes</h2>
+
+    <div *ngIf="loading">Cargando reportes...</div>
+    <div *ngIf="error" class="error">{{ error }}</div>
+
+    <mat-card-content *ngIf="reports?.length">
+      <mat-table [dataSource]="reports" class="mat-elevation-z8 reported-table" aria-label="Tabla de reportes">
+
+        <!-- Título / Objetivo -->
+        <ng-container matColumnDef="targetTitle">
+          <mat-header-cell *matHeaderCellDef>Título</mat-header-cell>
+          <mat-cell *matCellDef="let r">{{ r.targetTitle || r.targetId }}</mat-cell>
+        </ng-container>
+
+        <!-- Tipo -->
+        <ng-container matColumnDef="type">
+          <mat-header-cell *matHeaderCellDef>Tipo</mat-header-cell>
+          <mat-cell *matCellDef="let r">{{ r.type }}</mat-cell>
+        </ng-container>
+
+        <!-- Reportante -->
+        <ng-container matColumnDef="reporter">
+          <mat-header-cell *matHeaderCellDef>Reportado por</mat-header-cell>
+          <mat-cell *matCellDef="let r">{{ r.reporterName || r.reporterId }}</mat-cell>
+        </ng-container>
+
+        <!-- Fecha -->
+        <ng-container matColumnDef="createdAt">
+          <mat-header-cell *matHeaderCellDef>Fecha</mat-header-cell>
+          <mat-cell *matCellDef="let r">{{ r.createdAt | date:'short' }}</mat-cell>
+        </ng-container>
+
+        <!-- Motivo -->
+        <ng-container matColumnDef="reason">
+          <mat-header-cell *matHeaderCellDef>Motivo</mat-header-cell>
+          <mat-cell *matCellDef="let r">{{ r.reason }}</mat-cell>
+        </ng-container>
+
+        <!-- Acciones -->
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>Acciones</mat-header-cell>
+          <mat-cell *matCellDef="let r" class="actions-cell">
+            <button mat-button color="warn" (click)="resolve(r,'delete')">Eliminar</button>
+            <button mat-button color="primary" (click)="resolve(r,'flag')">Marcar</button>
+            <button mat-button color="accent" (click)="resolve(r,'dismiss')">Descartar</button>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="['targetTitle','type','reporter','createdAt','reason','actions']"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: ['targetTitle','type','reporter','createdAt','reason','actions'];"></mat-row>
+      </mat-table>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,148 @@
+{
+  "reports": [
+    {
+      "id": "r1",
+      "type": "post",
+      "targetId": "p1",
+      "targetTitle": "Crítica ofensiva",
+      "reporterId": "u3",
+      "reporterName": "Carlos Mendoza",
+      "reason": "Lenguaje agresivo",
+      "createdAt": "2025-01-10T14:22:00Z",
+      "status": "open"
+    },
+    {
+      "id": "r2",
+      "type": "portfolio",
+      "targetId": "pf2",
+      "targetTitle": "Portfolio de Ana",
+      "reporterId": "u5",
+      "reporterName": "Lucía Torres",
+      "reason": "Contenido plagiado",
+      "createdAt": "2025-01-12T09:50:00Z",
+      "status": "reviewing"
+    }
+  ],
+  "users": [
+    {
+      "id": "u1",
+      "name": "Juan Pérez",
+      "email": "juan_perez@mail.com",
+      "role": "writer",
+      "status": "active",
+      "portfolio": [
+        {
+          "id": "p1",
+          "title": "Amanecer en Acuarela"
+        }
+      ]
+    },
+    {
+      "id": "u2",
+      "name": "María Gómez",
+      "email": "maria_gomez@mail.com",
+      "role": "illustrator",
+      "status": "active",
+      "portfolio": [
+        {
+          "id": "p2",
+          "title": "Ilustraciones Cartoon"
+        }
+      ]
+    },
+    {
+      "id": "u3",
+      "name": "Carlos Mendoza",
+      "email": "carlos_mn@mail.com",
+      "role": "writer",
+      "status": "suspended",
+      "portfolio": [
+        {
+          "id": "p3",
+          "title": "Novela de Fantasía"
+        }
+      ]
+    },
+    {
+      "id": "u4",
+      "name": "Ana Torres",
+      "email": "ana_torres@mail.com",
+      "role": "illustrator",
+      "status": "active",
+      "portfolio": [
+        {
+          "id": "p4",
+          "title": "Arte Digital Surrealista"
+        }
+      ]
+    }
+  ],
+  "offers": [
+    {
+      "id": "o1",
+      "title": "Ilustrador para libro infantil",
+      "description": "Buscamos ilustrador estilo acuarela para libro educativo.",
+      "authorId": "u1",
+      "createdAt": "2025-02-01T08:00:00Z",
+      "status": "active"
+    },
+    {
+      "id": "o2",
+      "title": "Diseño de portada para novela",
+      "description": "Necesito ilustrador estilo fantasy.",
+      "authorId": "u3",
+      "createdAt": "2025-02-03T10:30:00Z",
+      "status": "closed"
+    }
+  ],
+  "portfolios": [
+    {
+      "id": "pf1",
+      "userId": "u2",
+      "title": "Portafolio de María",
+      "description": "Colección de ilustraciones estilo cartoon.",
+      "items": [
+        {
+          "id": "i1",
+          "imageUrl": "https://picsum.photos/200?random=1"
+        },
+        {
+          "id": "i2",
+          "imageUrl": "https://picsum.photos/200?random=2"
+        }
+      ]
+    },
+    {
+      "id": "pf2",
+      "userId": "u4",
+      "title": "Portafolio de Ana",
+      "description": "Arte digital estilo surrealista.",
+      "items": [
+        {
+          "id": "i3",
+          "imageUrl": "https://picsum.photos/200?random=3"
+        },
+        {
+          "id": "i4",
+          "imageUrl": "https://picsum.photos/200?random=4"
+        }
+      ]
+    },
+    {
+      "id": "pf3",
+      "userId": "u5",
+      "title": "Portafolio de Carlos",
+      "description": "Arte estilo Novela de Fantasía",
+      "items": [
+        {
+          "id": "i4",
+          "imageUrl": "https://picsum.photos/200?random=5"
+        },
+        {
+          "id": "i5",
+          "imageUrl": "https://picsum.photos/200?random=6"
+        }
+      ]
+    }
+  ]
+}

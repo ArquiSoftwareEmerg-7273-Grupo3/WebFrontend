@@ -1,0 +1,19 @@
+<mat-toolbar class="navbar">
+  <div class="logo">
+    <a [routerLink]="['/home']">
+      <img src="https://raw.githubusercontent.com/diegooo01/HidraNet/refs/heads/main/public/brand-logo/art-collab-logo.png" alt="ArtCollab Logo" width="170" height="60" />
+    </a>
+  </div>
+  <ul class="nav-items">
+    <li class="nav-item"><a routerLink="/about-us">Saber más</a></li>
+    <li class="nav-item"><a routerLink="/admin/dashboard">Admin Service</a></li>
+    <li class="nav-item"><a routerLink="/admin/users/new">Admin Users Create</a></li>
+    <li class="nav-item"><a routerLink="/admin/offers">Admin Offers</a></li>
+    <li class="nav-item"><a routerLink="/admin/portfolios">Admin Portfolios</a></li>
+    <li class="nav-item"><a routerLink="/admin/roles">Admin Roles</a></li>
+    <li class="nav-item"><a routerLink="/admin/reports">Admin Reports</a></li>
+  </ul>
+  <div class="auth">
+    <button class="signin-button " routerLink="/login" >Iniciar sesión</button>
+  </div>
+</mat-toolbar>

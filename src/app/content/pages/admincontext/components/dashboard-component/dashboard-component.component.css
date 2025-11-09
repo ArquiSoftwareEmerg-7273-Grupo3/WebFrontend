@@ -1,0 +1,167 @@
+mat-card-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: auto;
+  padding-top: 96px;
+  padding-bottom: 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  margin: 16px 0;
+  padding: 20px;
+  max-width: 1400px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  background-color: #fff;
+}
+
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  color: #fff;
+  margin-left: 0;
+}
+
+.btn {
+  padding: 8px 12px;
+  background: #429f95;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+}
+
+.error {
+  color: #b00020;
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  justify-items: center;
+  align-items: start;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 12px 24px 24px;
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.cards-container .card {
+  width: 100%;
+  max-width: 320px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px;
+  border-radius: 8px;
+  margin: 0;
+}
+
+.cards-container .avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 8px;
+}
+
+.cards-title {
+  text-align: center;
+  margin: 12px 0 8px;
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+@media (max-width: 600px) {
+  .container {
+    padding-top: 12px;
+  }
+  .cards-container {
+    grid-template-columns: 1fr;
+    padding: 8px 12px 12px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .cards-container {
+    grid-template-columns: 1fr;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .cards-container .card {
+    max-width: 100%;
+  }
+}
+
+.btn-action {
+  background: #429f95;
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+/* Quitar transparencia del panel de selección */
+.cdk-overlay-pane .mat-mdc-select-panel {
+  background-color: #ffffff !important;
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.25) !important;
+}
+
+/* Opciones */
+.mat-mdc-option {
+  color: #000 !important;
+  background-color: #ffffff !important;
+}
+
+.reported-section {
+  display: flex;
+  justify-content: center;
+  margin: 32px 0;
+}
+
+.reported-card {
+  width: 100%;
+  max-width: 980px;
+}
+
+.reported-table {
+  width: 100%;
+}
+
+.reported-card mat-card-title {
+  font-weight: 600;
+}
+
+
+
