@@ -5,6 +5,7 @@ import {CommonModule} from '@angular/common';
 import {AuthenticationService} from '../../services/authentication.service';
 import {SignUpRequest} from '../../model/sign-up.request';
 import {Router, RouterLink} from '@angular/router';
+import {HttpClient} from '@angular/common/http';
 
 @Component({
   selector: 'app-sign-up',
@@ -22,6 +23,8 @@ export class SignUpComponent implements OnInit {
   showPassword = false;
   submitted = false;
   step: number = 1; // <-- Etapa del registro
+  selectedFileName: string = ''; // Nombre del archivo seleccionado
+  selectedFile: File | null = null; // Archivo seleccionado
 
   // Campos básicos
   username = '';
@@ -61,7 +64,8 @@ export class SignUpComponent implements OnInit {
   constructor(
     private builder: FormBuilder,
     private authenticationService: AuthenticationService,
-    private router: Router
+    private router: Router,
+    private http: HttpClient
   ) {}
 
 
@@ -84,6 +88,66 @@ export class SignUpComponent implements OnInit {
 
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
+  }
+
+  /**
+   * Manejar selección de archivo de imagen
+   */
+  onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file: File | null = input.files?.[0] || null;
+    
+    if (!file) return;
+    
+    // Validar que sea una imagen
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona un archivo de imagen válido');
+      return;
+    }
+    
+    // Validar tamaño (máximo 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      alert('La imagen no debe superar los 10MB');
+      return;
+    }
+    
+    this.selectedFile = file;
+    this.selectedFileName = file.name;
+    
+    // Subir la imagen al backend
+    this.uploadImage(file);
+  }
+
+  /**
+   * Subir imagen al backend usando el endpoint de media
+   */
+  private uploadImage(file: File): void {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    console.log('📤 Subiendo imagen al backend...');
+
+    this.http.post('http://localhost:8080/api/v1/media/upload', formData).subscribe({
+      next: (response: any) => {
+        console.log('✅ Imagen subida exitosamente:', response);
+        
+        // Guardar la URL completa en el formulario
+        const imageUrl = 'http://localhost:8080' + response.url;
+        this.form.patchValue({ foto: imageUrl });
+        
+        console.log('🖼️ URL de la imagen:', imageUrl);
+        alert('✅ Imagen cargada correctamente');
+      },
+      error: (error) => {
+        console.error('❌ Error al subir imagen:', error);
+        alert('❌ Error al subir la imagen. Por favor intenta de nuevo.');
+        
+        // Limpiar selección en caso de error
+        this.selectedFile = null;
+        this.selectedFileName = '';
+      }
+    });
   }
 
   goToNextStep() {

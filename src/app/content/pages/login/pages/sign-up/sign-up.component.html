@@ -59,7 +59,17 @@
           </div>
           <div class="form-row">
             <div class="form-group">
-              <input type="text" placeholder="URL de foto (opcional)" formControlName="foto" />
+              <label for="photo-upload" class="file-upload-label">
+                <span class="material-symbols-outlined">add_photo_alternate</span>
+                <span>{{ selectedFileName || 'Seleccionar foto de perfil (opcional)' }}</span>
+              </label>
+              <input 
+                type="file" 
+                id="photo-upload" 
+                accept="image/*" 
+                (change)="onFileSelected($event)"
+                style="display: none;"
+              />
             </div>
           </div>
           <button class="login-button" type="button" (click)="goToNextStep()">Siguiente</button>

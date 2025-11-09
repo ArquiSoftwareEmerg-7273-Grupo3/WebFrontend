@@ -9,6 +9,7 @@ import { SocialFeedService, FeedPost } from './services/social-feed.service';
 import { Post as ApiPost } from './services/posts.service';
 import { Comments } from './services/comments.service';
 import { UsersService, UserProfile } from './services/users.service';
+import { WebSocketService } from '../../../public/services/websocket.service';
 
 // Interface para la respuesta de la API que incluye paginación
 interface PostsResponse {
@@ -87,12 +88,12 @@ interface Event {
 
 interface DisplayComment {
   id: number;
-  authorId: number;
-  authorName: string;
-  authorPhoto: string;
+  userId: number;
+  userName?: string;
+  userPhoto?: string;
   content: string;
   createdAt: Date;
-  isLiked?: boolean;
+  isReply?: boolean;
   likes?: number;
 }
 
@@ -121,6 +122,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   
   // Información del usuario actual
   currentUser: UserInfoResponse | null = null;
+
+  // Variables para WebSocket
+  wsConnected = false;
+  private hasAttemptedLoad = false;
 
   // Variables para el modal
   selectedPost: DisplayPost | null = null;
@@ -159,70 +164,49 @@ export class HomeComponent implements OnInit, OnDestroy {
     private miniTutorialService: MiniTutorialService,
     private authService: AuthenticationService,
     private socialFeedService: SocialFeedService,
-    private usersService: UsersService
+    private usersService: UsersService,
+    private wsService: WebSocketService
   ) {
     // Los datos ahora se cargarán desde el servicio
     this.posts = [];
   }
 
   ngOnInit(): void {
-    // Cargar información del usuario actual
     this.loadUserInfo();
     
-    // Cargar posts del feed
     this.loadFeed();
 
-    //const seen = localStorage.getItem(STORAGE_KEY) === '1';
-    //     if (!seen) {
-    //       this.miniTutorialService.start(steps);
-    //       console.log("Mostrando mini tutorial");
-    //
-    //       // cuando el overlay se cierra guardamos la marca para no volver a mostrarlo
-    //       const sub = this.miniTutorialService.isOpen$.subscribe(open => {
-    //         if (!open) {
-    //           try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* fallbacks si storage no disponible */ }
-    //         }
-    //       });
-    //       this.subs.add(sub);
-    //     }
+    this.setupWebSocket();
+
   }
 
   private loadFeed(): void {
     this.isLoadingPosts = true;
     
-    // Asegurar que tenemos información del usuario antes de cargar posts
     if (!this.currentUser) {
       console.log('Esperando información del usuario...');
-      // Si no hay usuario, esperar un poco antes de intentar cargar
       setTimeout(() => this.loadFeed(), 500);
       return;
     }
     
-    // Usar el servicio de posts directamente para obtener todos los posts con paginación
     const feedSub = this.socialFeedService['postsService'].getPosts(0, 10).subscribe({
       next: (response: any) => {
-        console.log('Respuesta del API:', response);
         
-        // Verificar si la respuesta es paginada o un array directo
         let posts: any[];
         if (response && response.content && Array.isArray(response.content)) {
-          // Respuesta paginada
           posts = response.content;
         } else if (Array.isArray(response)) {
-          // Array directo
           posts = response;
         } else {
           console.error('Formato de respuesta inesperado:', response);
           posts = [];
         }
         
-        // Primero crear posts con datos básicos
         const basicPosts: DisplayPost[] = posts.map(post => {
           const now = new Date();
           return {
-            // Campos base de ApiPostResponse
             id: post.id,
-            authorId: post.author_id || post.authorId || 0, // Usar el authorId real de la DB
+            authorId: post.author_id || post.authorId || 0,
             content: post.content,
             tags: post.tags || [],
             createdAt: post.created_at || post.createdAt || now.toISOString(),
@@ -235,7 +219,6 @@ export class HomeComponent implements OnInit, OnDestroy {
             hasMedia: post.has_media || post.hasMedia || false,
             engagementRate: post.engagement_rate || post.engagementRate || 0,
             
-            // Campos temporales - se actualizarán con datos reales del autor
             authorName: 'Cargando...',
             authorPhoto: 'assets/images/default-avatar.png',
             images: [],
@@ -249,18 +232,16 @@ export class HomeComponent implements OnInit, OnDestroy {
           } as DisplayPost;
         });
 
-        // Asignar posts básicos inmediatamente para mostrar el contenido
         this.posts = basicPosts;
         this.isLoadingPosts = false;
-        console.log('Posts cargados desde API:', this.posts);
 
-        // Ahora obtener información de los autores
         this.loadAuthorsInfo(basicPosts);
+        
+        // Cargar comentarios existentes para cada post
+        this.loadCommentsForPosts(basicPosts);
       },
       error: (error) => {
-        console.error('Error al cargar posts desde API:', error);
         this.isLoadingPosts = false;
-        // En caso de error, mantener posts vacío
         this.posts = [];
       }
     });
@@ -269,14 +250,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   private loadUserInfo(): void {
-    // Suscribirse a la información del usuario
     const userInfoSub = this.authService.userInformation.subscribe(userInfo => {
       if (userInfo) {
         this.currentUser = userInfo;
         this.userName = `${userInfo.nombres} ${userInfo.apellidos}`;
         this.userPhoto = userInfo.foto || 'assets/images/default-avatar.png';
         
-        console.log('Información del usuario cargada:', userInfo);
       }
     });
     this.subs.add(userInfoSub);
@@ -284,26 +263,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Si no hay información del usuario, intentar cargarla
     if (!this.currentUser) {
       this.authService.loadUserInformation().catch(error => {
-        console.error('Error al cargar información del usuario:', error);
       });
     }
   }
 
   private loadAuthorsInfo(posts: DisplayPost[]): void {
-    // Obtener IDs únicos de autores
     const authorIds = [...new Set(posts.map(post => post.authorId).filter(id => id && id > 0))];
     
     if (authorIds.length === 0) return;
 
-    console.log('Cargando información de autores:', authorIds);
 
-    // Cargar información de cada autor
     authorIds.forEach(authorId => {
       const authorSub = this.usersService.getUserById(authorId).subscribe({
         next: (authorProfile: UserProfile) => {
-          console.log(`Información del autor ${authorId}:`, authorProfile);
           
-          // Actualizar todos los posts de este autor
           this.posts = this.posts.map(post => {
             if (post.authorId === authorId) {
               return {
@@ -318,7 +291,6 @@ export class HomeComponent implements OnInit, OnDestroy {
         error: (error) => {
           console.error(`Error al cargar información del autor ${authorId}:`, error);
           
-          // Usar información por defecto en caso de error
           this.posts = this.posts.map(post => {
             if (post.authorId === authorId) {
               return {
@@ -336,49 +308,115 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Cargar comentarios existentes para cada post
+   */
+  private loadCommentsForPosts(posts: DisplayPost[]): void {
+    posts.forEach(post => {
+      if (post.commentsCount > 0) {
+        const commentsSub = this.socialFeedService['commentsService'].getCommentsForPost(post.id).subscribe({
+          next: (response: any) => {
+            
+            // Extraer el array de comentarios (puede venir en response.content o directamente)
+            let comments: any[];
+            if (response && response.content && Array.isArray(response.content)) {
+              comments = response.content;
+            } else if (Array.isArray(response)) {
+              comments = response;
+            } else {
+              console.warn('Formato de comentarios inesperado:', response);
+              comments = [];
+            }
+            
+            // Convertir a DisplayComment
+            const displayComments: DisplayComment[] = comments.map(comment => {
+              const now = new Date();
+              return {
+                id: comment.id,
+                userId: comment.userId || comment.author_id || comment.authorId || 0, 
+                userName: 'Cargando...',
+                userPhoto: 'assets/images/default-avatar.png',
+                content: comment.content,
+                createdAt: new Date(comment.createdAt || comment.created_at || now),
+                isReply: comment.isReply || false,
+                likes: 0
+              } as DisplayComment;
+            });
+            
+
+            // Actualizar el post con sus comentarios
+            const postIndex = this.posts.findIndex(p => p.id === post.id);
+            if (postIndex !== -1) {
+              this.posts[postIndex].comments = displayComments;
+              
+              // Cargar info de autores de comentarios
+              if (displayComments.length > 0) {
+                this.loadCommentsAuthorsInfo(postIndex, displayComments);
+              }
+            }
+          },
+          error: (error) => {
+            console.error(`Error al cargar comentarios del post ${post.id}:`, error);
+          }
+        });
+        
+        this.subs.add(commentsSub);
+      }
+    });
+  }
+
+  /**
+   * Cargar información de los autores de los comentarios
+   */
+  private loadCommentsAuthorsInfo(postIndex: number, comments: DisplayComment[]): void {
+    const userIds = [...new Set(comments.map(c => c.userId).filter(id => id && id > 0))];
+    
+    console.log('👥 Cargando autores de comentarios. UserIds:', userIds);
+
+    userIds.forEach(userId => {
+      console.log('🔍 Buscando usuario con ID:', userId);
+      
+      const userSub = this.usersService.getUserById(userId).subscribe({
+        next: (userProfile: UserProfile) => {
+          console.log('✅ Usuario obtenido:', userProfile);
+          
+          if (this.posts[postIndex]?.comments) {
+            this.posts[postIndex].comments = this.posts[postIndex].comments!.map(comment => {
+              if (comment.userId === userId) {
+                console.log(`🔄 Actualizando comentario ${comment.id} con usuario:`, userProfile.nombres);
+                return {
+                  ...comment,
+                  userName: `${userProfile.nombres} ${userProfile.apellidos}`,
+                  userPhoto: userProfile.foto || 'assets/images/default-avatar.png'
+                };
+              }
+              return comment;
+            });
+            
+            // Forzar detección de cambios
+            this.posts = [...this.posts];
+            console.log('✨ Posts actualizados. Comentarios del post:', this.posts[postIndex].comments);
+          }
+        },
+        error: (error) => {
+          console.error(`❌ Error al cargar información del autor ${userId}:`, error);
+        }
+      });
+
+      this.subs.add(userSub);
+    });
+  }
+
   createPost(): void {
     if (!this.newPostContent.trim()) return;
 
     const createSub = this.socialFeedService.createPost(this.newPostContent.trim()).subscribe({
       next: (newPost) => {
-        // Convertir el post nuevo a DisplayPost y agregarlo al feed
-        const now = new Date().toISOString();
-        const displayPost: DisplayPost = {
-          // Campos base requeridos de ApiPostResponse
-          id: newPost.id,
-          authorId: this.currentUser?.id || 0,
-          content: newPost.content,
-          tags: newPost.tags || [],
-          createdAt: now,
-          updatedAt: now,
-          active: true,
-          reactionsCount: 0,
-          commentsCount: 0,
-          repostsCount: 0,
-          viewsCount: 0,
-          hasMedia: false,
-          engagementRate: 0,
-          
-          // Campos adicionales para el template
-          authorName: this.userName,
-          authorPhoto: this.userPhoto,
-          images: [],
-          likes: 0,
-          isLiked: false,
-          comments: [],
-          rating: 0,
-          showComments: false,
-          createdAtDate: new Date(now),
-          visibility: 'public'
-        };
-        
-        this.posts.unshift(displayPost);
+     
         this.newPostContent = '';
-        console.log('Post creado exitosamente:', newPost);
       },
       error: (error) => {
         console.error('Error al crear post:', error);
-        // Aquí podrías mostrar un mensaje de error al usuario
       }
     });
     
@@ -388,38 +426,25 @@ export class HomeComponent implements OnInit, OnDestroy {
   likePost(post: DisplayPost): void {
     const likeSub = this.socialFeedService.likePost(post.id).subscribe({
       next: () => {
-        // Actualizar el estado local del post
         if (post.isLiked) {
           post.likes = (post.likes || 1) - 1;
         } else {
           post.likes = (post.likes || 0) + 1;
         }
         post.isLiked = !post.isLiked;
-        console.log('Like actualizado para post:', post.id);
       },
       error: (error) => {
-        console.error('Error al dar like al post:', error);
       }
     });
     
     this.subs.add(likeSub);
   }
 
-  likeComment(comment: DisplayComment): void {
-    // Por ahora mantener lógica local, más tarde se puede implementar con el servicio
-    if (!comment.isLiked) {
-      comment.likes = (comment.likes || 0) + 1;
-    } else {
-      comment.likes = (comment.likes || 1) - 1;
-    }
-    comment.isLiked = !comment.isLiked;
-  }
 
   sharePost(post: DisplayPost): void {
     const shareSub = this.socialFeedService.repostPost(post.id).subscribe({
       next: () => {
         console.log('Post compartido exitosamente:', post.id);
-        // Aquí podrías mostrar un mensaje de éxito al usuario
       },
       error: (error) => {
         console.error('Error al compartir post:', error);
@@ -430,39 +455,35 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   followUser(userId: number) {
-    // Implementar lógica de seguir usuario
     console.log('Siguiendo usuario:', userId);
   }
 
-  // Métodos para el modal
   openPostDetail(post: DisplayPost): void {
     this.selectedPost = post;
     document.body.style.overflow = 'hidden';
     
-    // Incrementar contador de vistas
     this.socialFeedService.viewPost(post.id).subscribe({
       next: () => console.log('Vista registrada para post:', post.id),
       error: (error) => console.error('Error al registrar vista:', error)
     });
   }
 
-  closePostDetail(event: MouseEvent): void {
-    if (event.target === event.currentTarget) {
-      this.selectedPost = null;
-      document.body.style.overflow = '';
+  closePostDetail(event?: MouseEvent): void {
+    // Si hay evento y es el fondo del modal, cerrar
+    if (event && event.target !== event.currentTarget) {
+      return;
     }
+    // Cerrar modal
+    this.selectedPost = null;
+    document.body.style.overflow = '';
   }
 
-  // Métodos de imágenes temporalmente removidos para evitar errores de compilación
 
   showPostOptions(event: MouseEvent, post: DisplayPost): void {
     event.stopPropagation();
-    // Implementar menú de opciones del post
-    console.log('Mostrando opciones del post:', post.id);
   }
 
   showLikes(post: DisplayPost): void {
-    // Implementar modal de personas que dieron like
     console.log('Mostrando likes del post:', post.id);
   }
 
@@ -479,24 +500,8 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     const commentSub = this.socialFeedService.commentOnPost(post.id, commentContent.trim()).subscribe({
       next: (newComment) => {
-        // Convertir Comments a DisplayComment y agregarlo al post
-        const displayComment: DisplayComment = {
-          id: newComment.id,
-          authorId: this.currentUser?.id || 0,
-          authorName: this.userName,
-          authorPhoto: this.userPhoto,
-          content: newComment.content,
-          createdAt: new Date(),
-          isLiked: false,
-          likes: 0
-        };
-
-        if (!post.comments) {
-          post.comments = [];
-        }
-        post.comments.push(displayComment);
+       
         this.commentTexts[post.id] = '';
-        console.log('Comentario creado exitosamente:', newComment);
       },
       error: (error) => {
         console.error('Error al crear comentario:', error);
@@ -551,8 +556,268 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.subs.add(trendingSub);
   }
 
+  /**
+   * ============================================
+   * WEBSOCKET - MÉTODOS PARA TIEMPO REAL
+   * ============================================
+   */
+
+  /**
+   * Configurar WebSocket y suscribirse a eventos en tiempo real
+   */
+  private setupWebSocket(): void {
+    
+    // Esperar a que el usuario esté cargado antes de conectar
+    const userSub = this.authService.userInformation.subscribe(userInfo => {
+      if (userInfo && !this.wsService.isConnected()) {
+        this.wsService.connect(userInfo.id);
+      }
+    });
+    this.subs.add(userSub);
+
+    // Monitorear estado de conexión
+    const connectedSub = this.wsService.isConnected$.subscribe(connected => {
+      this.wsConnected = connected;
+    });
+    this.subs.add(connectedSub);
+
+    const newPostsSub = this.wsService.newPosts.subscribe(newPost => {
+      this.handleNewPostReceived(newPost);
+    });
+    this.subs.add(newPostsSub);
+
+    const newCommentsSub = this.wsService.newComments.subscribe(({ postId, comment }) => {
+      this.handleNewCommentReceived(postId, comment);
+    });
+    this.subs.add(newCommentsSub);
+
+    const likesSub = this.wsService.postLikes.subscribe(({ postId, likesCount, userId }) => {
+      this.handleLikeUpdated(postId, likesCount, userId);
+    });
+    this.subs.add(likesSub);
+
+    const deletedSub = this.wsService.postDeleted.subscribe(postId => {
+      this.handlePostDeleted(postId);
+    });
+    this.subs.add(deletedSub);
+
+    const updatedSub = this.wsService.postUpdated.subscribe(updatedPost => {
+      this.handlePostUpdated(updatedPost);
+    });
+    this.subs.add(updatedSub);
+  }
+
+  /**
+   * Manejar nuevo post recibido por WebSocket
+   */
+  private handleNewPostReceived(newPost: any): void {
+    
+    // Verificar si el post ya existe (evitar duplicados)
+    if (this.posts.some(p => p.id === newPost.id)) {
+      return;
+    }
+
+    // Convertir a DisplayPost con todos los campos garantizados
+    const now = new Date();
+    const authorId = newPost.author_id || newPost.authorId || 0;
+    
+    // Si es el post del usuario actual, usar su información
+    const isOwnPost = authorId === this.currentUser?.id;
+    
+    const displayPost: DisplayPost = {
+      // Campos base de ApiPostResponse
+      id: newPost.id || 0,
+      authorId: authorId,
+      content: newPost.content || '',
+      tags: Array.isArray(newPost.tags) ? newPost.tags : [],
+      createdAt: newPost.created_at || newPost.createdAt || now.toISOString(),
+      updatedAt: newPost.updated_at || newPost.updatedAt || now.toISOString(),
+      active: true,
+      reactionsCount: newPost.reactions_count || newPost.reactionsCount || 0,
+      commentsCount: newPost.comments_count || newPost.commentsCount || 0,
+      repostsCount: newPost.reposts_count || newPost.repostsCount || 0,
+      viewsCount: newPost.views_count || newPost.viewsCount || 0,
+      hasMedia: newPost.has_media || newPost.hasMedia || false,
+      engagementRate: newPost.engagement_rate || newPost.engagementRate || 0,
+      
+      // Campos adicionales para el template - usar info del usuario actual si es su post
+      authorName: isOwnPost ? this.userName : 'Cargando...',
+      authorPhoto: isOwnPost ? this.userPhoto : 'assets/images/default-avatar.png',
+      images: Array.isArray(newPost.images) ? newPost.images : [],
+      likes: newPost.reactions_count || newPost.reactionsCount || 0,
+      isLiked: false,
+      comments: Array.isArray(newPost.comments) ? newPost.comments : [],
+      rating: newPost.engagement_rate || newPost.engagementRate || 0,
+      showComments: false,
+      createdAtDate: new Date(newPost.created_at || newPost.createdAt || now),
+      visibility: 'public'
+    };
+
+    // Agregar al inicio del feed sin mutar directamente
+    this.posts = [displayPost, ...this.posts];
+    
+    // Si no es del usuario actual, cargar info del autor
+    if (!isOwnPost && authorId > 0) {
+      this.loadAuthorsInfo([displayPost]);
+    }
+    
+    // Mostrar notificación visual
+    this.showNotification('Nuevo post disponible');
+  }
+
+  /**
+   * Manejar nuevo comentario recibido por WebSocket
+   */
+  private handleNewCommentReceived(postId: number, comment: any): void {
+    
+    const postIndex = this.posts.findIndex(p => p.id === postId);
+    if (postIndex === -1) {
+      console.warn('Post no encontrado para el comentario');
+      return;
+    }
+
+    const now = new Date();
+    const displayComment: DisplayComment = {
+      id: comment.id,
+      userId: comment.userId || comment.authorId || 0,
+      content: comment.content,
+      createdAt: new Date(comment.created_at || comment.createdAt || now),
+      isReply: false,
+    };
+
+    // Inicializar array de comentarios si no existe
+    if (!this.posts[postIndex].comments) {
+      this.posts[postIndex].comments = [];
+    }
+    
+    // Evitar duplicados
+    if (!this.posts[postIndex].comments!.some(c => c.id === displayComment.id)) {
+      this.posts[postIndex].comments!.push(displayComment);
+      this.posts[postIndex].commentsCount++;
+      
+      // Forzar detección de cambios
+      this.posts = [...this.posts];
+      console.log('Comentario agregado. Total comentarios:', this.posts[postIndex].comments!.length);
+      
+      // Cargar info del autor del comentario si es necesario
+      if (displayComment.userId > 0) {
+        this.loadCommentAuthorInfo(postIndex, displayComment.userId);
+      }
+    }
+  }
+
+  /**
+   * Manejar actualización de likes por WebSocket
+   */
+  private handleLikeUpdated(postId: number, likesCount: number, userId: number): void {
+    console.log('Procesando actualización de like. Post ID:', postId, 'Likes:', likesCount);
+    
+    const postIndex = this.posts.findIndex(p => p.id === postId);
+    if (postIndex === -1) {
+      console.warn('⚠️ Post no encontrado para actualizar likes');
+      return;
+    }
+
+    // Actualizar contador de likes
+    this.posts[postIndex].likes = likesCount;
+    this.posts[postIndex].reactionsCount = likesCount;
+    
+    // Si el like es del usuario actual, actualizar el estado
+    if (userId === this.currentUser?.id) {
+      this.posts[postIndex].isLiked = !this.posts[postIndex].isLiked;
+    }
+    
+    // Forzar detección de cambios
+    this.posts = [...this.posts];
+    console.log(' Likes actualizados:', likesCount);
+  }
+
+  /**
+   * Manejar post eliminado por WebSocket
+   */
+  private handlePostDeleted(postId: number): void {
+    console.log('🗑️ Procesando eliminación de post. Post ID:', postId);
+    
+    const initialLength = this.posts.length;
+    this.posts = this.posts.filter(p => p.id !== postId);
+    
+    if (this.posts.length < initialLength) {
+      console.log('Post eliminado del feed');
+    }
+  }
+
+  /**
+   * Manejar post actualizado por WebSocket
+   */
+  private handlePostUpdated(updatedPost: any): void {
+    console.log('Procesando actualización de post:', updatedPost);
+    
+    const postIndex = this.posts.findIndex(p => p.id === updatedPost.id);
+    if (postIndex === -1) {
+      console.warn(' Post no encontrado para actualizar');
+      return;
+    }
+
+    // Actualizar contenido manteniendo otros datos
+    this.posts[postIndex] = {
+      ...this.posts[postIndex],
+      content: updatedPost.content,
+      updatedAt: updatedPost.updated_at || updatedPost.updatedAt || new Date().toISOString(),
+      tags: updatedPost.tags || this.posts[postIndex].tags
+    };
+    
+    // Forzar detección de cambios
+    this.posts = [...this.posts];
+    console.log(' Post actualizado');
+  }
+
+  /**
+   * Cargar información del autor de un comentario
+   */
+  private loadCommentAuthorInfo(postIndex: number, authorId: number): void {
+    const authorSub = this.usersService.getUserById(authorId).subscribe({
+      next: (authorProfile) => {
+        if (this.posts[postIndex]?.comments) {
+          this.posts[postIndex].comments = this.posts[postIndex].comments!.map(comment => {
+            if (comment.userId === authorId) {
+              return {
+                ...comment,
+                userName: `${authorProfile.nombres} ${authorProfile.apellidos}`,
+                userPhoto: authorProfile.foto || 'assets/images/default-avatar.png'
+              };
+            }
+            return comment;
+          });
+          
+          // Forzar detección de cambios
+          this.posts = [...this.posts];
+        }
+      },
+      error: (error) => {
+        console.error(`Error al cargar información del autor ${authorId}:`, error);
+      }
+    });
+    
+    this.subs.add(authorSub);
+  }
+
+  /**
+   * Mostrar notificación de nuevo contenido
+   */
+  private showNotification(message: string): void {
+    console.log(' Notificación:', message);
+    // TODO: Implementar toast o notificación visual
+  }
+
+  /**
+   * ============================================
+   * FIN WEBSOCKET
+   * ============================================
+   */
+
   ngOnDestroy(): void {
     this.subs.unsubscribe();
+    this.wsService.disconnect(); 
   }
 
 }

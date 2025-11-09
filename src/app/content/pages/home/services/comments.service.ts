@@ -14,7 +14,7 @@ export interface Comments {
 
 export interface CreateCommentRequest {
   content: string;
-  parentCommentId?: number;
+  parentCommentId?: number | null;
 }
 
 export interface CommentReply extends Comments {
@@ -131,7 +131,7 @@ export class CommentsService {
   createReply(postId: number, parentCommentId: number, content: string): Observable<Comments> {
     const replyRequest: CreateCommentRequest = {
       content,
-      parentCommentId
+      parentCommentId: parentCommentId ? parentCommentId : null
     };
 
     return this.createComment(postId, replyRequest);

@@ -18,6 +18,8 @@
 
   <!-- Columna Central - Feed de publicaciones -->
   <div class="main-content">
+   
+
     <!-- Crear nueva publicación -->
     <div class="create-post">
       <img [src]="userPhoto" [alt]="userName" class="avatar">
@@ -117,13 +119,12 @@
 
           <!-- Mostrar últimos 3 comentarios -->
           <div class="comment-item" *ngFor="let comment of (post.comments || []).slice(-3).reverse()">
-            <img [src]="comment.authorPhoto" [alt]="comment.authorName" class="comment-avatar">
+            <img [src]="comment.userPhoto || 'assets/images/default-avatar.png'" [alt]="comment.userName || 'Usuario'" class="comment-avatar">
             <div class="comment-content">
-              <span class="comment-author">{{comment.authorName}}</span>
+              <span class="comment-author">{{comment.userName || 'Cargando...'}}</span>
               <span class="comment-text">{{comment.content}}</span>
               <div class="comment-meta">
                 <span class="comment-time">{{comment.createdAt | date:'shortTime'}}</span>
-                <button class="like-comment" [class.liked]="comment.isLiked">Me gusta</button>
                 <button class="reply-comment">Responder</button>
               </div>
             </div>
@@ -150,7 +151,7 @@
     <!-- Modal de detalle de post -->
     <div class="post-detail-modal" *ngIf="selectedPost" (click)="closePostDetail($event)">
       <div class="modal-content" (click)="$event.stopPropagation()">
-        <button class="close-modal" (click)="closePostDetail($event)">
+        <button class="close-modal" (click)="closePostDetail()">
           <span class="material-symbols-outlined">close</span>
         </button>
 
@@ -179,13 +180,12 @@
             <!-- Lista completa de comentarios -->
             <div class="comments-list">
               <div class="comment-item" *ngFor="let comment of selectedPost.comments">
-                <img [src]="comment.authorPhoto" [alt]="comment.authorName" class="comment-avatar">
+                <img [src]="comment.userPhoto" [alt]="comment.userName" class="comment-avatar">
                 <div class="comment-content">
-                  <span class="comment-author">{{comment.authorName}}</span>
+                  <span class="comment-author">{{comment.userName}}</span>
                   <span class="comment-text">{{comment.content}}</span>
                   <div class="comment-meta">
                     <span class="comment-time">{{comment.createdAt | date:'short'}}</span>
-                    <button class="like-comment" [class.liked]="comment.isLiked">Me gusta</button>
                     <button class="reply-comment">Responder</button>
                   </div>
                 </div>
@@ -218,7 +218,12 @@
       <h3>Publicidad</h3>
       <div class="ad-space">
         <div class="ad-placeholder">
-          <img src="src/assets/images/ads/ads1.jpg" alt="Anuncio">
+          <img src="https://marketplace.canva.com/EAF8xSUqJFE/1/0/900w/canva-tu-historia-publicidad-producto-tecnol%C3%B3gico-llamativo-verde-x_9-vJW3LB8.jpg" alt="Anuncio">
+        </div>
+      </div>
+       <div class="ad-space">
+        <div class="ad-placeholder">
+          <img src="https://scontent.flim40-1.fna.fbcdn.net/v/t39.30808-6/541519290_788777516923555_3809996556930543672_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=aa7b47&_nc_ohc=GytqYR7U_nEQ7kNvwETyGGI&_nc_oc=AdmuuzxOrr6JJQjJjRcK7ybS-JtcT4mv0PRpZFHzt0tgq9HE_pxGyQYwnOSJFTlkKh0t-pit4EGkcjG-ece3d8Io&_nc_zt=23&_nc_ht=scontent.flim40-1.fna&_nc_gid=7B9vIg1w8ILXadzOMLFiYw&oh=00_AfhBtXtwSSZ9PE1-qvZSxI5Ve_op5NI_HWKMUUhUUFDC8Q&oe=6915A7FA" alt="Anuncio">
         </div>
       </div>
     </div>

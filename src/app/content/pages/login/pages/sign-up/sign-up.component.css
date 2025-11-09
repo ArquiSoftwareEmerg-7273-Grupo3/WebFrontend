@@ -308,3 +308,35 @@ h2 {
   accent-color: #357a73;
   cursor: pointer;
 }
+
+/* Estilos para selector de archivo de foto */
+.file-upload-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  background-color: #f5f5f5;
+  border: 2px dashed #357a73;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: #555;
+  font-size: 14px;
+}
+
+.file-upload-label:hover {
+  background-color: #e8f5f3;
+  border-color: #2a6159;
+}
+
+.file-upload-label .material-symbols-outlined {
+  font-size: 24px;
+  color: #357a73;
+}
+
+.file-upload-label span:last-child {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
