@@ -31,7 +31,14 @@ import {
 import {SignInComponent} from './content/pages/login/pages/sign-in/sign-in.component';
 import {SignUpComponent} from './content/pages/login/pages/sign-up/sign-up.component';
 import {authenticationGuard} from './content/pages/login/services/authentication.guard';
-
+import { DashboardComponentComponent} from './content/pages/admincontext/components/dashboard-component/dashboard-component.component';
+import { UserFormComponentComponent } from './content/pages/admincontext/components/user-form-component/user-form-component.component';
+import { RolesManagmentComponentComponent} from './content/pages/admincontext/components/roles-managment-component/roles-managment-component.component';
+import { OffersListComponentComponent} from './content/pages/admincontext/components/offers-list-component/offers-list-component.component';
+import { PortfolioReviewComponentComponent} from './content/pages/admincontext/components/portfolio-review-component/portfolio-review-component.component';
+import {
+  ReportsListComponentComponent
+} from './content/pages/admincontext/components/reports-list-component/reports-list-component.component';
 export const routes: Routes = [
   { path: 'home', component: HomeComponent,  canActivate: [authenticationGuard] },
   { path: 'login', component: SignInComponent },
@@ -56,6 +63,12 @@ export const routes: Routes = [
   { path: 'all-illustrations', component: AllIllustrationsComponent},
   { path: 'all-portfolios', component: AllPortfoliosComponent},
   { path: 'portfolios/information/:id/create-new-illustration', component: CreateIlustrationComponent },
+  { path: 'admin/dashboard', component: DashboardComponentComponent },
+  { path: 'admin/reports', component: ReportsListComponentComponent},
+  { path: 'admin/users/new', component: UserFormComponentComponent },
+  { path: 'admin/roles', component: RolesManagmentComponentComponent },
+  { path: 'admin/portfolios', component: PortfolioReviewComponentComponent },
+  { path: 'admin/offers', component: OffersListComponentComponent },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
-  { path: '**', pathMatch: 'full', redirectTo: 'login' }
+  { path: '**', pathMatch: 'full', redirectTo: 'login' },
 ];
