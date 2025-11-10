@@ -1,20 +1,20 @@
 import {Component, ElementRef, HostListener, OnDestroy, OnInit} from '@angular/core';
 import {Subscription} from 'rxjs';
 import {Router} from '@angular/router';
-import {BusinessMiniService, BusinessMiniState} from '../../services/business-mini.service';
-import {CommonModule, NgIf, NgStyle} from '@angular/common';
+import {NgIf, NgStyle} from '@angular/common';
+import {OptionsIconService, OptionsIconState} from '../../services/options-icon.service';
+import {AuthenticationService} from '../../../content/pages/login/services/authentication.service';
 
 @Component({
-  selector: 'app-business-mini-ventana',
+  selector: 'app-options-icon',
   imports: [
     NgStyle,
-    NgIf,
-    CommonModule
+    NgIf
   ],
-  templateUrl: './business-mini-ventana.component.html',
-  styleUrl: './business-mini-ventana.component.css'
+  templateUrl: './options-icon.component.html',
+  styleUrl: './options-icon.component.css'
 })
-export class BusinessMiniVentanaComponent implements OnInit, OnDestroy {
+export class OptionsIconComponent implements OnInit, OnDestroy {
   visible = false;
   left = 0;
   top = 0;
@@ -22,13 +22,15 @@ export class BusinessMiniVentanaComponent implements OnInit, OnDestroy {
 
   constructor(
     private el: ElementRef,
-    private service: BusinessMiniService,
-    private router: Router
-  ) {}
+    private service: OptionsIconService,
+    private router: Router,
+    private authService: AuthenticationService
+  ) {
+  }
 
   ngOnInit() {
     this.sub.add(
-      this.service.state.subscribe((s: BusinessMiniState) => {
+      this.service.state.subscribe((s: OptionsIconState) => {
         this.visible = s.open;
         if (s.x !== undefined) this.left = s.x;
         if (s.y !== undefined) this.top = s.y;
@@ -53,9 +55,11 @@ export class BusinessMiniVentanaComponent implements OnInit, OnDestroy {
     }
   }
 
-  stop(ev: MouseEvent) { ev.stopPropagation(); }
+  stop(ev: MouseEvent) {
+    ev.stopPropagation();
+  }
 
-  goToEscritorForm() {
-    this.router.navigate(['register/writer']);
+  logout() {
+    this.authService.signOut();
   }
 }

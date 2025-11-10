@@ -1,6 +1,6 @@
 
 import {Component, HostListener, Input, ChangeDetectorRef, ElementRef, OnInit, OnDestroy} from '@angular/core';
-import { NgIf, NgOptimizedImage } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { AuthenticationService } from '../../../content/pages/login/services/authentication.service';
 import { BusinessMiniService } from '../../services/business-mini.service';
@@ -8,6 +8,8 @@ import { BusinessMiniVentanaComponent} from '../business-mini-ventana/business-m
 import { UserInfoResponse} from '../../../content/pages/login/model/user-info.response';
 import { UserRoleUtils} from '../../../content/pages/login/services/user-role.utils';
 import { Subscription } from 'rxjs';
+import {OptionsIconComponent} from '../options-icon/options-icon.component';
+import {OptionsIconService} from '../../services/options-icon.service';
 
 @Component({
   selector: 'app-toolbar-content',
@@ -15,15 +17,14 @@ import { Subscription } from 'rxjs';
   imports: [
     NgIf,
     RouterLink,
-    BusinessMiniVentanaComponent
+    BusinessMiniVentanaComponent,
+    OptionsIconComponent
   ],
   templateUrl: './toolbar-content.component.html',
   styleUrl: './toolbar-content.component.css'
 })
 export class ToolbarContentComponent implements OnInit, OnDestroy {
   menuOpen = false;
-
-  miniVentanaOpen = false;
 
   // Variable para cambiar roles fácilmente durante pruebas
   availableRoles = ['noRole', 'illustrator', 'writer'];
@@ -38,7 +39,8 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     private authService: AuthenticationService,
     private el: ElementRef,
-    private businessMiniService: BusinessMiniService
+    private businessMiniService: BusinessMiniService,
+    private optionsIconService: OptionsIconService
   ) {
     // Comentamos la suscripción al servicio por ahora
     // this.authService.currentRole.subscribe(role => {
@@ -56,9 +58,19 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
     x = Math.min(Math.max(x, 8), window.innerWidth - width - 8);
     const verticalOffset = 14;
     const y = rect.bottom + window.scrollY + verticalOffset;
-
-    console.log('Business mini coords', { x, y, width });
     this.businessMiniService.toggle({ x, y });
+  }
+
+  openOptionsIcon(event: MouseEvent) {
+    event.stopPropagation();
+    const target = event.currentTarget as HTMLElement || (event.target as HTMLElement);
+    const rect = target.getBoundingClientRect();
+    const width = 200;
+    let x = rect.right  + window.scrollX - width + 20;
+    x = Math.min(Math.max(x, 8), window.innerWidth - width - 8);
+    const verticalOffset = 14;
+    const y = rect.bottom + window.scrollY + verticalOffset;
+    this.optionsIconService.toggle({ x, y });
   }
 
   ngOnInit() {

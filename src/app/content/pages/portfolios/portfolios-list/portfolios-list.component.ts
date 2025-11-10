@@ -7,6 +7,7 @@ import {
 } from './components/portfolio-card-writer/portfolio-card-writer.component';
 import {Portfolio} from '../model/portfolio.entity';
 import {EditPortfolioComponent} from '../edit-portfolio/edit-portfolio.component';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-portfolios-list',
@@ -15,7 +16,8 @@ import {EditPortfolioComponent} from '../edit-portfolio/edit-portfolio.component
     NgForOf,
     PortfolioCardWriterComponent,
     NgIf,
-    EditPortfolioComponent
+    EditPortfolioComponent,
+    FormsModule
   ],
   templateUrl: './portfolios-list.component.html',
   styleUrl: './portfolios-list.component.css'
@@ -47,6 +49,10 @@ export class PortfoliosListComponent {
   selectedPortfolio: Portfolio | undefined;
   categories: string[] | undefined | undefined;
 
+  filteredPortfolios: Portfolio[] = [];
+  filterCategories: string[] = ['Retratos', 'Acuarelas', 'Ilustración', 'Concept Art']; // nombres al azar
+  selectedFilter: string = '';
+
   constructor(private router: Router) {}
 
   toggleMenu(p: Portfolio, event?: MouseEvent) {
@@ -55,6 +61,11 @@ export class PortfoliosListComponent {
       if (x !== p) x.showMenu = false;
     });
     p.showMenu = !p.showMenu;
+  }
+
+  createCategory(): void {
+    // TODO: reemplazar por lógica real (abrir modal / navegar)
+    alert('Crear categoría — implementar lógica aquí');
   }
 
   /** Cierra todos los menús al hacer clic fuera (documento) */
@@ -71,12 +82,9 @@ export class PortfoliosListComponent {
     this.router.navigate(['/portfolios/create-new-portfolio']);
   }
 
-  editPortfolio(id: number) {
-    alert('Funcionalidad de edición de portafolio en desarrollo.');
-  }
 
   deletePortfolio(id: number) {
-    alert('Funcionalidad de eliminación de portafolio en desarrollo.');
+    alert('Portafolio eliminado');
   }
 
   goToEditPortolio() {
@@ -89,5 +97,13 @@ export class PortfoliosListComponent {
 
   savePortfolio($event: Portfolio) {
 
+  }
+
+  applyFilter(): void {
+    if (!this.selectedFilter) {
+      this.filteredPortfolios = [...this.portfolios];
+    } else {
+      this.filteredPortfolios = this.portfolios.filter(p => p.title === this.selectedFilter);
+    }
   }
 }

@@ -14,6 +14,19 @@
     </div>
   </section>
 
+  <div class="actions-row">
+    <div class="left">
+      <button class="create-category-btn" type="button" (click)="createCategory()">Crear categoría</button>
+    </div>
+
+    <div class="right">
+      <select id="catFilter" class="category-filter" [(ngModel)]="selectedFilter" (change)="applyFilter()">
+        <option value="">Todas</option>
+        <option *ngFor="let c of filterCategories" [value]="c">{{ c }}</option>
+      </select>
+    </div>
+  </div>
+
   <!-- Tarjetas -->
   <div class="cards-container">
       <div class="card-shell" *ngFor="let portfolio of portfolios">
