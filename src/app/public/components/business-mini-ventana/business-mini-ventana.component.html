@@ -3,7 +3,6 @@
      [ngStyle]="{ left: left + 'px', top: top + 'px' }">
 <section class="panel" data-test="create-writer">
   <div class="grid">
-    <!-- Columna izquierda -->
     <div>
       <h2>Mis aplicaciones</h2>
       <div class="list">
@@ -17,20 +16,20 @@
         <div class="item">
           <span class="icon">📊</span>
           <div class="text-group">
-            <div class="title">Análisis de perfil</div>
+            <div class="title" (click)="goToProfileAnalysis()">Análisis de perfil</div>
           </div>
         </div>
 
         <div class="item">
           <span class="icon">💳</span>
           <div class="text-group">
-            <div class="title">Planes</div>
+            <div class="title" (click)="goToPlans()">Planes</div>
           </div>
         </div>
         <div class="item">
           <span class="icon">📣</span>
           <div class="text-group">
-            <div class="title">Publicidad</div>
+            <div class="title" (click)="goToAdvertising()">Publicidad</div>
           </div>
         </div>
 

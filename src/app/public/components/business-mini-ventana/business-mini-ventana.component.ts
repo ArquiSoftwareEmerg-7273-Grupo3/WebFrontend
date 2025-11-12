@@ -58,4 +58,16 @@ export class BusinessMiniVentanaComponent implements OnInit, OnDestroy {
   goToEscritorForm() {
     this.router.navigate(['register/writer']);
   }
+
+  goToProfileAnalysis(){
+    this.router.navigate(['business/profile-analysis']);
+  }
+
+  goToAdvertising(){
+    this.router.navigate(['business/advertising']);
+  }
+
+  goToPlans(){
+    this.router.navigate(['business/plans']);
+  }
 }

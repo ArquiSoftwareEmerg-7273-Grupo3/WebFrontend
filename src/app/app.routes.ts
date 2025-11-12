@@ -37,7 +37,12 @@ import {EscritorFormComponent} from './content/pages/registration-forms/escritor
 
 import { JobsComponent } from './content/pages/jobs/jobs.component';
 import {EditPortfolioComponent} from './content/pages/portfolios/edit-portfolio/edit-portfolio.component';
-//canActivate: [authenticationGuard]
+import {
+  ProfileAnalysisComponent
+} from './content/pages/business/components/profile-analysis/profile-analysis.component';
+import {AdvertisingComponent} from './content/pages/business/components/advertising/advertising.component';
+import {PlanComponent} from './content/pages/business/components/plan/plan.component';
+
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: SignInComponent },
@@ -48,6 +53,9 @@ export const routes: Routes = [
   { path: 'messages', component: ChatsComponent, canActivate: [authenticationGuard] },
   { path: 'projects/create-new-project', component: CreateProjectComponent },
   { path: 'information/project/:id', component: ProjectIndividualComponent },
+  { path: 'business/profile-analysis', component: ProfileAnalysisComponent, canActivate: [authenticationGuard] },
+  { path: 'business/plans', component: PlanComponent, canActivate: [authenticationGuard] },
+  { path: 'business/advertising', component: AdvertisingComponent, canActivate: [authenticationGuard] },
   { path: 'applications', component: ApplicationsComponent, canActivate: [authenticationGuard] },
   { path: 'portfolios', component: PortfoliosListComponent },
   { path: 'portfolios/create-new-portfolio', component: CreatePortfolioComponent, canActivate: [authenticationGuard] },

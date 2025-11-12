@@ -1,0 +1,280 @@
+.perfil-analisis-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 130px;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #111827;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 2fr 1.4fr;
+  gap: 24px;
+  align-items: stretch;
+  margin-bottom: 32px;
+}
+
+.hero-text h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.hero-text p {
+  font-size: 0.98rem;
+  color: #4b5563;
+  margin-bottom: 16px;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.95rem;
+  background: linear-gradient(90deg, #26776f, #8bc8bd);
+  color: #000000;
+  box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.3);
+  opacity: 0.96;
+}
+
+.hero-card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 18px 18px 14px;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.hero-card h2 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.hero-card p {
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.metric {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 4px;
+}
+
+.metric .label {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.metric .value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.tag-activo {
+  background-color: rgba(37, 99, 235, 0.06);
+  color: #2563eb;
+}
+
+.note {
+  margin-top: 6px;
+  font-size: 0.72rem;
+  color: #9ca3af;
+}
+
+.service-description {
+  margin-bottom: 28px;
+}
+
+.service-description h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.info-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.04);
+}
+
+.info-card h3 {
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.info-card p {
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.how-it-works {
+  margin-bottom: 28px;
+}
+
+.how-it-works h2 {
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.step {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.step-number {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #111827;
+  color: #ffffff;
+  flex-shrink: 0;
+}
+
+.step-content h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.step-content p {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.benefits {
+  margin-bottom: 50px;
+  margin-top: 50px;
+}
+
+.benefits h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.benefits-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 18px;
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.benefits-list li::before {
+  content: "•";
+  margin-right: 6px;
+  color: #2563eb;
+}
+
+.cta-final {
+  margin-top: 30px;
+}
+
+.cta-box {
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px dashed rgba(60, 143, 134, 0.95);
+  background: #eff6ff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.cta-box h2 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.cta-box p {
+  font-size: 0.78rem;
+  color: #4b5563;
+  margin: 0;
+}
+
+.btn-outline {
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid #26776f;
+  background: transparent;
+  color: #26776f;
+  font-size: 0.86rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+
+.btn-outline:hover {
+  background-color: #429f95;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgb(38, 119, 111);
+}
+
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .benefits-list {
+    grid-template-columns: 1fr;
+  }
+
+  .cta-box {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

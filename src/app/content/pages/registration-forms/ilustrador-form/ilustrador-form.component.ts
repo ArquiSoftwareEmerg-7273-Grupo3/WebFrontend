@@ -3,6 +3,7 @@ import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/
 import {Ilustrador} from '../../profile/model/ilustrador.entity';
 import {ProfileRegistrationService} from '../services/profile-registration.service';
 import {NgIf} from '@angular/common';
+import {AuthenticationService} from '../../login/services/authentication.service';
 
 @Component({
   selector: 'app-ilustrador-form',
@@ -39,7 +40,6 @@ export class IlustradorFormComponent {
     this.profileRegistrationService.registerIlustrador(ilustrador).subscribe({
       next: () => {
         alert('Registro de ilustrador exitoso');
-
       },
       error: (err) => {
         console.error('Error al registrar ilustrador', err);
