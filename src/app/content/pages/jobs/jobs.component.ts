@@ -2,7 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { JobsService, Job, JobFilters } from './services/jobs.service';
+import { JobsService } from './services/jobs.service';
+import { AuthenticationService } from '../login/services/authentication.service';
+import { UserRoleUtils } from '../login/services/user-role.utils';
+import { UserInfoResponse } from '../login/model/user-info.response';
+import { ContratoProyecto, ContratoProyectoLabel, EspecialidadProyectoLabel, ModalidadProyectoLabel, EstadoProyectoLabel } from './model/proyecto.model';
+import {
+  EspecialidadProyecto,
+  ModalidadProyecto,
+  EstadoProyecto,
+  ProyectoResource
+} from './model/proyecto.model';
 
 @Component({
   selector: 'app-jobs',
@@ -11,176 +21,144 @@ import { JobsService, Job, JobFilters } from './services/jobs.service';
   styleUrl: './jobs.component.css'
 })
 export class JobsComponent implements OnInit {
-  jobs: Job[] = [];
-  filteredJobs: Job[] = [];
+  proyectos: ProyectoResource[] = [];
+  filteredProyectos: ProyectoResource[] = [];
   
-  // Filtros
-  selectedCategory: string = '';
-  selectedType: string = '';
-  selectedLocation: string = '';
+  currentUser: UserInfoResponse | null = null;
+  userRole: 'ILLUSTRATOR' | 'WRITER' | 'GENERAL' = 'GENERAL';
+  
+  selectedEspecialidad: string = '';
+  selectedModalidad: string = '';
+  selectedEstado: string = '';
   searchTerm: string = '';
   
-  // Estados de carga y error
   loading: boolean = false;
   error: string = '';
-  totalJobs: number = 0;
-  currentPage: number = 1;
-  jobsPerPage: number = 12;
+  totalProyectos: number = 0;
+  placeholderImage = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&h=400&fit=crop';
   
-  categories = [
-    { value: '', label: 'Todas las categorías' },
-    { value: 'illustration', label: 'Ilustración' },
-    { value: 'writing', label: 'Escritura' },
-    { value: 'design', label: 'Diseño' },
-    { value: 'marketing', label: 'Marketing' }
+  especialidades = [
+    { value: '', label: 'Todas las especialidades' },
+    ...Object.values(EspecialidadProyecto).map(especialidad => ({
+      value: especialidad,
+      label: especialidad
+    }))
   ];
   
-  jobTypes = [
-    { value: '', label: 'Todos los tipos' },
-    { value: 'full-time', label: 'Tiempo completo' },
-    { value: 'part-time', label: 'Medio tiempo' },
-    { value: 'freelance', label: 'Freelance' },
-    { value: 'remote', label: 'Remoto' }
+  modalidades = [
+    { value: '', label: 'Cualquier modalidad' },
+    ...Object.values(ModalidadProyecto).map(modalidad => ({
+      value: modalidad,
+      label: modalidad
+    }))
   ];
   
-  locations = [
-    { value: '', label: 'Todas las ubicaciones' },
-    { value: 'Lima', label: 'Lima' },
-    { value: 'Arequipa', label: 'Arequipa' },
-    { value: 'Cusco', label: 'Cusco' },
-    { value: 'Remoto', label: 'Remoto' }
+  estados = [
+    { value: '', label: 'Estado del proyecto' },
+    ...Object.values(EstadoProyecto).map(estado => ({
+      value: estado,
+      label: estado
+    }))
   ];
 
-  constructor(private jobsService: JobsService, private router: Router) {}
+  constructor(
+    private jobsService: JobsService, 
+    private router: Router,
+    private authService: AuthenticationService
+  ) {}
 
   ngOnInit(): void {
-    this.loadJobs();
+    this.loadUserInfo();
+  }
+
+  getEspecialidadLabel(value: EspecialidadProyecto) {
+    return EspecialidadProyectoLabel[value] ?? value;
+  }
+  getModalidadLabel(value: ModalidadProyecto) {
+    return ModalidadProyectoLabel[value] ?? value;
+  }
+  getContratoLabel(value: ContratoProyecto) {
+    return ContratoProyectoLabel[value] ?? value;
+  }
+  getEstadoLabel(value: EstadoProyecto) {
+    return EstadoProyectoLabel[value] ?? value;
+  }
+  // Cargar información del usuario y determinar rol
+  loadUserInfo(): void {
+    this.authService.getUserInformation().then(userInfo => {
+      this.currentUser = userInfo;
+      if (userInfo) {
+        this.userRole = UserRoleUtils.getUserRole(userInfo);
+        this.loadJobs();
+      } else {
+        // Si no hay usuario, mostrar vista general
+        this.loadJobs();
+      }
+    }).catch(() => {
+      // Si hay error, cargar vista general
+      this.loadJobs();
+    });
   }
 
   // Cargar trabajos desde el backend
   loadJobs(): void {
+    this.loadProyectos();
+  }
+
+  // Cargar proyectos disponibles (para Ilustradores)
+  loadProyectos(): void {
     this.loading = true;
     this.error = '';
-
-    const filters: JobFilters = {
-      category: this.selectedCategory || undefined,
-      type: this.selectedType || undefined,
-      location: this.selectedLocation || undefined,
-      search: this.searchTerm || undefined,
-      page: this.currentPage,
-      limit: this.jobsPerPage
-    };
-
-    this.jobsService.getJobs(filters).subscribe({
-      next: (response) => {
-        this.jobs = response.jobs;
-        this.filteredJobs = response.jobs;
-        this.totalJobs = response.total;
+    this.jobsService.getProyectos().subscribe({
+      next: (proyectos) => {
+        this.proyectos = proyectos;
+        this.totalProyectos = proyectos.length;
+        this.applyFilters(false);
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading jobs:', error);
-        this.error = 'Error al cargar los trabajos. Mostrando datos de ejemplo.';
+        console.error('Error loading proyectos:', error);
+        this.error = 'Error al cargar los proyectos disponibles.';
         this.loading = false;
-        // Fallback a datos de ejemplo
-        this.loadExampleJobs();
       }
     });
   }
 
-  // Datos de ejemplo como fallback
-  loadExampleJobs(): void {
-    // Datos de ejemplo - en producción vendría del backend
-    this.jobs = [
-      {
-        id: 1,
-        title: 'Ilustrador para libro infantil',
-        company: 'Editorial Fantasía',
-        location: 'Lima',
-        type: 'freelance',
-        category: 'illustration',
-        description: 'Buscamos un ilustrador talentoso para crear ilustraciones para un libro infantil sobre aventuras mágicas. El proyecto incluye 20 ilustraciones a color.',
-        requirements: ['Experiencia en ilustración infantil', 'Dominio de técnicas digitales', 'Portfolio con trabajos similares'],
-        salary: 'S/. 2,000 - S/. 3,500',
-        postedDate: new Date('2025-10-28'),
-        deadline: new Date('2025-11-15'),
-        applicants: 12,
-        image: 'https://images.unsplash.com/photo-1513475382585-d06e58bcb0e0?w=300&h=200&fit=crop',
-        featured: true
-      },
-      {
-        id: 2,
-        title: 'Escritor de contenido creativo',
-        company: 'Agencia Digital Pro',
-        location: 'Arequipa',
-        type: 'part-time',
-        category: 'writing',
-        description: 'Se necesita escritor creativo para desarrollar contenido para redes sociales y blogs. Trabajo remoto con horarios flexibles.',
-        requirements: ['Experiencia en copywriting', 'Conocimiento de SEO', 'Creatividad y originalidad'],
-        salary: 'S/. 1,200 - S/. 2,000',
-        postedDate: new Date('2025-10-27'),
-        deadline: new Date('2025-11-10'),
-        applicants: 8,
-        image: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?w=300&h=200&fit=crop'
-      },
-      {
-        id: 3,
-        title: 'Diseñador gráfico para campaña publicitaria',
-        company: 'CreativeStudio',
-        location: 'Remoto',
-        type: 'full-time',
-        category: 'design',
-        description: 'Únete a nuestro equipo para crear campañas visuales impactantes. Trabajarás en proyectos variados para marcas reconocidas.',
-        requirements: ['3+ años de experiencia', 'Dominio de Adobe Creative Suite', 'Portfolio sólido'],
-        salary: 'S/. 3,000 - S/. 4,500',
-        postedDate: new Date('2025-10-26'),
-        deadline: new Date('2025-11-20'),
-        applicants: 25,
-        image: 'https://images.unsplash.com/photo-1558655146-9f40138edfeb?w=300&h=200&fit=crop',
-        urgent: true
-      },
-      {
-        id: 4,
-        title: 'Ilustrador de personajes para videojuego',
-        company: 'GameDev Studio',
-        location: 'Cusco',
-        type: 'remote',
-        category: 'illustration',
-        description: 'Buscamos ilustrador especializado en personajes para nuestro próximo videojuego de aventuras. Estilo cartoon/anime.',
-        requirements: ['Experiencia en concept art', 'Estilo cartoon/anime', 'Trabajo en equipo'],
-        salary: 'S/. 2,500 - S/. 4,000',
-        postedDate: new Date('2025-10-25'),
-        deadline: new Date('2025-11-12'),
-        applicants: 18,
-        image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?w=300&h=200&fit=crop'
-      },
-      {
-        id: 5,
-        title: 'Redactor de novelas románticas',
-        company: 'Editorial Romance',
-        location: 'Lima',
-        type: 'freelance',
-        category: 'writing',
-        description: 'Editorial especializada en romance busca escritores para desarrollar nuevas historias. Oportunidad de publicación garantizada.',
-        requirements: ['Experiencia en narrativa romántica', 'Capacidad de escritura ágil', 'Creatividad'],
-        salary: 'Por proyecto: S/. 1,800 - S/. 3,200',
-        postedDate: new Date('2025-10-24'),
-        deadline: new Date('2025-11-08'),
-        applicants: 15,
-        image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&h=200&fit=crop',
-        featured: true
-      }
-    ];
-  }
+  // Aplicar filtros
+  applyFilters(reloadIfEmpty: boolean = true): void {
+    if (reloadIfEmpty && this.proyectos.length === 0) {
+      this.loadProyectos();
+      return;
+    }
 
-  // Aplicar filtros (ahora utiliza el servicio backend)
-  applyFilters(): void {
-    this.currentPage = 1; // Resetear a página 1 cuando se aplican filtros
-    this.loadJobs();
+    let filtered = [...this.proyectos];
+
+    if (this.selectedEspecialidad) {
+      filtered = filtered.filter(proyecto => proyecto.especialidadProyecto === this.selectedEspecialidad);
+    }
+
+    if (this.selectedModalidad) {
+      filtered = filtered.filter(proyecto => proyecto.modalidadProyecto === this.selectedModalidad);
+    }
+
+    if (this.selectedEstado) {
+      filtered = filtered.filter(proyecto => proyecto.estado === this.selectedEstado);
+    }
+
+    if (this.searchTerm) {
+      const searchTerm = this.searchTerm.toLowerCase();
+      filtered = filtered.filter(proyecto =>
+        proyecto.titulo.toLowerCase().includes(searchTerm) ||
+        proyecto.descripcion?.toLowerCase().includes(searchTerm) ||
+        proyecto.requisitos?.toLowerCase().includes(searchTerm)
+      );
+    }
+
+    this.filteredProyectos = filtered;
   }
 
   onFilterChange(): void {
-    this.applyFilters();
+    this.applyFilters(false);
   }
 
   // Método para ver detalles del trabajo
@@ -188,56 +166,86 @@ export class JobsComponent implements OnInit {
     this.router.navigate(['/jobs', jobId]);
   }
 
-  // Método para aplicar al trabajo
-  applyToJob(jobId: number): void {
-    // Aquí implementarías la lógica para aplicar al trabajo
-    console.log('Aplicando al trabajo con ID:', jobId);
-    // Ejemplo: navegar a una página de aplicación o abrir un modal
+  // Navegar a la gestión de proyectos (para Escritores)
+  goToMyProjects(): void {
+    this.router.navigate(['/jobs/writer/my-projects']);
   }
 
-  // Método para guardar trabajo como favorito
-  saveJob(jobId: number): void {
-    this.jobsService.saveJob(jobId).subscribe({
-      next: () => {
-        console.log('Trabajo guardado como favorito');
-        // Aquí podrías mostrar un mensaje de éxito
+  // Método para aplicar al trabajo (para Ilustradores)
+  applyToJob(jobId: number): void {
+    if (this.userRole !== 'ILLUSTRATOR') {
+      alert('Solo los ilustradores pueden postularse a proyectos.');
+      return;
+    }
+
+    if (!this.currentUser) {
+      alert('Debes iniciar sesión para postularte.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    // Crear postulación
+    const postulacion = {
+      fecha: new Date().toISOString()
+    };
+
+    this.jobsService.postularseAProyecto(jobId, postulacion).subscribe({
+      next: (response) => {
+        alert('¡Postulación enviada exitosamente!');
+        // Recargar proyectos para actualizar contadores
+        this.loadProyectos();
       },
       error: (error) => {
-        console.error('Error al guardar trabajo:', error);
-        // Aquí podrías mostrar un mensaje de error
+        console.error('Error al postularse:', error);
+        const errorMessage = error.error?.message || error.message || 'Error al enviar la postulación.';
+        alert(errorMessage);
       }
     });
   }
 
-  getDaysAgo(date: Date): number {
-    const today = new Date();
-    const diffTime = Math.abs(today.getTime() - date.getTime());
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  getRequirementsList(requisitos?: string): string[] {
+    if (!requisitos) {
+      return [];
+    }
+    return requisitos
+      .split(/[\n,•]/g)
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
   }
 
-  getDaysRemaining(date: Date): number {
-    const today = new Date();
-    const diffTime = date.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  formatCurrency(value?: number): string {
+    if (value === undefined || value === null) {
+      return '';
+    }
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: 'PEN'
+    }).format(value);
   }
 
-  getTypeLabel(type: string): string {
-    const typeMap: { [key: string]: string } = {
-      'full-time': 'Tiempo completo',
-      'part-time': 'Medio tiempo',
-      'freelance': 'Freelance',
-      'remote': 'Remoto'
-    };
-    return typeMap[type] || type;
+  formatDate(dateString?: string): string {
+    if (!dateString) {
+      return 'Sin definir';
+    }
+    return new Date(dateString).toLocaleDateString('es-PE', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
   }
 
-  getCategoryLabel(category: string): string {
-    const categoryMap: { [key: string]: string } = {
-      'illustration': 'Ilustración',
-      'writing': 'Escritura',
-      'design': 'Diseño',
-      'marketing': 'Marketing'
-    };
-    return categoryMap[category] || category;
+  getEstadoBadgeClass(estado: EstadoProyecto): string {
+    switch (estado) {
+      case EstadoProyecto.ABIERTO:
+        return 'badge featured';
+      case EstadoProyecto.CERRADO:
+        return 'badge urgent';
+      case EstadoProyecto.EN_PROGRESO:
+        return 'badge in-progress';
+      case EstadoProyecto.FINALIZADO:
+        return 'badge completed';
+      default:
+        return 'badge';
+    }
   }
 }

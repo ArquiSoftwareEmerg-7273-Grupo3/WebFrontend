@@ -38,6 +38,7 @@ import {EscritorFormComponent} from './content/pages/registration-forms/escritor
 import { JobsComponent } from './content/pages/jobs/jobs.component';
 import {EditPortfolioComponent} from './content/pages/portfolios/edit-portfolio/edit-portfolio.component';
 import { JobDetailComponent } from './content/pages/jobs/job-detail/job-detail.component';
+import { WriterProjectsComponent } from './content/pages/jobs/writer-projects/writer-projects.component';
 //canActivate: [authenticationGuard]
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -68,6 +69,7 @@ export const routes: Routes = [
   { path: 'portfolios/information/:id/create-new-illustration', component: CreateIlustrationComponent },
   { path: 'jobs', component: JobsComponent },
   { path: 'jobs/:id', component: JobDetailComponent },
+  { path: 'jobs/writer/my-projects', component: WriterProjectsComponent, canActivate: [authenticationGuard] },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

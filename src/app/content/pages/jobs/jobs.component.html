@@ -2,8 +2,16 @@
   <!-- Header -->
   <div class="jobs-header">
     <div class="header-content">
-      <h1>Oportunidades Laborales</h1>
-      <p>Encuentra el proyecto perfecto para ti</p>
+      <div>
+        <h1 *ngIf="userRole === 'ILLUSTRATOR'">Proyectos Disponibles</h1>
+        <h1 *ngIf="userRole !== 'ILLUSTRATOR'">Oportunidades Laborales</h1>
+        <p *ngIf="userRole === 'ILLUSTRATOR'">Encuentra proyectos y postúlate como ilustrador</p>
+        <p *ngIf="userRole !== 'ILLUSTRATOR'">Encuentra el proyecto perfecto para ti</p>
+      </div>
+      <button *ngIf="userRole === 'WRITER'" class="btn-manage-projects" (click)="goToMyProjects()">
+        <span class="material-symbols-outlined">folder_managed</span>
+        Mis Proyectos
+      </button>
     </div>
   </div>
 
@@ -30,7 +38,7 @@
           <span class="material-symbols-outlined">search</span>
           <input 
             type="text" 
-            placeholder="Buscar trabajos, empresas o palabras clave..."
+            placeholder="Buscar proyectos, especialidades o palabras clave..."
             [(ngModel)]="searchTerm"
             (input)="onFilterChange()"
             class="search-input">
@@ -40,25 +48,25 @@
       <!-- Filter Dropdowns -->
       <div class="filters-row">
         <div class="filter-group">
-          <select [(ngModel)]="selectedCategory" (change)="onFilterChange()" class="filter-select">
-            <option *ngFor="let category of categories" [value]="category.value">
-              {{category.label}}
+          <select [(ngModel)]="selectedEspecialidad" (change)="onFilterChange()" class="filter-select">
+            <option *ngFor="let especialidad of especialidades" [value]="especialidad.value">
+              {{especialidad.label}}
             </option>
           </select>
         </div>
 
         <div class="filter-group">
-          <select [(ngModel)]="selectedType" (change)="onFilterChange()" class="filter-select">
-            <option *ngFor="let type of jobTypes" [value]="type.value">
-              {{type.label}}
+          <select [(ngModel)]="selectedModalidad" (change)="onFilterChange()" class="filter-select">
+            <option *ngFor="let modalidad of modalidades" [value]="modalidad.value">
+              {{modalidad.label}}
             </option>
           </select>
         </div>
 
         <div class="filter-group">
-          <select [(ngModel)]="selectedLocation" (change)="onFilterChange()" class="filter-select">
-            <option *ngFor="let location of locations" [value]="location.value">
-              {{location.label}}
+          <select [(ngModel)]="selectedEstado" (change)="onFilterChange()" class="filter-select">
+            <option *ngFor="let estado of estados" [value]="estado.value">
+              {{estado.label}}
             </option>
           </select>
         </div>
@@ -68,8 +76,8 @@
 
   <!-- Results Header -->
   <div *ngIf="!loading" class="results-header">
-    <span class="results-count">{{totalJobs}} trabajos encontrados</span>
-    <span *ngIf="filteredJobs.length !== totalJobs" class="filter-info">({{filteredJobs.length}} con filtros aplicados)</span>
+    <span class="results-count">{{totalProyectos}} proyectos encontrados</span>
+    <span *ngIf="filteredProyectos.length !== totalProyectos" class="filter-info">({{filteredProyectos.length}} con filtros aplicados)</span>
     <div class="view-options">
       <span class="material-symbols-outlined active">view_list</span>
       <span class="material-symbols-outlined">grid_view</span>
@@ -78,51 +86,49 @@
 
   <!-- Jobs List -->
   <div *ngIf="!loading" class="jobs-list">
-    <div *ngFor="let job of filteredJobs" class="job-card" [class.featured]="job.featured" [class.urgent]="job.urgent">
+    <div *ngFor="let proyecto of filteredProyectos" class="job-card">
       
-      <!-- Featured/Urgent Badge -->
+      <!-- Estado -->
       <div class="job-badges">
-        <span *ngIf="job.featured" class="badge featured">Destacado</span>
-        <span *ngIf="job.urgent" class="badge urgent">Urgente</span>
+        <span class="badge" [ngClass]="getEstadoBadgeClass(proyecto.estado)">
+          {{proyecto.estado}}
+        </span>
       </div>
 
       <div class="job-card-header">
         <div class="job-image">
-          <img [src]="job.image" [alt]="job.title" />
+          <img [src]="placeholderImage" [alt]="proyecto.titulo" />
         </div>
         
         <div class="job-main-info">
           <div class="job-title-section">
-            <h3 class="job-title">{{job.title}}</h3>
-            <button class="save-btn" (click)="saveJob(job.id)">
-              <span class="material-symbols-outlined">bookmark_border</span>
-            </button>
+            <h3 class="job-title">{{proyecto.titulo}}</h3>
           </div>
           
           <div class="company-info">
-            <span class="company-name">{{job.company}}</span>
+            <span class="company-name">{{getEspecialidadLabel(proyecto.especialidadProyecto)}}</span>
             <span class="job-location">
               <span class="material-symbols-outlined">location_on</span>
-              {{job.location}}
+              {{getModalidadLabel(proyecto.modalidadProyecto)}}
             </span>
           </div>
           
           <div class="job-meta">
-            <span class="job-type">{{getTypeLabel(job.type)}}</span>
-            <span class="job-category">{{getCategoryLabel(job.category)}}</span>
-            <span class="salary" *ngIf="job.salary">{{job.salary}}</span>
+            <span class="job-type">{{getContratoLabel(proyecto.contratoProyecto)}}</span>
+            <span class="job-category">{{getEspecialidadLabel(proyecto.especialidadProyecto)}}</span>
+            <span class="salary" *ngIf="proyecto.presupuesto">{{formatCurrency(proyecto.presupuesto)}}</span>
           </div>
         </div>
       </div>
 
       <div class="job-description">
-        <p>{{job.description}}</p>
+        <p>{{proyecto.descripcion}}</p>
       </div>
 
-      <div class="job-requirements" *ngIf="job.requirements.length > 0">
+      <div class="job-requirements" *ngIf="getRequirementsList(proyecto.requisitos).length > 0">
         <h4>Requisitos principales:</h4>
         <ul>
-          <li *ngFor="let req of job.requirements.slice(0, 3)">{{req}}</li>
+          <li *ngFor="let req of getRequirementsList(proyecto.requisitos).slice(0, 3)">{{req}}</li>
         </ul>
       </div>
 
@@ -130,17 +136,17 @@
         <div class="job-stats">
           <span class="posted-date">
             <span class="material-symbols-outlined">schedule</span>
-            Publicado hace {{getDaysAgo(job.postedDate)}} días
+            Inicio: {{formatDate(proyecto.fechaInicio)}}
           </span>
           <span class="applicants">
             <span class="material-symbols-outlined">group</span>
-            {{job.applicants}} postulantes
+            Máx. {{proyecto.maxPostulaciones}} postulaciones
           </span>
         </div>
 
         <div class="job-actions">
-          <button class="btn-secondary" (click)="viewJobDetails(job.id)">Ver detalles</button>
-          <button class="btn-primary" (click)="applyToJob(job.id)">
+          <button class="btn-secondary" (click)="viewJobDetails(proyecto.id)">Ver detalles</button>
+          <button class="btn-primary" *ngIf="userRole === 'ILLUSTRATOR'" (click)="applyToJob(proyecto.id)">
             <span class="material-symbols-outlined">send</span>
             Postularme
           </button>
@@ -150,18 +156,18 @@
   </div>
 
   <!-- No Results -->
-  <div *ngIf="filteredJobs.length === 0" class="no-results">
+  <div *ngIf="filteredProyectos.length === 0 && !loading" class="no-results">
     <div class="no-results-content">
       <span class="material-symbols-outlined">work_off</span>
       <h3>No se encontraron trabajos</h3>
       <p>Intenta ajustar tus filtros o buscar términos diferentes</p>
-      <button class="btn-primary" (click)="selectedCategory = ''; selectedType = ''; selectedLocation = ''; searchTerm = ''; onFilterChange()">
+      <button class="btn-primary" (click)="selectedEspecialidad = ''; selectedModalidad = ''; selectedEstado = ''; searchTerm = ''; onFilterChange()">
         Limpiar filtros
       </button>
     </div>
 
     <!-- Load More Button -->
-    <div class="load-more" *ngIf="filteredJobs.length > 0">
+    <div class="load-more" *ngIf="filteredProyectos.length > 0">
       <button class="btn-outline">Cargar más trabajos</button>
     </div>
   </div>

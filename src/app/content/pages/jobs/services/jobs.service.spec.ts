@@ -1,7 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { JobsService, Job, JobFilters } from './jobs.service';
+import { JobsService } from './jobs.service';
 import { environment } from '../../../../../environments/environment';
+import { ProyectoResource } from '../model/proyecto.model';
 
 describe('JobsService', () => {
   let service: JobsService;
@@ -24,85 +25,70 @@ describe('JobsService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch jobs with filters', () => {
-    const mockResponse = {
-      jobs: [
-        {
-          id: 1,
-          title: 'Frontend Developer',
-          company: 'Tech Corp',
-          location: 'Remote',
-          type: 'full-time' as const,
-          category: 'design' as const,
-          description: 'Test job',
-          requirements: ['Angular', 'TypeScript'],
-          postedDate: new Date(),
-          deadline: new Date(),
-          applicants: 5,
-          image: 'test.jpg'
-        }
-      ],
-      total: 1
-    };
+  it('should fetch proyectos', () => {
+    const mockResponse: ProyectoResource[] = [
+      {
+        id: 1,
+        escritorId: 10,
+        titulo: 'Proyecto de prueba',
+        descripcion: 'Descripción',
+        estado: 'Abierto para postulaciones' as any,
+        modalidad: 'Remoto' as any,
+        contrato: 'Freelance' as any,
+        especialidad: 'Ilustración Digital' as any,
+        requisitos: 'Portafolio actualizado',
+        fechaFin: '2025-01-01T00:00:00',
+        fechaInicio: '2024-12-01T00:00:00',
+        presupuesto: 2000,
+        maxPostulaciones: 5
+      }
+    ];
 
-    const filters: JobFilters = {
-      category: 'design',
-      type: 'full-time',
-      search: 'frontend'
-    };
-
-    service.getJobs(filters).subscribe(response => {
+    service.getProyectos().subscribe(response => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne(request => 
-      request.url === `${environment.baseUrlAuth}/proyectos` &&
-      request.params.get('category') === 'design' &&
-      request.params.get('type') === 'full-time' &&
-      request.params.get('search') === 'frontend'
-    );
+    const req = httpMock.expectOne(`${environment.baseUrlProject}/api/v1/proyectos`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
 
-  it('should fetch job by id', () => {
-    const mockJob: Job = {
+  it('should fetch proyecto by id', () => {
+    const mockProyecto: ProyectoResource = {
       id: 1,
-      title: 'Frontend Developer',
-      company: 'Tech Corp',
-      location: 'Remote',
-      type: 'full-time',
-      category: 'design',
-      description: 'Test job',
-      requirements: ['Angular', 'TypeScript'],
-      postedDate: new Date(),
-      deadline: new Date(),
-      applicants: 5,
-      image: 'test.jpg'
+      escritorId: 10,
+      titulo: 'Proyecto de prueba',
+      descripcion: 'Descripción',
+      estado: 'Abierto para postulaciones' as any,
+      modalidad: 'Remoto' as any,
+      contrato: 'Freelance' as any,
+      especialidad: 'Ilustración Digital' as any,
+      requisitos: 'Portafolio actualizado',
+      fechaFin: '2025-01-01T00:00:00',
+      fechaInicio: '2024-12-01T00:00:00',
+      presupuesto: 2000,
+      maxPostulaciones: 5
     };
 
-    service.getJobById(1).subscribe(job => {
-      expect(job).toEqual(mockJob);
+    service.getProyectoById(1).subscribe(response => {
+      expect(response).toEqual(mockProyecto);
     });
 
-    const req = httpMock.expectOne(`${environment.baseUrlAuth}/proyectos/1`);
+    const req = httpMock.expectOne(`${environment.baseUrlProject}/api/v1/proyectos/1`);
     expect(req.request.method).toBe('GET');
-    req.flush(mockJob);
+    req.flush(mockProyecto);
   });
 
-  it('should apply to job', () => {
-    const application = {
-      jobId: 1,
-      message: 'I am interested in this position'
-    };
+  it('should allow postulacion to proyecto', () => {
+    const postulacion = { fecha: '2024-12-15T00:00:00' };
 
-    service.applyToJob(application).subscribe(response => {
+    service.postularseAProyecto(1, postulacion).subscribe(response => {
       expect(response).toBeTruthy();
     });
 
-    const req = httpMock.expectOne(`${environment.baseUrlAuth}/postulaciones`);
+    const req = httpMock.expectOne(`${environment.baseUrlProject}/api/v1/postulaciones/postular/proyecto/1`);
     expect(req.request.method).toBe('POST');
-    expect(req.request.body).toEqual(application);
+    expect(req.request.body).toEqual(postulacion);
     req.flush({ success: true });
   });
 });

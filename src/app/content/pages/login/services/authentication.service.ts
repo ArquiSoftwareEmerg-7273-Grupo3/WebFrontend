@@ -98,6 +98,22 @@ export class AuthenticationService {
     return this.loadUserInformation();
   }
 
+  // Obtener información almacenada sin volver a llamar al backend
+  getCurrentUserInfo(): UserInfoResponse | null {
+    return this.userInfo.getValue();
+  }
+
+  // Asegurar información del usuario reutilizando caché cuando sea posible
+  ensureUserInformation(forceRefresh: boolean = false): Promise<UserInfoResponse | null> {
+    if (!forceRefresh) {
+      const cachedUser = this.userInfo.getValue();
+      if (cachedUser) {
+        return Promise.resolve(cachedUser);
+      }
+    }
+    return this.loadUserInformation();
+  }
+
   // Determinar el rol del usuario basado en la información específica presente
   private determineUserRole(userInfo: UserInfoResponse): string {
     if (userInfo.ilustrador && userInfo.ilustrador !== null) {

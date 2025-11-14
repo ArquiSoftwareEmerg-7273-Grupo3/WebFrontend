@@ -1,0 +1,220 @@
+<div class="writer-projects-container">
+  <!-- Header -->
+  <div class="projects-header">
+    <div class="header-content">
+      <h1>Mis Proyectos</h1>
+      <p>Administra tus proyectos y revisa las postulaciones</p>
+      <button class="btn-create" (click)="goToCreateProject()">
+        <span class="material-symbols-outlined">add</span>
+        Crear Nuevo Proyecto
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <!-- Mensaje de error -->
+    <div *ngIf="error" class="error-message">
+      <span class="material-symbols-outlined">warning</span>
+      <p>{{ error }}</p>
+    </div>
+
+    <!-- Indicador de carga -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando proyectos...</p>
+    </div>
+
+    <!-- Lista de Proyectos -->
+    <div *ngIf="!loading && proyectos.length > 0" class="projects-content" [class.with-selection]="proyectoSeleccionado">
+      <div class="projects-column">
+        <div *ngFor="let proyecto of proyectos" class="project-card" [class.active]="proyectoSeleccionado?.id === proyecto.id">
+          <div class="project-header">
+            <div>
+              <h3>{{ proyecto.titulo }}</h3>
+              <div class="project-meta">
+                <span class="chip state">{{ proyecto.estado }}</span>
+                <span class="chip">{{ getModalidadLabel(proyecto.modalidadProyecto) }}</span>
+                <span class="chip">{{ getContratoLabel(proyecto.contratoProyecto) }}</span>
+              </div>
+            </div>
+            <div class="project-actions">
+              <button class="btn-view" (click)="verPostulaciones(proyecto)">
+                <span class="material-symbols-outlined">visibility</span>
+                Ver Postulaciones
+              </button>
+              <button class="btn-close" (click)="cerrarProyecto(proyecto)">
+                <span class="material-symbols-outlined">close</span>
+                Cerrar
+              </button>
+              <button class="btn-finish" (click)="finalizarProyecto(proyecto)">
+                <span class="material-symbols-outlined">check_circle</span>
+                Finalizar
+              </button>
+            </div>
+          </div>
+          
+          <div class="project-body">
+            <p class="project-description">{{ proyecto.descripcion }}</p>
+            <div class="project-info">
+              <div class="info-item">
+                <span class="material-symbols-outlined">attach_money</span>
+                <span>{{ formatCurrency(proyecto.presupuesto) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="material-symbols-outlined">palette</span>
+                <span>{{ getEspecialidadLabel(proyecto.especialidadProyecto) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span>Inicio: {{ formatDate(proyecto.fechaInicio) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="material-symbols-outlined">event</span>
+                <span>Fin: {{ formatDate(proyecto.fechaFin) }}</span>
+              </div>
+              <div class="info-item">
+                <span class="material-symbols-outlined">people</span>
+                <span>Máx. {{ proyecto.maxPostulaciones }} postul.</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección de Postulaciones -->
+      <div class="detail-column">
+        <div *ngIf="!proyectoSeleccionado" class="detail-placeholder">
+          <span class="material-symbols-outlined">dashboard_customize</span>
+          <h3>Selecciona un proyecto</h3>
+          <p>El panel mostrará las postulaciones y acciones disponibles.</p>
+        </div>
+
+        <div *ngIf="proyectoSeleccionado" class="postulaciones-section">
+          <div class="postulaciones-header">
+            <div>
+              <h2>{{ proyectoSeleccionado.titulo }}</h2>
+              <p class="subtitle">Postulaciones y seguimiento</p>
+            </div>
+            <button class="btn-close-section" (click)="proyectoSeleccionado = null; postulaciones = []">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+        <div *ngIf="loadingPostulaciones" class="loading-container">
+          <div class="spinner"></div>
+          <p>Cargando postulaciones...</p>
+        </div>
+
+        <div *ngIf="!loadingPostulaciones && postulaciones.length === 0" class="no-postulaciones">
+          <span class="material-symbols-outlined">inbox</span>
+          <p>No hay postulaciones para este proyecto aún.</p>
+        </div>
+
+        <div *ngIf="!loadingPostulaciones && postulaciones.length > 0" class="postulaciones-list">
+          <div *ngFor="let postulacion of postulaciones" class="postulacion-card">
+            <div class="postulacion-header">
+              <div class="postulacion-info">
+                <span class="postulacion-id">ID: {{ postulacion.id }}</span>
+                <span class="postulacion-date">{{ formatDate(postulacion.fechaPostulacion) }}</span>
+              </div>
+              <span class="estado-badge" [ngClass]="getEstadoClass(postulacion.estado)">
+                {{ getEstadoLabel(postulacion.estado) }}
+              </span>
+            </div>
+            
+            <div class="postulacion-body">
+              <div class="postulacion-details">
+                <p><strong>Ilustrador ID:</strong> {{ postulacion.ilustradorId }}</p>
+                <p><strong>Proyecto ID:</strong> {{ postulacion.proyectoId }}</p>
+              </div>
+              
+              <div *ngIf="postulacion.estado === 'PENDIENTE'" class="postulacion-actions">
+                <button class="btn-approve" (click)="abrirModalAprobar(postulacion)">
+                  <span class="material-symbols-outlined">check</span>
+                  Aprobar
+                </button>
+                <button class="btn-reject" (click)="abrirModalRechazar(postulacion)">
+                  <span class="material-symbols-outlined">close</span>
+                  Rechazar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sin proyectos -->
+    <div *ngIf="!loading && proyectos.length === 0" class="no-projects">
+      <div class="no-projects-content">
+        <span class="material-symbols-outlined">folder_off</span>
+        <h3>No tienes proyectos aún</h3>
+        <p>Crea tu primer proyecto para comenzar a recibir postulaciones</p>
+        <button class="btn-primary" (click)="goToCreateProject()">
+          <span class="material-symbols-outlined">add</span>
+          Crear Proyecto
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Aprobar Postulación -->
+  <div *ngIf="showAprobarModal" class="modal-overlay" (click)="cerrarModales()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Aprobar Postulación</h3>
+        <button class="btn-close-modal" (click)="cerrarModales()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>¿Deseas aprobar esta postulación?</p>
+        <div class="form-group">
+          <label for="respuesta">Respuesta (opcional):</label>
+          <textarea 
+            id="respuesta" 
+            [(ngModel)]="respuestaAprobacion" 
+            placeholder="Escribe un mensaje para el ilustrador..."
+            rows="4">
+          </textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="cerrarModales()">Cancelar</button>
+        <button class="btn-primary" (click)="aprobarPostulacion()">Aprobar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Rechazar Postulación -->
+  <div *ngIf="showRechazarModal" class="modal-overlay" (click)="cerrarModales()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Rechazar Postulación</h3>
+        <button class="btn-close-modal" (click)="cerrarModales()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>¿Deseas rechazar esta postulación?</p>
+        <div class="form-group">
+          <label for="razon">Razón del rechazo:</label>
+          <textarea 
+            id="razon" 
+            [(ngModel)]="razonRechazo" 
+            placeholder="Explica la razón del rechazo..."
+            rows="4"
+            required>
+          </textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="cerrarModales()">Cancelar</button>
+        <button class="btn-danger" (click)="rechazarPostulacion()">Rechazar</button>
+      </div>
+    </div>
+  </div>
+</div>
+

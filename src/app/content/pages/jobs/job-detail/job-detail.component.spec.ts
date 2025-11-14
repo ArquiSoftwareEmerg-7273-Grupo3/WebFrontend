@@ -12,7 +12,7 @@ describe('JobDetailComponent', () => {
   let mockActivatedRoute: any;
 
   beforeEach(async () => {
-    const jobsServiceSpy = jasmine.createSpyObj('JobsService', ['getJobById', 'saveJob']);
+    const jobsServiceSpy = jasmine.createSpyObj('JobsService', ['getProyectoById', 'postularseAProyecto']);
     const routerSpy = jasmine.createSpyObj('Router', ['navigate']);
     
     mockActivatedRoute = {
@@ -40,28 +40,29 @@ describe('JobDetailComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load job on init', () => {
-    const mockJob = {
+  it('should load proyecto on init', () => {
+    const mockProyecto = {
       id: 1,
-      title: 'Test Job',
-      company: 'Test Company',
-      location: 'Test Location',
-      type: 'full-time' as const,
-      category: 'design' as const,
-      description: 'Test description',
-      requirements: ['Test requirement'],
-      postedDate: new Date(),
-      deadline: new Date(),
-      applicants: 5,
-      image: 'test.jpg'
+      escritorId: 10,
+      titulo: 'Proyecto de prueba',
+      descripcion: 'Descripción',
+      estado: 'Abierto para postulaciones',
+      modalidad: 'Remoto',
+      contrato: 'Freelance',
+      especialidad: 'Ilustración Digital',
+      requisitos: 'Portafolio',
+      fechaFin: '2025-01-01T00:00:00',
+      fechaInicio: '2024-12-01T00:00:00',
+      presupuesto: 2000,
+      maxPostulaciones: 5
     };
 
-    mockJobsService.getJobById.and.returnValue(of(mockJob));
+    mockJobsService.getProyectoById.and.returnValue(of(mockProyecto));
 
     component.ngOnInit();
 
-    expect(mockJobsService.getJobById).toHaveBeenCalledWith(1);
-    expect(component.job).toEqual(mockJob);
+    expect(mockJobsService.getProyectoById).toHaveBeenCalledWith(1);
+    expect(component.proyecto).toEqual(mockProyecto as any);
     expect(component.loading).toBeFalse();
   });
 

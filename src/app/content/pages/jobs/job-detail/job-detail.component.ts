@@ -1,7 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
-import { JobsService, Job } from '../services/jobs.service';
+import { JobsService } from '../services/jobs.service';
+import { ContratoProyectoLabel, EspecialidadProyecto,ContratoProyecto, EspecialidadProyectoLabel, ModalidadProyecto, ModalidadProyectoLabel, ProyectoResource, EstadoProyectoLabel, EstadoProyecto } from '../model/proyecto.model';
+import { AuthenticationService } from '../../login/services/authentication.service';
+import { UserRoleUtils } from '../../login/services/user-role.utils';
+import { UserInfoResponse } from '../../login/model/user-info.response';
 
 @Component({
   selector: 'app-job-detail',
@@ -11,93 +15,135 @@ import { JobsService, Job } from '../services/jobs.service';
   styleUrl: './job-detail.component.css'
 })
 export class JobDetailComponent implements OnInit {
-  job: Job | null = null;
+  proyecto: ProyectoResource | null = null;
   loading: boolean = false;
   error: string = '';
+  currentUser: UserInfoResponse | null = null;
+  userRole: 'ILLUSTRATOR' | 'WRITER' | 'GENERAL' = 'GENERAL';
+  placeholderImage = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&h=800&fit=crop';
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private jobsService: JobsService
+    private jobsService: JobsService,
+    private authService: AuthenticationService
   ) {}
 
   ngOnInit() {
+    this.loadUserInfo();
     const jobId = this.route.snapshot.params['id'];
     if (jobId) {
-      this.loadJob(parseInt(jobId));
+      this.loadJob(parseInt(jobId, 10));
     }
   }
+
+  loadUserInfo(): void {
+    this.authService.getUserInformation().then(userInfo => {
+      this.currentUser = userInfo;
+      if (userInfo) {
+        this.userRole = UserRoleUtils.getUserRole(userInfo);
+      }
+    }).catch(() => {
+      // Si hay error, continuar sin información de usuario
+    });
+  }
+  getEspecialidadLabel(value: EspecialidadProyecto) {
+    return EspecialidadProyectoLabel[value] ?? value;
+  }
+  getModalidadLabel(value: ModalidadProyecto) {
+    return ModalidadProyectoLabel[value] ?? value;
+  }
+  getContratoLabel(value: ContratoProyecto) {
+    return ContratoProyectoLabel[value] ?? value;
+  }
+  getEstadoLabel(value: EstadoProyecto) {
+    return EstadoProyectoLabel[value] ?? value;
+    }
 
   loadJob(jobId: number) {
     this.loading = true;
     this.error = '';
 
-    this.jobsService.getJobById(jobId).subscribe({
-      next: (job) => {
-        this.job = job;
+    this.jobsService.getProyectoById(jobId).subscribe({
+      next: (proyecto) => {
+        this.proyecto = proyecto;
         this.loading = false;
       },
       error: (error) => {
-        console.error('Error loading job:', error);
-        this.error = 'Error al cargar el trabajo';
+        console.error('Error loading project:', error);
+        this.error = 'Error al cargar el proyecto.';
         this.loading = false;
       }
     });
   }
 
   applyToJob() {
-    if (this.job) {
-      // Implementar lógica de aplicación
-      console.log('Aplicando al trabajo:', this.job.id);
-    }
-  }
+    if (!this.proyecto) return;
 
-  saveJob() {
-    if (this.job) {
-      this.jobsService.saveJob(this.job.id).subscribe({
-        next: () => {
-          console.log('Trabajo guardado');
-        },
-        error: (error) => {
-          console.error('Error al guardar:', error);
-        }
-      });
+    if (this.userRole !== 'ILLUSTRATOR') {
+      alert('Solo los ilustradores pueden postularse a proyectos.');
+      return;
     }
+
+    if (!this.currentUser) {
+      alert('Debes iniciar sesión para postularte.');
+      this.router.navigate(['/login']);
+      return;
+    }
+
+    const postulacion = {
+      fecha: new Date().toISOString()
+    };
+
+    this.jobsService.postularseAProyecto(this.proyecto.id, postulacion).subscribe({
+      next: () => {
+        alert('¡Postulación enviada exitosamente!');
+        this.router.navigate(['/jobs']);
+      },
+      error: (error) => {
+        console.error('Error al postularse:', error);
+        const errorMessage = error.error?.message || error.message || 'Error al enviar la postulación.';
+        alert(errorMessage);
+      }
+    });
   }
 
   goBack() {
     this.router.navigate(['/jobs']);
   }
 
-  getDaysAgo(date: Date): number {
-    const today = new Date();
-    const diffTime = Math.abs(today.getTime() - date.getTime());
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  getRequirementList(requisitos?: string): string[] {
+    if (!requisitos) {
+      return [];
+    }
+    return requisitos
+      .split(/[\n,•]/g)
+      .map(item => item.trim())
+      .filter(item => item.length > 0);
   }
 
-  getDaysRemaining(date: Date): number {
-    const today = new Date();
-    const diffTime = date.getTime() - today.getTime();
-    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  formatDate(dateString?: string): string {
+    if (!dateString) {
+      return 'Sin definir';
+    }
+    return new Date(dateString).toLocaleDateString('es-PE', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   }
 
-  getTypeLabel(type: string): string {
-    const typeMap: { [key: string]: string } = {
-      'full-time': 'Tiempo completo',
-      'part-time': 'Medio tiempo',
-      'freelance': 'Freelance',
-      'remote': 'Remoto'
-    };
-    return typeMap[type] || type;
+  formatCurrency(value?: number): string {
+    if (value === undefined || value === null) {
+      return '';
+    }
+    return new Intl.NumberFormat('es-PE', {
+      style: 'currency',
+      currency: 'PEN'
+    }).format(value);
   }
 
-  getCategoryLabel(category: string): string {
-    const categoryMap: { [key: string]: string } = {
-      'illustration': 'Ilustración',
-      'writing': 'Escritura',
-      'design': 'Diseño',
-      'marketing': 'Marketing'
-    };
-    return categoryMap[category] || category;
+  canApply(): boolean {
+    return this.userRole === 'ILLUSTRATOR';
   }
 }
