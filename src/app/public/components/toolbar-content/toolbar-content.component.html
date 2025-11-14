@@ -20,7 +20,7 @@
           <br />
           <span>Notificaciones</span>
         </a>
-        <a (click)="openBusinessMiniVentana($event)">
+        <a (click)="openBusinessMiniVentana($event)" data-test="btn-negocios" >
           <span class="material-symbols-outlined">business</span>
           <br />
           <span>Negocios</span>
@@ -73,9 +73,10 @@
       <button class="icon-button square" [routerLink]="['/messages']" (click)="scrollToTop()">
         <span class="material-symbols-outlined">chat_bubble</span>
       </button>
-      <button class="icon-button circle" [routerLink]="['/profile']" (click)="closeMenu(); scrollToTop()">
+      <button class="icon-button circle" (click)="openOptionsIcon($event)">
         <span class="material-symbols-outlined">person</span>
       </button>
+      <app-options-icon></app-options-icon>
     </div>
 
     <button class="burger square" (click)="toggleMenu()">
@@ -87,8 +88,9 @@
 
   <div class="burger-menu" *ngIf="menuOpen">
     <div class="icon-row">
-      <a class="burger-icon circle" [routerLink]="['/profile']" (click)="closeMenu(); scrollToTop()">
+      <a class="burger-icon circle" (click)="closeMenu(); scrollToTop()">
         <span class="material-symbols-outlined">person</span>
+        <app-options-icon></app-options-icon>
       </a>
 
     </div>
@@ -103,7 +105,7 @@
         <span class="material-symbols-outlined">notifications</span>
         <span>Notificaciones</span>
       </a>
-      <a [routerLink]="['/business']" (click)="closeMenu(); scrollToTop()">
+      <a [routerLink]="['/business']" (click)="closeMenu(); scrollToTop()" data-test="btn-negocios">
         <span class="material-symbols-outlined">business</span>
         <span>Negocios</span>
       </a>

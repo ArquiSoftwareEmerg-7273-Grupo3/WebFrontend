@@ -24,5 +24,8 @@
     <div class="button-wrapper">
       <button (click)="createPorfolio()">Crear Portafolio</button>
     </div>
+    <div *ngIf="cannotCreateMore" class="info-message">
+      Ya has creado un portafolio. No puedes crear más.
+    </div>
   </div>
 </div>

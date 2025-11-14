@@ -1,0 +1,13 @@
+<div class="options-icon" *ngIf="visible"
+     (click)="stop($event)"
+     [ngStyle]="{ left: left + 'px', top: top + 'px' }">
+  <button class="options-item" (click)="navigate('/profile')">
+    <span class="material-symbols-outlined">person</span> Ver perfil
+  </button>
+  <button class="options-item" (click)="navigate('/settings')">
+    <span class="material-symbols-outlined">settings</span> Ajustes
+  </button>
+  <button class="options-item" (click)="logout()">
+    <span class="material-symbols-outlined">logout</span> Cerrar sesión
+  </button>
+</div>

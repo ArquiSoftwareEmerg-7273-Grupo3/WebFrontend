@@ -45,7 +45,6 @@ export class BusinessMiniVentanaComponent implements OnInit, OnDestroy {
     this.router.navigate([path]);
   }
 
-  // Cerrar si se hace click fuera del componente
   @HostListener('document:click', ['$event'])
   onDocClick(ev: MouseEvent) {
     if (!this.visible) return;
@@ -54,10 +53,21 @@ export class BusinessMiniVentanaComponent implements OnInit, OnDestroy {
     }
   }
 
-  // evitar que clicks internos cierren la ventana
   stop(ev: MouseEvent) { ev.stopPropagation(); }
 
   goToEscritorForm() {
     this.router.navigate(['register/writer']);
+  }
+
+  goToProfileAnalysis(){
+    this.router.navigate(['business/profile-analysis']);
+  }
+
+  goToAdvertising(){
+    this.router.navigate(['business/advertising']);
+  }
+
+  goToPlans(){
+    this.router.navigate(['business/plans']);
   }
 }

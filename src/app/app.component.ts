@@ -22,7 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
   userId: number | null = null;
 
   private STORAGE_PREFIX = 'mini-tutorial-completed:';
-  private FALLBACK_SUFFIX = 'global';
+
   private wasTutorialOpen = false;
 
   showNavbar = true;
@@ -31,15 +31,6 @@ export class AppComponent implements OnInit, OnDestroy {
   private routerSub?: Subscription;
   private authSub?: Subscription;
   private tutorialOpenSub?: Subscription;
-
-  private steps = [
-    { selector: '', title: 'Estimado Usuario:', description: 'Actualmente, tienes funciones limitadas, es importante que te crees un perfil para obtener una experiencia más completa' },
-    { selector: '', title: 'Completa tu perfil', description: 'Si te interesa crear ofertas y encontrar a las personas calificadas, debes registrarte como escritor' },
-    { selector: '[data-test="create-writer"]', title: 'Enviar formulario', description: 'Para crear un perfil de escritor, deberá seleccionar la opción correspondiente, lo cual le permitirá completar los datos necesarios. Al finalizar este proceso, contará con un perfil de escritor activo.' },
-    { selector: '.popup-registro-ilustrador .btn-primary', title: 'Enviar formulario', description: 'Si te interesa crear portafolios y encontrar ofertas adecuadas a tu perfil, debes registrarte como ilustrador'},
-    { route: '/perfil', selector: '[data-test="btn-completar"]', title: 'Enviar formulario', description: 'Para crear un perfil de ilustrador, deberá seleccionar la opción correspondiente y dirigirse al botón de \'Completar\', donde podrá ingresar los datos requeridos. Al finalizar este proceso, contará con un perfil de ilustrador activo.'},
-    { selector: '.popup-registro-ilustrador .btn-primary', title: 'Enviar formulario', description: 'Si no estás interesado en crear algún perfil, puedes continuar sin problema'}
-  ];
 
   constructor(
     private router: Router,
@@ -52,6 +43,29 @@ export class AppComponent implements OnInit, OnDestroy {
         this.showNavbar = !this.hideNavbarRoutes.includes(event.urlAfterRedirects);
       });
   }
+
+  /**
+   * private steps = [
+   *     { selector: '', title: 'Estimado Usuario:', description: 'Actualmente, tienes funciones limitadas, es importante que te crees un perfil para obtener una experiencia más completa' },
+   *     { selector: '', title: 'Completa tu perfil', description: 'Si te interesa crear ofertas y encontrar a las personas calificadas, debes registrarte como escritor' },
+   *     { selector: '[data-test="btn-negocios"]', title: 'Abrir Negocios', description: 'Haga clic en "Negocios" y luego en "Crear perfil como escritor"' },
+   *     { router: '/register/writer', selector: '[data-test="writer-form-submit"]', title: 'Crear perfil como escritor', description: 'En esta página complete los datos. Al finalizar este proceso, contará con un perfil de escritor activo.' },
+   *     { router: '/home', selector: '.popup-registro-ilustrador .btn-primary', title: 'Completa tu perfil', description: 'Si te interesa crear portafolios y encontrar ofertas adecuadas a tu perfil, debes registrarte como ilustrador'},
+   *     { router: '/perfil', selector: '[data-test="btn-completar"]', title: 'Enviar formulario', description: 'Para crear un perfil de ilustrador, deberá seleccionar la opción correspondiente y dirigirse al botón de \'Completar\', donde podrá ingresar los datos requeridos. Al finalizar este proceso, contará con un perfil de ilustrador activo.' , requiresAuth: true},
+   *     { router: '/home', selector: '.popup-registro-ilustrador .btn-primary', title: 'Enviar formulario', description: 'Si no estás interesado en crear algún perfil, puedes continuar sin problema'}
+   *   ];
+   * @private
+   */
+
+  private steps = [
+    { selector: '', title: 'Estimado Usuario:', description: 'Actualmente, tienes funciones limitadas, es importante que te crees un perfil para obtener una experiencia más completa' },
+    { selector: '', title: 'Completa tu perfil', description: 'Si te interesa crear ofertas y encontrar a las personas calificadas, debes registrarte como escritor' },
+    { selector: '[data-test="btn-negocios"]', title: 'Abrir Negocios', description: 'Haga clic en "Negocios" y luego en "Crear perfil como escritor"' },
+    { selector: '[data-test="writer-form-submit"]', title: 'Crear perfil como escritor', description: 'En esta página complete los datos. Al finalizar este proceso, contará con un perfil de escritor activo.' },
+    { selector: '.popup-registro-ilustrador .btn-primary', title: 'Completa tu perfil', description: 'Si te interesa crear portafolios y encontrar ofertas adecuadas a tu perfil, debes registrarte como ilustrador'},
+    { selector: '[data-test="btn-completar"]', title: 'Enviar formulario', description: 'Para crear un perfil de ilustrador, deberá seleccionar la opción correspondiente y dirigirse al botón de \'Completar\', donde podrá ingresar los datos requeridos. Al finalizar este proceso, contará con un perfil de ilustrador activo.' , requiresAuth: true},
+    { selector: '.popup-registro-ilustrador .btn-primary', title: 'Enviar formulario', description: 'Si no estás interesado en crear algún perfil, puedes continuar sin problema'}
+  ];
 
   ngOnInit() {
     this.authSub = this.authenticationService.isSignedIn.subscribe(isSignedIn => {
@@ -67,7 +81,13 @@ export class AppComponent implements OnInit, OnDestroy {
       } else if (!open && this.wasTutorialOpen) {
         (async () => {
           const key = await this.currentUserStorageKey();
-          if (key) localStorage.setItem(key, '1');
+          console.debug('[mini-tutorial] cerrado, clave calculada =', key);
+          if (key) {
+            localStorage.setItem(key, '1');
+            console.debug('[mini-tutorial] guardado en localStorage:', key);
+          } else {
+            console.warn('[mini-tutorial] no hay clave de usuario para guardar el estado');
+          }
           this.wasTutorialOpen = false;
         })();
       }
@@ -80,40 +100,58 @@ export class AppComponent implements OnInit, OnDestroy {
     this.tutorialOpenSub?.unsubscribe();
   }
 
-  private async currentUserStorageKey(): Promise<string> {
+  private async currentUserStorageKey(): Promise<string | null> {
     try {
-      const id = await firstValueFrom(this.authenticationService.currentUserId.pipe(take(1)));
-      console.log("Storage key user id:", id);
-      if (id != null) return this.STORAGE_PREFIX + id;
-      const name = await firstValueFrom(this.authenticationService.currentUsername.pipe(take(1)));
-      if (name) return this.STORAGE_PREFIX + encodeURIComponent(name);
-    } catch {
-      // ignore
+      const id = await firstValueFrom(
+        this.authenticationService.currentUserId.pipe(
+          filter(id => id != null && typeof id === 'number' && id > 0),
+          take(1)
+        )
+      );
+      if (id != null) {
+        const key = this.STORAGE_PREFIX + id;
+        console.debug('[mini-tutorial] userId disponible, key=', key);
+        return key;
+      }
+    } catch (e) {
+      console.debug('[mini-tutorial] currentUserId wait failed', e);
     }
-    // siempre devolver una clave fallback para que no retorne null
-    return this.STORAGE_PREFIX + this.FALLBACK_SUFFIX;
+
+    try {
+      const name = await firstValueFrom(
+        this.authenticationService.currentUsername.pipe(
+          filter(n => !!n && n !== '0'),
+          take(1)
+        )
+      );
+      if (name) {
+        const key = this.STORAGE_PREFIX + encodeURIComponent(name);
+        console.debug('[mini-tutorial] username disponible, key=', key);
+        return key;
+      }
+    } catch (e) {
+      console.debug('[mini-tutorial] currentUsername wait failed', e);
+    }
+
+    // No hay datos de usuario aún -> devolver null para reintentar
+    console.debug('[mini-tutorial] no hay datos de usuario aún, devolver null');
+    return null;
   }
+
 
   private async maybeStartTutorialAfterLogin() {
     const key = await this.currentUserStorageKey();
-    // si por alguna razón no tenemos key (defensivo), reintentar
+
     if (!key) {
       setTimeout(() => this.maybeStartTutorialAfterLogin(), 300);
       return;
     }
 
     const completed = !!localStorage.getItem(key);
+    console.debug('[mini-tutorial] clave=', key, 'completed=', completed);
+
     if (completed) return;
 
-    // marcar inmediatamente como mostrado para evitar que vuelva a iniciarse por condiciones de carrera
-    try {
-      localStorage.setItem(key, '1');
-      console.log('MiniTutorial: marcado como completado para', key);
-    } catch (e) {
-      console.warn('No se pudo escribir en localStorage', e);
-    }
-
-    // pequeña espera para que la UI termine de renderizar y luego arrancar
     setTimeout(() => this.miniTutorialService.start(this.steps), 300);
   }
 
@@ -124,4 +162,5 @@ export class AppComponent implements OnInit, OnDestroy {
   getId(){
     this.authenticationService.currentUserId.subscribe(id => this.userId = id);
   }
+
 }

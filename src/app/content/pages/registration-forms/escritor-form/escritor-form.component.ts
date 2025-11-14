@@ -4,6 +4,7 @@ import {ProfileRegistrationService} from '../services/profile-registration.servi
 import {Ilustrador} from '../../profile/model/ilustrador.entity';
 import {Escritor} from '../../profile/model/escritor.entity';
 import {NgIf} from '@angular/common';
+import {AuthenticationService} from '../../login/services/authentication.service';
 
 @Component({
   selector: 'app-escritor-form',

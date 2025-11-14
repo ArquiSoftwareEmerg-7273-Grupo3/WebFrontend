@@ -12,7 +12,6 @@
     max-width: 1100px;
     display: grid;
     grid-template-columns: 96px 1fr;
-
     gap: 1.25rem;
     background: var(--card-bg);
     border: 1px solid var(--line);
@@ -84,35 +83,28 @@
   }
 
   /* ===== GRID TARJETAS ===== */
-  .cards-container{
+  .cards-container {
+    padding: 1rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 1.5rem;
-    max-width: 1100px;
-    width: 100%;
-    justify-content: center;
-    align-items: stretch;
-    margin-top: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem;
+    justify-items: center;
+    align-items: start;
+    box-sizing: border-box;
   }
 
-  /* ===== CARD SHELL (envoltorio visual) =====
-     - No toca la lógica del componente hijo
-     - Aporta look pro: radios, sombra, hover, recorte */
-  .card-shell{
-    background: var(--card-bg);
-    border: 1px solid #e9edf5;
-    border-radius: 18px;          /* bordes suaves */
-    overflow: hidden;             /* recorta bordes de contenido hijo */
-    box-shadow: 0 2px 6px rgba(16,24,40,0.08);
-    transition: transform .22s ease, box-shadow .22s ease;
-    position: relative;
-    isolation: isolate;           /* para pseudo-elementos si usas */
-    display: block;
+  .card-shell {
+    width: 650px;
+    padding: 12px;
+    box-sizing: border-box;
+    display: flex;
+    background: #4a9b8e;
+    justify-content: center;
+    align-items: flex-start;
 
-    /* Si el hijo no pinta fondo, garantizamos base blanca */
     app-portfolio-card-writer{
       display:block;
-      background: transparent; /* no obliga, solo sugiere */
+      background: transparent;
     }
   }
 
@@ -121,18 +113,16 @@
     box-shadow: 0 10px 24px rgba(16,24,40,0.14);
   }
 
-  /* Estado de enfoque accesible si la tarjeta contiene enlaces internos */
   .card-shell:focus-within{
     outline: 3px solid rgba(10,102,194,.25);
     outline-offset: 2px;
   }
 
-  /* Opcional: efecto sutil sobre imágenes internas comunes */
   .card-shell img{
     display: block;
     width: 100%;
-    height: 200px;      /* altura consistente tipo “featured” */
-    object-fit: cover;  /* recorte elegante */
+    height: 200px;
+    object-fit: cover;
     border-bottom: 1px solid #f0f2f5;
     transition: transform .35s ease;
   }
@@ -140,7 +130,6 @@
     transform: scale(1.02);
   }
 
-  /* Tipografía base dentro de la tarjeta si el hijo no aplica estilos fuertes */
   .card-shell h3{
     font-size: 1.1rem;
     font-weight: 700;
@@ -156,7 +145,6 @@
     padding: 0 1.25rem;
   }
 
-  /* Footer visual genérico (si el hijo emite un pie o acciones) */
   .card-shell .card-footer{
     display: flex;
     justify-content: space-between;
@@ -168,7 +156,6 @@
     color: #475467;
   }
 
-  /* ===== FAB (sin cambios de lógica) ===== */
   .floating-button{
     position: fixed;
     bottom: 2rem;
@@ -198,9 +185,9 @@
 
 .menu-container {
   position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;
+  top: 8px;
+  right: 8px;
+  z-index: 3;
 }
 
 .menu-icon {
@@ -244,11 +231,88 @@
   transition: background 0.2s ease, color 0.2s ease;
 }
 
+.actions-title {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.create-category-btn {
+  padding: 8px 14px;
+  border-radius: 10px;
+  border: 1px solid #e6f3ef;
+  background: #5fb3aa;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background .15s ease, transform .08s ease;
+}
+
+.create-category-btn:hover {
+  background: #4b9c94;
+  transform: translateY(-1px);
+}
+
+.actions-row{
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 0 20px 0;
+  gap: 12px;
+}
+
+.actions-row .left{
+  flex: 0 0 auto;
+}
+
+.actions-row .right{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label{
+  color: var(--ink-600);
+  font-size: 0.95rem;
+}
+
+.category-filter{
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #429f95;
+  background: #fff;
+  font-size: 0.95rem;
+}
+
+.create-category-btn {
+  padding: 16px 20px;
+  border-radius: 10px;
+  border: 1px solid #e6f3ef;
+  background: #429f95;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease, transform .08s ease;
+}
+
+.create-category-btn:hover {
+  background: #4b9c94;
+  transform: translateY(-1px);
+}
+
+.cards-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
 
 
 @media (prefers-color-scheme: dark){

@@ -14,35 +14,55 @@
     </div>
   </section>
 
-  <!-- Tarjetas -->
-  <div class="cards-container">
-      <div class="card-shell" *ngFor="let portfolio of portfolios">
-        <div class="menu-container">
-          <div class="icon-btn" (click)="toggleMenu(portfolio, $event)" aria-label="Abrir menú">
-            <span class="material-symbols-outlined menu-icon">more_vert</span>
-          </div>
+  <div class="actions-row">
+    <div class="left">
+      <button class="create-category-btn" type="button" (click)="createCategory()">Crear categoría</button>
+    </div>
 
-          <div class="menu-dropdown" *ngIf="portfolio.showMenu" (click)="$event.stopPropagation()">
-            <button (click)="goToEditPortolio(); $event.stopPropagation()">Editar</button>
-            <button (click)="deletePortfolio(portfolio.id); $event.stopPropagation()">Eliminar</button>
-          </div>
-        </div>
-
-      <!-- Componente existente -->
-      <app-portfolio-card-writer
-        [id]="portfolio.id"
-        [imageSrc]="portfolio.imageSrc"
-        [title]="portfolio.title"
-        (viewMoreClicked)="goToPortfolio($event)">
-      </app-portfolio-card-writer>
+    <div class="right">
+      <select id="catFilter" class="category-filter" [(ngModel)]="selectedFilter" (change)="applyFilter()">
+        <option value="">Todas</option>
+        <option *ngFor="let c of filterCategories" [value]="c">{{ c }}</option>
+      </select>
     </div>
   </div>
-  <app-edit-portfolio *ngIf="selectedPortfolio as sp"
-                      [portfolio]="sp"
-                      [categories]="categories || []"
-                      (save)="savePortfolio($event)"
-                      (cancel)="closeEdit()">
-  </app-edit-portfolio>
+
+  <div class="content-layout">
+    <div class="cards-column">
+      <div class="cards-container">
+        <div class="card-shell" *ngFor="let portfolio of portfolios">
+          <div class="menu-container">
+            <div class="icon-btn" (click)="toggleMenu(portfolio, $event)" aria-label="Abrir menú">
+              <span class="material-symbols-outlined menu-icon">more_vert</span>
+            </div>
+
+            <div class="menu-dropdown" *ngIf="portfolio.showMenu" (click)="$event.stopPropagation()">
+              <button (click)="goToEditPortolio(); $event.stopPropagation()">Editar</button>
+              <button>Eliminar</button>
+            </div>
+          </div>
+
+          <!-- Componente existente (no se toca la lógica) -->
+          <app-portfolio-card-writer
+            [id]="portfolio.id"
+            [urlImagen]="portfolio.urlImagen"
+            [titulo]="portfolio.titulo"
+            (viewMoreClicked)="goToPortfolio($event!)">
+          </app-portfolio-card-writer>
+        </div>
+      </div>
+    </div>
+
+    <aside class="detail-column" *ngIf="selectedPortfolio as sp">
+      <app-edit-portfolio
+        [portfolio]="sp"
+        [categories]="categories || []"
+        (save)="savePortfolio($event)"
+        (cancel)="closeEdit()">
+      </app-edit-portfolio>
+    </aside>
+  </div>
+
 
   <!-- Botón flotante -->
   <button class="floating-button" (click)="goToCreatePortfolio()">

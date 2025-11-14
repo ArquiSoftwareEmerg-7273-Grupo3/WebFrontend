@@ -33,8 +33,8 @@ export class EditPortfolioComponent implements OnChanges{
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['portfolio'] && this.portfolio) {
-      this.title = this.portfolio.title ?? this.title;
-      this.description = this.portfolio.description ?? this.description;
+      this.title = this.portfolio.titulo ?? this.title;
+      this.description = this.portfolio.descripcion ?? this.description;
       this.category = (this.portfolio as any).category ?? this.category;
       (this.portfolio as any).imageSrc && (this.previewCoverUrl = (this.portfolio as any).imageSrc);
     }
@@ -66,13 +66,13 @@ export class EditPortfolioComponent implements OnChanges{
   // Emitir los datos actualizados al padre y luego cerrar (emit cancel)
   guardarVisual(): void {
     const updated: Portfolio = {
-      id: this.portfolio?.id ?? Date.now(),
-      title: this.title,
-      description: this.description,
+      id: this.portfolio?.id,
+      titulo: this.title,
+      descripcion: this.description,
       category: this.category,
-      imageSrc: this.previewCoverUrl,
+      urlImage: this.previewCoverUrl,
       showMenu: this.portfolio?.showMenu
-    } as Portfolio;
+    } as unknown as Portfolio;
 
     this.save.emit(updated);
     this.cancel.emit();
