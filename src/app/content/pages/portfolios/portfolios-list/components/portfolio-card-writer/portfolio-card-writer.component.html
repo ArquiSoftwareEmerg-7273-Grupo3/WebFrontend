@@ -1,15 +1,14 @@
-<div class="card">
+<div class="card" role="article">
   <div class="image-wrapper">
-    <img [src]="imageSrc" alt="Portfolio image" />
+    <img [ngSrc]="urlImagen" [alt]="titulo || 'Portafolio'" />
   </div>
 
   <div class="info">
-    <h2 class="title">{{ title }}</h2>
+    <h2 class="title">{{ titulo }}</h2>
 
     <div class="spacer"></div>
 
     <div class="footer">
-      <span class="date">{{ date }}</span>
       <button class="view-more" (click)="viewMore()">Ver más</button>
     </div>
   </div>

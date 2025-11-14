@@ -1,13 +1,13 @@
-import {GalleryItem} from './gallery-item.entity';
+import {Ilustration} from './ilustration.entity';
 
 export class Portfolio {
   constructor(
-    public id: number,
-    public title: string,
-    public description: string,
-    public imageSrc: string,
+    public titulo: string,
+    public descripcion: string,
+    public urlImagen: string,
     public showMenu?: boolean,
-    public galleryItems?: GalleryItem[],
+    public ilustrations?: Ilustration[],
+    public id?: number,
   ) {
   }
 }

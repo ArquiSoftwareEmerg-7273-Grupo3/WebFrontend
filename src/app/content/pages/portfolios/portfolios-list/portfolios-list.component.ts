@@ -1,4 +1,4 @@
-import {Component, HostListener} from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
 import {Router} from '@angular/router';
 import {PortfolioCardComponent} from '../../home/components/portfolio-card/portfolio-card.component';
@@ -8,6 +8,7 @@ import {
 import {Portfolio} from '../model/portfolio.entity';
 import {EditPortfolioComponent} from '../edit-portfolio/edit-portfolio.component';
 import {FormsModule} from '@angular/forms';
+import {PortfolioService} from '../services/portfolio.service';
 
 @Component({
   selector: 'app-portfolios-list',
@@ -22,38 +23,38 @@ import {FormsModule} from '@angular/forms';
   templateUrl: './portfolios-list.component.html',
   styleUrl: './portfolios-list.component.css'
 })
-export class PortfoliosListComponent {
-  portfolios: Portfolio[] = [
-    {
-      id: 1,
-      title: 'Retratos',
-      imageSrc: 'https://png.pngtree.com/thumb_back/fh260/background/20230527/pngtree-how-to-draw-a-portrait-using-pencils-image_2676967.jpg',
-      description: 'Este proyecto trata sobre crear cuentos ilustrados con animales fantásticos que enseñen valores a los niños. A través de personajes mágicos y situaciones sorprendentes, se busca estimular la creatividad y la imaginación infantil. Además, se abordarán temas como la empatía, el respeto por la diversidad y la importancia de la amistad en un formato lúdico y educativo que permitirá a los niños aprender mientras se divierten.',
-      showMenu: false,
-    },
-    {
-      id: 2,
-      title: 'Acuarelas',
-      imageSrc: 'https://www.massalagros.com/wp-content/uploads/2022/04/pintar-con-acuarela.jpg',
-      description: 'En este proyecto exploraremos historias sobre la amistad para fomentar la empatía y la solidaridad en la infancia. A través de narraciones emotivas y personajes entrañables, los niños descubrirán el valor del compañerismo, el trabajo en equipo y la importancia de apoyarse mutuamente. Cada cuento estará diseñado para provocar reflexión y diálogo tanto en casa como en el aula.'
-
-    },
-    {
-      id: 3,
-      title: 'Ilustraciones personalizadas',
-      imageSrc: 'https://thumbs.dreamstime.com/b/esbozando-guiones-gr%C3%A1ficos-detallados-para-el-proyecto-de-v%C3%ADdeo-animado-cierre-un-animaci%C3%B3n-con-dibujos-mano-artista-la-331329054.jpg',
-      description: 'Este proyecto tiene como objetivo desarrollar cuentos ilustrados que promuevan la inclusión y el respeto por las diferencias. A través de relatos protagonizados por niños y niñas de diferentes culturas, capacidades y contextos, se busca construir una visión más abierta y comprensiva del mundo. El enfoque será pedagógico y emocional, incorporando actividades complementarias para padres y educadores.'
-    }
-  ];
+export class PortfoliosListComponent implements OnInit {
+  portfolios: Portfolio[] = [];
   editVisible: boolean | undefined;
   selectedPortfolio: Portfolio | undefined;
   categories: string[] | undefined | undefined;
 
   filteredPortfolios: Portfolio[] = [];
-  filterCategories: string[] = ['Retratos', 'Acuarelas', 'Ilustración', 'Concept Art']; // nombres al azar
+  filterCategories: string[] = ['Retratos', 'Acuarelas', 'Ilustración', 'Concept Art'];
   selectedFilter: string = '';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private portfolioService: PortfolioService) {}
+
+  ngOnInit(): void {
+    this.portfolioService.getPortafolio().subscribe({
+      next: (list: Portfolio[]) => {
+        console.log('[PortfoliosList] portafolios recibidos ->', list);
+        this.portfolios = list || [];
+        // comprobar que cada portfolio tiene id
+        this.portfolios.forEach(p => {
+          if (p.id === undefined || p.id === null) {
+            console.warn('[PortfoliosList] portfolio sin id detectado', p);
+          }
+        });
+        this.applyFilter();
+      },
+      error: (err: any) => {
+        console.error('Error cargando portafolios:', err);
+        this.portfolios = [];
+        this.applyFilter();
+      }
+    });
+  }
 
   toggleMenu(p: Portfolio, event?: MouseEvent) {
     event?.stopPropagation();
@@ -64,17 +65,20 @@ export class PortfoliosListComponent {
   }
 
   createCategory(): void {
-    // TODO: reemplazar por lógica real (abrir modal / navegar)
     alert('Crear categoría — implementar lógica aquí');
   }
 
-  /** Cierra todos los menús al hacer clic fuera (documento) */
   @HostListener('document:click')
   closeAllMenus() {
     this.portfolios.forEach(p => (p.showMenu = false));
   }
 
-  goToPortfolio(id: number) {
+  goToPortfolio(id?: number) {
+    console.log('[goToPortfolio] id recibido ->', id);
+    if (id === undefined || id === null) {
+      console.warn('[goToPortfolio] id indefinido. Revisar que [id] se esté pasando desde la plantilla y que la API devuelva campo id.');
+      return;
+    }
     this.router.navigate(['/portfolios/information', id]);
   }
 
@@ -103,7 +107,7 @@ export class PortfoliosListComponent {
     if (!this.selectedFilter) {
       this.filteredPortfolios = [...this.portfolios];
     } else {
-      this.filteredPortfolios = this.portfolios.filter(p => p.title === this.selectedFilter);
+      this.filteredPortfolios = this.portfolios.filter(p => p.titulo === this.selectedFilter);
     }
   }
 }

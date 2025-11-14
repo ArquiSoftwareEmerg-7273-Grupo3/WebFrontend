@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import {environment} from '../../../../../environments/environment';
-import {BehaviorSubject, Observable} from 'rxjs';
+import {BehaviorSubject, map, Observable} from 'rxjs';
 import {Router} from '@angular/router';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {SignUpRequest} from '../model/sign-up.request';
@@ -160,6 +160,17 @@ export class AuthenticationService {
           }
         });
     });
+  }
+
+  public getIlustradorId$(): Observable<number | null> {
+    return this.userInfo.asObservable().pipe(
+      map(u => {
+        if (!u || !(u as any).ilustrador) return null;
+        const raw = (u as any).ilustrador?.id ?? (u as any).ilustrador;
+        const n = raw != null ? Number(raw) : null;
+        return Number.isNaN(n as number) ? null : (n as number);
+      })
+    );
   }
 
   getUserInfo$() {

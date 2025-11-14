@@ -4,7 +4,7 @@ import {ChatsComponent} from './content/pages/chats/chats.component';
 import {ApplicationsComponent} from './content/pages/applications/applications.component';
 import {CreateProjectComponent} from './content/pages/create-project/create-project.component';
 import {PortfoliosListComponent} from './content/pages/portfolios/portfolios-list/portfolios-list.component';
-import {CreatePortfolioComponent} from './content/pages/create-portfolio/create-portfolio.component';
+import {CreatePortfolioComponent} from './content/pages/portfolios/create-portfolio/create-portfolio.component';
 import {PortfoliosComponent} from './content/pages/portfolios/portfolios.component';
 import {CreateIlustrationComponent} from './content/pages/portfolios/create-ilustration/create-ilustration.component';
 import {ProfileComponent} from './content/pages/profile/profile.component';
@@ -58,7 +58,7 @@ export const routes: Routes = [
   { path: 'business/advertising', component: AdvertisingComponent, canActivate: [authenticationGuard] },
   { path: 'applications', component: ApplicationsComponent, canActivate: [authenticationGuard] },
   { path: 'portfolios', component: PortfoliosListComponent },
-  { path: 'portfolios/create-new-portfolio', component: CreatePortfolioComponent, canActivate: [authenticationGuard] },
+  { path: 'portfolios/information/:id/create-new-portfolio', component: CreatePortfolioComponent, canActivate: [authenticationGuard] },
   { path: 'portfolios/information/:id', component: PortfoliosComponent },
   { path: 'portfolios/edit', component: EditPortfolioComponent },
   { path: 'information/writer/:id', component: WriterIndividualComponent },
