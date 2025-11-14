@@ -44,6 +44,14 @@ export class JobsComponent implements OnInit {
       label: especialidad
     }))
   ];
+
+  // Vista actual: 'list' o 'grid'
+  viewMode: 'list' | 'grid' = 'list';
+
+  setViewMode(mode: 'list' | 'grid') {
+  this.viewMode = mode;
+  }
+
   
   modalidades = [
     { value: '', label: 'Cualquier modalidad' },
@@ -247,5 +255,9 @@ export class JobsComponent implements OnInit {
       default:
         return 'badge';
     }
+  }
+
+  getOpenProjects(): number {
+    return this.proyectos.filter(p => p.estado === EstadoProyecto.ABIERTO).length;
   }
 }

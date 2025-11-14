@@ -1,72 +1,199 @@
 <div class="home-title">
-  <!-- Summary Panel -->
-  <section class="summary-panel">
-    <div class="summary-media"></div>
-
-    <div class="summary-body">
-      <h1 class="summary-title">
-        Mis <span>Portafolios</span>
-      </h1>
-      <p class="summary-desc">
-        En esta sección podrás crear portafolios y subir tus ilustraciones como a ti mejor te parezca.
-        ¡Deja que tu creatividad fluya!
-      </p>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background">
+      <div class="hero-pattern"></div>
+      <div class="hero-gradient"></div>
     </div>
-  </section>
-
-  <div class="actions-row">
-    <div class="left">
-      <button class="create-category-btn" type="button" (click)="createCategory()">Crear categoría</button>
-    </div>
-
-    <div class="right">
-      <select id="catFilter" class="category-filter" [(ngModel)]="selectedFilter" (change)="applyFilter()">
-        <option value="">Todas</option>
-        <option *ngFor="let c of filterCategories" [value]="c">{{ c }}</option>
-      </select>
-    </div>
-  </div>
-
-  <div class="content-layout">
-    <div class="cards-column">
-      <div class="cards-container">
-        <div class="card-shell" *ngFor="let portfolio of portfolios">
-          <div class="menu-container">
-            <div class="icon-btn" (click)="toggleMenu(portfolio, $event)" aria-label="Abrir menú">
-              <span class="material-symbols-outlined menu-icon">more_vert</span>
-            </div>
-
-            <div class="menu-dropdown" *ngIf="portfolio.showMenu" (click)="$event.stopPropagation()">
-              <button (click)="goToEditPortolio(); $event.stopPropagation()">Editar</button>
-              <button>Eliminar</button>
-            </div>
+    
+    <div class="hero-content">
+      <div class="hero-icon">
+        <span class="material-symbols-outlined">palette</span>
+      </div>
+      
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Mis <span class="gradient-text">Portafolios</span>
+        </h1>
+        <p class="hero-description">
+          Crea portafolios increíbles y comparte tus ilustraciones con el mundo.
+          <span class="highlight">¡Deja que tu creatividad fluya!</span>
+        </p>
+        
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ portfolios.length }}</span>
+            <span class="stat-label">Portafolios</span>
           </div>
-
-          <!-- Componente existente (no se toca la lógica) -->
-          <app-portfolio-card-writer
-            [id]="portfolio.id"
-            [urlImagen]="portfolio.urlImagen"
-            [titulo]="portfolio.titulo"
-            (viewMoreClicked)="goToPortfolio($event!)">
-          </app-portfolio-card-writer>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ portfolios[0]?.cantidadTotalIlustraciones }}</span>
+            <span class="stat-label">Ilustraciones</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ portfolios[0]?.cantidadCategorias }}</span>
+            <span class="stat-label">Categorías</span>
+          </div>
         </div>
       </div>
     </div>
+  </section>
 
-    <aside class="detail-column" *ngIf="selectedPortfolio as sp">
-      <app-edit-portfolio
-        [portfolio]="sp"
-        [categories]="categories || []"
-        (save)="savePortfolio($event)"
-        (cancel)="closeEdit()">
-      </app-edit-portfolio>
-    </aside>
+  <!-- Toolbar Section -->
+  <div class="toolbar-section">
+    <div class="toolbar-left">
+      <button class="action-btn primary" type="button" (click)="createCategory()">
+        <span class="btn-icon material-symbols-outlined">category</span>
+        <span class="btn-text">Nueva Categoría</span>
+      </button>
+      
+      <button class="action-btn secondary" type="button">
+        <span class="btn-icon material-symbols-outlined">sort</span>
+        <span class="btn-text">Ordenar</span>
+      </button>
+    </div>
+
+    <div class="toolbar-right">
+      <div class="search-box">
+        <span class="material-symbols-outlined search-icon">search</span>
+        <input type="text" placeholder="Buscar portafolios..." class="search-input" />
+      </div>
+      
+      <div class="filter-dropdown">
+        <span class="material-symbols-outlined filter-icon">filter_list</span>
+        <select id="catFilter" class="category-filter" [(ngModel)]="selectedFilter" (change)="applyFilter()">
+          <option value="">Todas las categorías</option>
+          <option *ngFor="let c of filterCategories" [value]="c">{{ c }}</option>
+        </select>
+      </div>
+    </div>
   </div>
+
+  <!-- Portfolios Grid -->
+  <div class="portfolios-grid">
+    <div class="portfolio-card" *ngFor="let portfolio of portfolios" (click)="goToPortfolio(portfolio.id!)">
+      <div class="card-header">
+        <div class="card-badge">
+          <span class="material-symbols-outlined">workspace_premium</span>
+        </div>
+        <div class="card-menu">
+          <button class="menu-trigger" (click)="toggleMenu(portfolio, $event)" aria-label="Abrir menú">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+          
+          <div class="menu-dropdown" *ngIf="portfolio.showMenu" (click)="$event.stopPropagation()">
+            <button (click)="editPortfolio(portfolio, $event)" class="menu-item">
+              <span class="material-symbols-outlined">edit</span>
+              <span>Editar</span>
+            </button>
+            <button (click)="deletePortfolio(portfolio.id!); $event.stopPropagation()" class="menu-item delete">
+              <span class="material-symbols-outlined">delete</span>
+              <span>Eliminar</span>
+            </button>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card-image">
+        <img [src]="portfolio.urlImagen || 'assets/placeholder.png'" [alt]="portfolio.titulo" />
+        <div class="card-overlay">
+          <button class="view-btn" (click)="goToPortfolio(portfolio.id!); $event.stopPropagation()">
+            <span class="material-symbols-outlined">visibility</span>
+            Ver Portafolio
+          </button>
+        </div>
+      </div>
+      
+      <div class="card-content">
+        <h3 class="card-title">{{ portfolio.titulo }}</h3>
+        <p class="card-description">{{ portfolio.descripcion }}</p>
+        
+        <div class="card-footer">
+          <div class="card-stats">
+            <div class="stat">
+              <span class="material-symbols-outlined">image</span>
+              <span>{{ portfolio.ilustrations?.length || 0 }}</span>
+            </div>
+            <div class="stat">
+              <span class="material-symbols-outlined">favorite</span>
+              <span>0</span>
+            </div>
+            <div class="stat">
+              <span class="material-symbols-outlined">visibility</span>
+              <span>0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Empty State -->
+    <div class="empty-state-card" *ngIf="portfolios.length === 0">
+      <div class="empty-icon">
+        <span class="material-symbols-outlined">folder_open</span>
+      </div>
+      <h3>No tienes portafolios aún</h3>
+      <p>Crea tu primer portafolio y comienza a compartir tu arte</p>
+      <button class="create-first-btn" (click)="goToCreatePortfolio()">
+        <span class="material-symbols-outlined">add</span>
+        Crear Mi Primer Portafolio
+      </button>
+    </div>
+  </div>
+
+  <!-- Edit Sidebar -->
+  <aside class="edit-sidebar" *ngIf="selectedPortfolio as sp" [@slideIn]>
+    <app-edit-portfolio
+      [portfolio]="sp"
+      [categories]="categories || []"
+      (save)="savePortfolio($event)"
+      (cancel)="closeEdit()">
+    </app-edit-portfolio>
+  </aside>
 
 
   <!-- Botón flotante -->
-  <button class="floating-button" (click)="goToCreatePortfolio()">
+  <button class="floating-button" (click)="goToCreatePortfolio()" title="Crear nuevo portafolio">
     <span class="material-symbols-outlined">add</span>
   </button>
+
+  <!-- Modal para crear categoría -->
+  <div class="modal-overlay" *ngIf="showCategoryModal" (click)="closeCategoryModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Crear Nueva Categoría</h2>
+        <button class="close-btn" (click)="closeCategoryModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="categoryName">Nombre de la categoría *</label>
+          <input
+            id="categoryName"
+            type="text"
+            [(ngModel)]="newCategoryName"
+            placeholder="Ej: Retratos, Paisajes, etc."
+            class="form-input"
+          />
+        </div>
+        <div class="form-group">
+          <label for="categoryDesc">Descripción</label>
+          <textarea
+            id="categoryDesc"
+            [(ngModel)]="newCategoryDescription"
+            placeholder="Describe esta categoría..."
+            class="form-textarea"
+            rows="4"
+          ></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeCategoryModal()">Cancelar</button>
+        <button class="btn-primary" (click)="saveCategoryModal()">Crear Categoría</button>
+      </div>
+    </div>
+  </div>
 </div>
 

@@ -1,11 +1,46 @@
 <div class="writer-projects-container">
-  <!-- Header -->
-  <div class="projects-header">
-    <div class="header-content">
-      <h1>Mis Proyectos</h1>
-      <p>Administra tus proyectos y revisa las postulaciones</p>
-      <button class="btn-create" (click)="goToCreateProject()">
-        <span class="material-symbols-outlined">add</span>
+  <!-- Hero Section -->
+  <div class="hero-section">
+    <div class="hero-background">
+      <div class="hero-pattern"></div>
+      <div class="hero-gradient"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-icon">
+        <span class="material-symbols-outlined">folder_managed</span>
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span class="gradient-text">Mis Proyectos</span>
+        </h1>
+        <p class="hero-description">
+          Administra tus proyectos y revisa las <span class="highlight">postulaciones de ilustradores</span>
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ proyectos.length }}</span>
+            <span class="stat-label">Proyectos</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getTotalPostulaciones() }}</span>
+            <span class="stat-label">Postulaciones</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getProyectosPendientes() }}</span>
+            <span class="stat-label">Pendientes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar Section -->
+  <div class="toolbar-section">
+    <div class="toolbar-left">
+      <button class="action-btn primary" (click)="goToCreateProject()">
+        <span class="material-symbols-outlined btn-icon">add_circle</span>
         Crear Nuevo Proyecto
       </button>
     </div>

@@ -33,4 +33,78 @@ export class IlustrationService {
       })
     );
   }
+
+  updateIllustration(illustrationId: number, illustrationData: any): Observable<any> {
+    const url = `${this.basePath}/api/v1/ilustraciones/${illustrationId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }) : this.httpOptions.headers;
+    return this.http.put(url, illustrationData, { headers }).pipe(
+      catchError(err => {
+        console.error('[IlustrationService.updateIllustration] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  deleteIllustration(illustrationId: number): Observable<any> {
+    const url = `${this.basePath}/api/v1/ilustraciones/${illustrationId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.delete(url, { headers }).pipe(
+      catchError(err => {
+        console.error('[IlustrationService.deleteIllustration] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  getIllustrationSummary(illustrationId: number): Observable<any> {
+    const url = `${this.basePath}/api/v1/ilustraciones/${illustrationId}/resumen`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.get(url, { headers }).pipe(
+      catchError(err => {
+        console.error('[IlustrationService.getIllustrationSummary] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  getPublishedIllustrations(ilustradorId: number): Observable<any[]> {
+    const url = `${this.basePath}/api/v1/ilustraciones/ilustrador/${ilustradorId}/publicadas`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.get<any[]>(url, { headers }).pipe(
+      catchError(err => {
+        console.error('[IlustrationService.getPublishedIllustrations] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  // Calificaciones
+  rateIllustration(illustrationId: number, rating: number, comment?: string): Observable<any> {
+    const url = `${this.basePath}/api/v1/calificaciones/${illustrationId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }) : this.httpOptions.headers;
+    const body = { puntuacion: rating, comentario: comment || '' };
+    return this.http.post(url, body, { headers }).pipe(
+      catchError(err => {
+        console.error('[IlustrationService.rateIllustration] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  getRatings(illustrationId: number): Observable<any[]> {
+    const url = `${this.basePath}/api/v1/calificaciones/${illustrationId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.get<any[]>(url, { headers }).pipe(
+      catchError(err => {
+        console.error('[IlustrationService.getRatings] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
 }

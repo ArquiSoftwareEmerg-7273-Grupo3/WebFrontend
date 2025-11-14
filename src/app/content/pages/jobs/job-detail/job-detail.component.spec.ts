@@ -3,6 +3,7 @@ import { JobDetailComponent } from './job-detail.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { JobsService } from '../services/jobs.service';
 import { of } from 'rxjs';
+import { ContratoProyecto, EspecialidadProyecto, EstadoProyecto, ModalidadProyecto } from '../model/proyecto.model';
 
 describe('JobDetailComponent', () => {
   let component: JobDetailComponent;
@@ -46,10 +47,10 @@ describe('JobDetailComponent', () => {
       escritorId: 10,
       titulo: 'Proyecto de prueba',
       descripcion: 'Descripción',
-      estado: 'Abierto para postulaciones',
-      modalidad: 'Remoto',
-      contrato: 'Freelance',
-      especialidad: 'Ilustración Digital',
+      estado: EstadoProyecto.ABIERTO,
+      modalidadProyecto: ModalidadProyecto.PRESENCIAL,
+      contratoProyecto: ContratoProyecto.FREELANCE,
+      especialidadProyecto: EspecialidadProyecto.ILUSTRACION_DIGITAL,
       requisitos: 'Portafolio',
       fechaFin: '2025-01-01T00:00:00',
       fechaInicio: '2024-12-01T00:00:00',

@@ -115,6 +115,7 @@ export class SignUpComponent implements OnInit {
     this.selectedFile = file;
     this.selectedFileName = file.name;
     
+
     // Subir la imagen al backend
     this.uploadImage(file);
   }
@@ -126,22 +127,18 @@ export class SignUpComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
 
-    console.log('📤 Subiendo imagen al backend...');
 
     this.http.post('http://localhost:8080/api/v1/media/upload', formData).subscribe({
       next: (response: any) => {
-        console.log('✅ Imagen subida exitosamente:', response);
         
         // Guardar la URL completa en el formulario
         const imageUrl = 'http://localhost:8080' + response.url;
         this.form.patchValue({ foto: imageUrl });
         
-        console.log('🖼️ URL de la imagen:', imageUrl);
-        alert('✅ Imagen cargada correctamente');
+       
       },
       error: (error) => {
         console.error('❌ Error al subir imagen:', error);
-        alert('❌ Error al subir la imagen. Por favor intenta de nuevo.');
         
         // Limpiar selección en caso de error
         this.selectedFile = null;

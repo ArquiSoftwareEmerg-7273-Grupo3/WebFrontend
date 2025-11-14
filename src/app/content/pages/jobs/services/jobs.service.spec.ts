@@ -33,9 +33,9 @@ describe('JobsService', () => {
         titulo: 'Proyecto de prueba',
         descripcion: 'Descripción',
         estado: 'Abierto para postulaciones' as any,
-        modalidad: 'Remoto' as any,
-        contrato: 'Freelance' as any,
-        especialidad: 'Ilustración Digital' as any,
+        modalidadProyecto: 'Remoto' as any,
+        contratoProyecto: 'Freelance' as any,
+        especialidadProyecto: 'Ilustración Digital' as any,
         requisitos: 'Portafolio actualizado',
         fechaFin: '2025-01-01T00:00:00',
         fechaInicio: '2024-12-01T00:00:00',
@@ -48,7 +48,7 @@ describe('JobsService', () => {
       expect(response).toEqual(mockResponse);
     });
 
-    const req = httpMock.expectOne(`${environment.baseUrlProject}/api/v1/proyectos`);
+    const req = httpMock.expectOne(`${environment.baseUrlAuth}/api/v1/proyectos`);
     expect(req.request.method).toBe('GET');
     req.flush(mockResponse);
   });
@@ -60,9 +60,9 @@ describe('JobsService', () => {
       titulo: 'Proyecto de prueba',
       descripcion: 'Descripción',
       estado: 'Abierto para postulaciones' as any,
-      modalidad: 'Remoto' as any,
-      contrato: 'Freelance' as any,
-      especialidad: 'Ilustración Digital' as any,
+      modalidadProyecto: 'Remoto' as any,
+      contratoProyecto: 'Freelance' as any,
+      especialidadProyecto: 'Ilustración Digital' as any,
       requisitos: 'Portafolio actualizado',
       fechaFin: '2025-01-01T00:00:00',
       fechaInicio: '2024-12-01T00:00:00',
@@ -74,7 +74,7 @@ describe('JobsService', () => {
       expect(response).toEqual(mockProyecto);
     });
 
-    const req = httpMock.expectOne(`${environment.baseUrlProject}/api/v1/proyectos/1`);
+    const req = httpMock.expectOne(`${environment.baseUrlAuth}/api/v1/proyectos/1`);
     expect(req.request.method).toBe('GET');
     req.flush(mockProyecto);
   });
@@ -86,7 +86,7 @@ describe('JobsService', () => {
       expect(response).toBeTruthy();
     });
 
-    const req = httpMock.expectOne(`${environment.baseUrlProject}/api/v1/postulaciones/postular/proyecto/1`);
+    const req = httpMock.expectOne(`${environment.baseUrlAuth}/api/v1/postulaciones/postular/proyecto/1`);
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(postulacion);
     req.flush({ success: true });

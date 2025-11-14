@@ -65,6 +65,7 @@ export const routes: Routes = [
   { path: 'portfolios/information/:id/create-new-portfolio', component: CreatePortfolioComponent, canActivate: [authenticationGuard] },
   { path: 'portfolios/information/:id', component: PortfoliosComponent },
   { path: 'portfolios/edit', component: EditPortfolioComponent },
+  { path: 'portfolios/create-new-portfolio', component: CreatePortfolioComponent, canActivate: [authenticationGuard] },
   { path: 'information/writer/:id', component: WriterIndividualComponent },
   { path: 'information/illustrator/:id', component: IllustratorIndividualComponent },
   { path: 'information/illustration/:id', component: IllustrationIndividualComponent },

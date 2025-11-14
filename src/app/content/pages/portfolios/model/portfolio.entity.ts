@@ -8,6 +8,8 @@ export class Portfolio {
     public showMenu?: boolean,
     public ilustrations?: Ilustration[],
     public id?: number,
+    public cantidadCategorias?: number,
+    public cantidadTotalIlustraciones?: number
   ) {
   }
 }

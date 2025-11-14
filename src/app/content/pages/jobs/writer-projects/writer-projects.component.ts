@@ -287,5 +287,13 @@ export class WriterProjectsComponent implements OnInit {
   goToCreateProject(): void {
     this.router.navigate(['/projects/create-new-project']);
   }
+
+  getTotalPostulaciones(): number {
+    return this.postulaciones.length;
+  }
+
+  getProyectosPendientes(): number {
+    return this.proyectos.filter(p => p.estado === 'ABIERTO').length;
+  }
 }
 

@@ -1,26 +1,197 @@
-<div class="container">
-
+<div class="create-illustration-container">
+  <!-- Back Button -->
   <button class="back-button" (click)="goBack()">
     <span class="material-symbols-outlined">arrow_back</span>
+    <span class="back-text">Volver</span>
   </button>
 
-  <h1>Subir <br> <span class="cyan">Ilustración</span></h1>
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-icon">
+      <span class="material-symbols-outlined">add_photo_alternate</span>
+    </div>
+    <div class="header-text">
+      <h1 class="page-title">
+        Agregar Nueva <span class="gradient-text">Ilustración</span>
+      </h1>
+      <p class="page-subtitle">
+        Completa los detalles de tu ilustración y selecciona una categoría
+      </p>
+    </div>
+  </div>
 
+  <!-- Form Card -->
   <div class="form-card">
-    <div class="form-content">
-      <div class="form-left">
-        <input type="text" placeholder="Título" [(ngModel)]="title" />
-        <textarea placeholder="Descripción" [(ngModel)]="description"></textarea>
+    <div class="form-grid">
+      <!-- Left Column - Form Fields -->
+      <div class="form-column">
+        <div class="form-section">
+          <h3 class="section-title">
+            <span class="material-symbols-outlined">info</span>
+            Información Básica
+          </h3>
+
+          <div class="form-group">
+            <label for="title">
+              Título de la Ilustración *
+              <span class="required-badge">Requerido</span>
+            </label>
+            <input
+              id="title"
+              type="text"
+              [(ngModel)]="title"
+              placeholder="Ej: Retrato Digital, Paisaje Urbano..."
+              class="form-input"
+              maxlength="100"
+            />
+            <span class="char-count">{{ title.length }}/100</span>
+          </div>
+
+          <div class="form-group">
+            <label for="description">
+              Descripción
+              <span class="optional-badge">Opcional</span>
+            </label>
+            <textarea
+              id="description"
+              [(ngModel)]="description"
+              placeholder="Describe tu ilustración, técnicas utilizadas, inspiración..."
+              class="form-textarea"
+              rows="5"
+              maxlength="500"
+            ></textarea>
+            <span class="char-count">{{ description.length }}/500</span>
+          </div>
+
+          <div class="form-group">
+            <label for="photo-upload">
+              Imagen de la Ilustración *
+              <span class="required-badge">Requerido</span>
+            </label>
+
+            <div class="file-input-wrapper" [class.has-file]="selectedFileName">
+              <label class="file-input-label" for="photo-upload">
+                <span class="material-symbols-outlined" style="display: block; font-size: 48px; margin-bottom: 0.5rem;">
+                  {{ selectedFileName ? 'check_circle' : 'add_photo_alternate' }}
+                </span>
+                <span style="display: block;">
+                  {{ selectedFileName || 'Click para seleccionar imagen' }}
+                </span>
+                <span style="display: block; font-size: 0.85rem; margin-top: 0.5rem; opacity: 0.7;">
+                  JPG, PNG o GIF (máx. 10MB)
+                </span>
+              </label>
+
+              <input
+                id="photo-upload"
+                type="file"
+                accept="image/jpeg,image/png,image/gif,image/webp"
+                (change)="OnFileSelected($event)"
+                style="display: none;"
+              />
+            </div>
+
+            <p class="input-hint">
+              <span class="material-symbols-outlined">info</span>
+              La imagen se convertirá automáticamente para su almacenamiento
+            </p>
+          </div>
+
+
+          <div class="form-group">
+            <label for="category">
+              Categoría
+              <span class="optional-badge">Opcional</span>
+            </label>
+            <div class="select-wrapper">
+              <span class="material-symbols-outlined select-icon">folder</span>
+              <select
+                id="category"
+                [(ngModel)]="selectedCategory"
+                class="form-select"
+              >
+                <option [value]="null">Sin categoría</option>
+                <option *ngFor="let cat of categories" [value]="cat.id">
+                  {{ cat.nombre }}
+                </option>
+              </select>
+            </div>
+            <p class="input-hint" *ngIf="categories.length === 0">
+              <span class="material-symbols-outlined">warning</span>
+              No hay categorías disponibles. Puedes crear una desde la lista de portafolios.
+            </p>
+          </div>
+        </div>
       </div>
 
-      <div class="form-right">
-        <div class="upload-wrapper">
-          <input type="text" placeholder="Subir Imagen" [(ngModel)]="image" />
-          <span class="material-symbols-outlined upload-icon">upload</span>
+      <!-- Right Column - Preview -->
+      <div class="preview-column">
+        <div class="preview-section">
+          <h3 class="section-title">
+            <span class="material-symbols-outlined">visibility</span>
+            Vista Previa
+          </h3>
+
+          <div class="preview-card">
+            <div class="preview-image">
+              <img
+                *ngIf="imagePreview"
+                [src]="imagePreview"
+                [alt]="title || 'Vista previa'"
+                (error)="imagePreview = ''"
+              />
+              <div class="preview-placeholder" *ngIf="!imagePreview">
+                <span class="material-symbols-outlined">image</span>
+                <p>La vista previa aparecerá aquí</p>
+              </div>
+            </div>
+
+            <div class="preview-info">
+              <h4 class="preview-title">{{ title || 'Título de la ilustración' }}</h4>
+              <p class="preview-description" *ngIf="description">
+                {{ description }}
+              </p>
+              <p class="preview-description empty" *ngIf="!description">
+                Sin descripción
+              </p>
+
+              <div class="preview-meta">
+                <div class="meta-badge" *ngIf="selectedCategory">
+                  <span class="material-symbols-outlined">folder</span>
+                  <span>{{ getCategoryName(selectedCategory) }}</span>
+                </div>
+                <div class="meta-badge" *ngIf="!selectedCategory">
+                  <span class="material-symbols-outlined">folder_off</span>
+                  <span>Sin categoría</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview-tips">
+            <h4>💡 Consejos</h4>
+            <ul>
+              <li>Usa imágenes de alta calidad</li>
+              <li>Escribe títulos descriptivos</li>
+              <li>Organiza con categorías</li>
+              <li>Agrega descripciones detalladas</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
 
-    <button (click)="createIllustration()">Crear ilustración</button>
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="goBack()" [disabled]="isLoading">
+        <span class="material-symbols-outlined">close</span>
+        Cancelar
+      </button>
+      <button class="btn-submit" (click)="createIllustration()" [disabled]="isLoading || !title || !image">
+        <span class="material-symbols-outlined" *ngIf="!isLoading">check</span>
+        <span class="spinner-small" *ngIf="isLoading"></span>
+        {{ isLoading ? 'Creando...' : 'Crear Ilustración' }}
+      </button>
+    </div>
   </div>
 </div>

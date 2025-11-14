@@ -1,0 +1,57 @@
+<div class="rating-container">
+  <div class="rating-summary">
+    <div class="average-rating">
+      <span class="rating-number">{{ averageRating | number:'1.1-1' }}</span>
+      <div class="stars-display">
+        <span class="star" *ngFor="let star of [1,2,3,4,5]" [class.filled]="star <= averageRating">★</span>
+      </div>
+      <span class="rating-count">({{ ratings.length }} {{ ratings.length === 1 ? 'calificación' : 'calificaciones' }})</span>
+    </div>
+    
+    <button class="rate-btn" (click)="toggleRatingForm()">
+      <span class="material-symbols-outlined">star</span>
+      Calificar
+    </button>
+  </div>
+
+  <!-- Rating Form -->
+  <div class="rating-form" *ngIf="showRatingForm">
+    <h4>Tu calificación</h4>
+    <div class="star-selector">
+      <span
+        *ngFor="let star of [1,2,3,4,5]"
+        [class]="getStarClass(star)"
+        (click)="setRating(star)"
+        (mouseenter)="setHoveredStar(star)"
+        (mouseleave)="clearHover()">
+        ★
+      </span>
+    </div>
+    
+    <textarea
+      [(ngModel)]="userComment"
+      placeholder="Escribe un comentario (opcional)..."
+      class="comment-input"
+      rows="3">
+    </textarea>
+    
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="toggleRatingForm()">Cancelar</button>
+      <button class="btn-submit" (click)="submitRating()">Enviar</button>
+    </div>
+  </div>
+
+  <!-- Ratings List -->
+  <div class="ratings-list" *ngIf="ratings.length > 0">
+    <h4>Calificaciones</h4>
+    <div class="rating-item" *ngFor="let rating of ratings">
+      <div class="rating-header">
+        <div class="stars-display">
+          <span class="star" *ngFor="let star of [1,2,3,4,5]" [class.filled]="star <= rating.puntuacion">★</span>
+        </div>
+        <span class="rating-date">{{ rating.fecha || 'Reciente' }}</span>
+      </div>
+      <p class="rating-comment" *ngIf="rating.comentario">{{ rating.comentario }}</p>
+    </div>
+  </div>
+</div>

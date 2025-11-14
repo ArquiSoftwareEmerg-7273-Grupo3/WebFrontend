@@ -29,16 +29,23 @@
     </div>
 
     <!-- Lado derecho: foto -->
-    <div class="cover-wrapper">
-      <div class="cover-circle">
-        <img *ngIf="previewCoverUrl" [src]="previewCoverUrl" alt="Portada" class="cover-img" />
-      </div>
+   <div class="cover-wrapper">
+  <div class="cover-circle">
+    <img *ngIf="previewCoverUrl" [src]="previewCoverUrl" alt="Portada" class="cover-img" />
+  </div>
 
-      <button type="button" class="change-cover-btn" (click)="onChangeCoverClick(fileInput)">
-        Cambiar foto<br />del portafolio
-      </button>
+  <button type="button" class="change-cover-btn" (click)="fileInput.click()">
+    Cambiar foto<br />del portafolio
+  </button>
 
-      <input #fileInput type="file" accept="image/*" class="hidden-file" (change)="onCoverSelected($event)" />
-    </div>
+  <input
+    #fileInput
+    type="file"
+    accept="image/*"
+    class="hidden-file"
+    (change)="onCoverSelected($event)"
+  />
+</div>
+  
   </div>
 </div>

@@ -32,6 +32,9 @@ export class PortfoliosListComponent implements OnInit {
   filteredPortfolios: Portfolio[] = [];
   filterCategories: string[] = ['Retratos', 'Acuarelas', 'Ilustración', 'Concept Art'];
   selectedFilter: string = '';
+  showCategoryModal: boolean = false;
+  newCategoryName: string = '';
+  newCategoryDescription: string = '';
 
   constructor(private router: Router, private portfolioService: PortfolioService) {}
 
@@ -65,7 +68,48 @@ export class PortfoliosListComponent implements OnInit {
   }
 
   createCategory(): void {
-    alert('Crear categoría — implementar lógica aquí');
+    this.showCategoryModal = true;
+  }
+
+  closeCategoryModal(): void {
+    this.showCategoryModal = false;
+    this.newCategoryName = '';
+    this.newCategoryDescription = '';
+  }
+
+  saveCategoryModal(): void {
+    if (!this.newCategoryName.trim()) {
+      alert('El nombre de la categoría es obligatorio');
+      return;
+    }
+
+    if (this.portfolios.length === 0) {
+      alert('Primero debes crear un portafolio');
+      return;
+    }
+
+    const portfolioId = this.portfolios[0].id;
+    if (!portfolioId) {
+      alert('No se encontró el ID del portafolio');
+      return;
+    }
+
+    const categoryData = {
+      nombre: this.newCategoryName.trim(),
+      descripcion: this.newCategoryDescription.trim()
+    };
+
+    this.portfolioService.createCategory(portfolioId, categoryData).subscribe({
+      next: (response) => {
+        alert('Categoría creada exitosamente');
+        this.closeCategoryModal();
+        this.ngOnInit();
+      },
+      error: (err) => {
+        console.error('Error creando categoría:', err);
+        alert('Error al crear la categoría: ' + (err?.error || err?.message || 'Error desconocido'));
+      }
+    });
   }
 
   @HostListener('document:click')
@@ -88,7 +132,21 @@ export class PortfoliosListComponent implements OnInit {
 
 
   deletePortfolio(id: number) {
-    alert('Portafolio eliminado');
+    if (!confirm('¿Estás seguro de que deseas eliminar este portafolio?')) {
+      return;
+    }
+
+    this.portfolioService.deletePortfolio(id).subscribe({
+      next: () => {
+        alert('Portafolio eliminado exitosamente');
+        this.portfolios = this.portfolios.filter(p => p.id !== id);
+        this.applyFilter();
+      },
+      error: (err) => {
+        console.error('Error eliminando portafolio:', err);
+        alert('Error al eliminar el portafolio: ' + (err?.error || err?.message || 'Error desconocido'));
+      }
+    });
   }
 
   goToEditPortolio() {
@@ -96,11 +154,40 @@ export class PortfoliosListComponent implements OnInit {
   }
 
   closeEdit() {
-    //
+    this.editVisible = false;
+    this.selectedPortfolio = undefined;
   }
 
   savePortfolio($event: Portfolio) {
+    if (!$event.id) {
+      alert('No se puede actualizar un portafolio sin ID');
+      return;
+    }
 
+    const updateData = {
+      titulo: $event.titulo,
+      descripcion: $event.descripcion,
+      urlImagen: $event.urlImagen
+    };
+
+    this.portfolioService.updatePortfolio($event.id, updateData).subscribe({
+      next: () => {
+        alert('Portafolio actualizado exitosamente');
+        this.closeEdit();
+        this.ngOnInit();
+      },
+      error: (err) => {
+        console.error('Error actualizando portafolio:', err);
+        alert('Error al actualizar el portafolio: ' + (err?.error || err?.message || 'Error desconocido'));
+      }
+    });
+  }
+
+  editPortfolio(portfolio: Portfolio, event?: MouseEvent) {
+    event?.stopPropagation();
+    this.selectedPortfolio = portfolio;
+    this.editVisible = true;
+    portfolio.showMenu = false;
   }
 
   applyFilter(): void {
@@ -109,5 +196,11 @@ export class PortfoliosListComponent implements OnInit {
     } else {
       this.filteredPortfolios = this.portfolios.filter(p => p.titulo === this.selectedFilter);
     }
+  }
+
+  getTotalIllustrations(): number {
+    return this.portfolios.reduce((total, portfolio) => {
+      return total + (portfolio.ilustrations?.length || 0);
+    }, 0);
   }
 }

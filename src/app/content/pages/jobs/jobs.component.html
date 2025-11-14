@@ -1,19 +1,51 @@
 <div class="jobs-container">
-  <!-- Header -->
-  <div class="jobs-header">
-    <div class="header-content">
-      <div>
-        <h1 *ngIf="userRole === 'ILLUSTRATOR'">Proyectos Disponibles</h1>
-        <h1 *ngIf="userRole !== 'ILLUSTRATOR'">Oportunidades Laborales</h1>
-        <p *ngIf="userRole === 'ILLUSTRATOR'">Encuentra proyectos y postúlate como ilustrador</p>
-        <p *ngIf="userRole !== 'ILLUSTRATOR'">Encuentra el proyecto perfecto para ti</p>
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background">
+      <div class="hero-pattern"></div>
+      <div class="hero-gradient"></div>
+    </div>
+    
+    <div class="hero-content">
+      <div class="hero-icon">
+        <span class="material-symbols-outlined">work</span>
       </div>
+      
+      <div class="hero-text">
+        <h1 class="hero-title">
+          <span *ngIf="userRole === 'ILLUSTRATOR'">Proyectos <span class="gradient-text">Disponibles</span></span>
+          <span *ngIf="userRole !== 'ILLUSTRATOR'">Oportunidades <span class="gradient-text">Laborales</span></span>
+        </h1>
+        <p class="hero-description">
+          <span *ngIf="userRole === 'ILLUSTRATOR'">Encuentra proyectos increíbles y postúlate como ilustrador.</span>
+          <span *ngIf="userRole !== 'ILLUSTRATOR'">Encuentra el proyecto perfecto para ti.</span>
+          <span class="highlight">¡Tu próxima oportunidad te espera!</span>
+        </p>
+        
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ totalProyectos }}</span>
+            <span class="stat-label">Proyectos</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ filteredProyectos.length }}</span>
+            <span class="stat-label">Disponibles</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getOpenProjects() }}</span>
+            <span class="stat-label">Abiertos</span>
+          </div>
+        </div>
+      </div>
+
       <button *ngIf="userRole === 'WRITER'" class="btn-manage-projects" (click)="goToMyProjects()">
         <span class="material-symbols-outlined">folder_managed</span>
         Mis Proyectos
       </button>
     </div>
-  </div>
+  </section>
 
   <!-- Main Content Container -->
   <div class="main-content">
@@ -79,13 +111,27 @@
     <span class="results-count">{{totalProyectos}} proyectos encontrados</span>
     <span *ngIf="filteredProyectos.length !== totalProyectos" class="filter-info">({{filteredProyectos.length}} con filtros aplicados)</span>
     <div class="view-options">
-      <span class="material-symbols-outlined active">view_list</span>
-      <span class="material-symbols-outlined">grid_view</span>
-    </div>
+  <span
+    class="material-symbols-outlined"
+    [ngClass]="{ active: viewMode === 'list' }"
+    (click)="setViewMode('list')"
+  >
+    view_list
+  </span>
+
+  <span
+    class="material-symbols-outlined"
+    [ngClass]="{ active: viewMode === 'grid' }"
+    (click)="setViewMode('grid')"
+  >
+    grid_view
+  </span>
+</div>
+
   </div>
 
   <!-- Jobs List -->
-  <div *ngIf="!loading" class="jobs-list">
+<div *ngIf="!loading" class="jobs-list" [ngClass]="viewMode">
     <div *ngFor="let proyecto of filteredProyectos" class="job-card">
       
       <!-- Estado -->

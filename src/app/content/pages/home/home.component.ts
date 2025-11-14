@@ -10,92 +10,9 @@ import { Post as ApiPost } from './services/posts.service';
 import { Comments } from './services/comments.service';
 import { UsersService, UserProfile } from './services/users.service';
 import { WebSocketService } from '../../../public/services/websocket.service';
-
+import { DisplayPost, DisplayComment, ApiPostResponse, PostsResponse, User, Event } 
+  from '../../../public/services/interface-feed';
 // Interface para la respuesta de la API que incluye paginación
-interface PostsResponse {
-  content: ApiPostResponse[];
-  pageable: {
-    pageNumber: number;
-    pageSize: number;
-    sort: {
-      empty: boolean;
-      unsorted: boolean;
-      sorted: boolean;
-    };
-    offset: number;
-    paged: boolean;
-    unpaged: boolean;
-  };
-  last: boolean;
-  totalElements: number;
-  totalPages: number;
-  size: number;
-  number: number;
-  sort: {
-    empty: boolean;
-    unsorted: boolean;
-    sorted: boolean;
-  };
-  first: boolean;
-  numberOfElements: number;
-  empty: boolean;
-}
-
-// Interface para cada post en la respuesta de la API
-interface ApiPostResponse {
-  id: number;
-  authorId: number;
-  content: string;
-  tags: string[];
-  createdAt: string;
-  updatedAt: string;
-  active: boolean;
-  reactionsCount: number;
-  commentsCount: number;
-  repostsCount: number;
-  viewsCount: number;
-  hasMedia: boolean;
-  engagementRate: number;
-}
-
-// Interface extendida para compatibilidad con el template actual
-interface DisplayPost extends ApiPostResponse {
-  authorName?: string;
-  authorPhoto?: string;
-  images?: string[];
-  likes?: number;
-  isLiked?: boolean;
-  comments?: DisplayComment[];
-  rating?: number;
-  showComments?: boolean;
-  createdAtDate?: Date;
-  visibility?: 'public' | 'private' | 'followers';
-}
-
-interface User {
-  id: number;
-  name: string;
-  photo: string;
-  role: string;
-}
-
-interface Event {
-  id: number;
-  title: string;
-  description: string;
-  date: Date;
-}
-
-interface DisplayComment {
-  id: number;
-  userId: number;
-  userName?: string;
-  userPhoto?: string;
-  content: string;
-  createdAt: Date;
-  isReply?: boolean;
-  likes?: number;
-}
 
 // MediaViewerOptions removido - funcionalidad de imágenes temporalmente deshabilitada
 
@@ -105,6 +22,7 @@ interface DisplayComment {
   imports: [
     CommonModule,
     FormsModule,
+    
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']

@@ -45,11 +45,98 @@ export class PortfolioService {
           const descripcion = item?.descripcion ?? item?.description ?? '';
           const urlImagen = item?.urlImagen ?? item?.image ?? item?.urlImage ?? '';
           const categorias = item?.categorias ?? item?.galleryItems ?? [];
-          return new Portfolio(titulo, descripcion, urlImagen, false, categorias, id);
+          const cantidadCategorias = item?.cantidadCategorias ?? categorias.length;
+          let cantidadTotalIlustraciones = item?.cantidadTotalIlustraciones ?? 0;
+          return new Portfolio(titulo, descripcion, urlImagen, false, categorias, id, cantidadCategorias, cantidadTotalIlustraciones);
         });
       }),
       catchError(err => {
         console.error('[PortfolioService.getPortafolio] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  updatePortfolio(portfolioId: number, portfolio: Partial<Portfolio>): Observable<any> {
+    const url = `${this.basePath}/api/v1/portafolios/${portfolioId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }) : this.httpOptions.headers;
+    return this.http.put(url, portfolio, { headers }).pipe(
+      catchError(err => {
+        console.error('[PortfolioService.updatePortfolio] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  deletePortfolio(portfolioId: number): Observable<any> {
+    const url = `${this.basePath}/api/v1/portafolios/${portfolioId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.delete(url, { headers }).pipe(
+      catchError(err => {
+        console.error('[PortfolioService.deletePortfolio] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  // Categorías
+  createCategory(portfolioId: number, categoryData: any): Observable<any> {
+    const url = `${this.basePath}/api/v1/categorias/portafolio/${portfolioId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }) : this.httpOptions.headers;
+    return this.http.post(url, categoryData, { headers }).pipe(
+      catchError(err => {
+        console.error('[PortfolioService.createCategory] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  getCategoriesByPortfolio(portfolioId: number): Observable<any[]> {
+    const url = `${this.basePath}/api/v1/categorias/portafolio/${portfolioId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.get<any[]>(url, { headers }).pipe(
+      catchError(err => {
+        console.error('[PortfolioService.getCategoriesByPortfolio] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  updateCategory(categoryId: number, categoryData: any): Observable<any> {
+    const url = `${this.basePath}/api/v1/categorias/${categoryId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }) : this.httpOptions.headers;
+    return this.http.put(url, categoryData, { headers }).pipe(
+      catchError(err => {
+        console.error('[PortfolioService.updateCategory] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  deleteCategory(categoryId: number): Observable<any> {
+    const url = `${this.basePath}/api/v1/categorias/${categoryId}`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : undefined;
+    return this.http.delete(url, { headers }).pipe(
+      catchError(err => {
+        console.error('[PortfolioService.deleteCategory] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
+
+  addIllustrationToCategory(categoryId: number, illustrationData: any): Observable<any> {
+    const url = `${this.basePath}/api/v1/categorias/${categoryId}/ilustraciones`;
+    const token = localStorage.getItem('token');
+    const headers = token ? new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }) : this.httpOptions.headers;
+    return this.http.post(url, illustrationData, { headers }).pipe(
+      catchError(err => {
+        console.error('[PortfolioService.addIllustrationToCategory] error', err);
         return throwError(() => err);
       })
     );

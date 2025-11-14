@@ -79,37 +79,192 @@
     </div>
   </div>
 
-      <!-- Publicaciones -->
-  <div class="publicaciones-box">
-    <div class="publicaciones-header">
-      <h3>Mis publicaciones</h3>
-      <select class="ordenar" aria-label="Ordenar publicaciones">
-        <option>Más recientes</option>
-      </select>
+  <div class="sidebar-cards">
+  
+  <!-- Card - Mi Portafolio -->
+  <div *ngIf="userRole === 'ILUSTRADOR'" class="side-card portfolio-card" (click)="goToMiPortafolio()">
+    <div class="card-icon">
+      <span class="material-symbols-outlined">brush</span>
     </div>
+    <div class="card-content">
+      <h3>Mi Portafolio</h3>
+      <p>Explora tus trabajos, organiza tus proyectos y muestra tu talento.</p>
+    </div>
+    <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
+  </div>
 
-    <div class="publicaciones-grid">
-      <div class="publicacion" *ngFor="let pub of publicaciones">
-        <img
-          [src]="pub.imagenUrl"
-          [alt]="pub.titulo"
-          class="pub-imagen"
-          loading="lazy"
-        />
-        <div class="pub-detalles">
-          <h4 class="pub-titulo" title="{{ pub.titulo }}">{{ pub.titulo }}</h4>
-          <p class="pub-descripcion">
-            {{ pub.descripcion }}
+
+  <!-- Card - Estado de Postulaciones -->
+  <div class="side-card status-card" (click)="goToMisPostulaciones()">
+    <div class="card-icon status">
+      <span class="material-symbols-outlined">assignment</span>
+    </div>
+    <div class="card-content">
+      <h3>Mis Postulaciones</h3>
+      <p>Revisa el estado de tus candidaturas y nuevas oportunidades.</p>
+    </div>
+    <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
+  </div>
+
+</div>
+
+
+     <!-- Feed de publicaciones -->
+    <div class="posts-feed" *ngIf="!isLoadingPosts && posts.length > 0">
+      <div class="post-card" *ngFor="let post of posts">
+        <!-- Cabecera del post -->
+        <div class="post-header" (click)="openPostDetail(post)">
+          <img [src]="post.authorPhoto" [alt]="post.authorName" class="post-avatar">
+          <div class="post-info">
+            <span class="author-name">{{post.authorName}}</span>
+            <span class="post-meta">
+              <span class="post-date">{{post.createdAt | date:'shortTime'}}</span>
+              <span class="post-visibility" *ngIf="post.visibility">
+                <span class="material-symbols-outlined">public</span>
+              </span>
+            </span>
+          </div>
+          <button class="post-options" (click)="showPostOptions($event, post)">
+            <span class="material-symbols-outlined">more_vert</span>
+          </button>
+        </div>
+
+        <!-- Contenido del post -->
+        <div class="post-content" (click)="openPostDetail(post)">
+          <p [class.truncated]="post.content.length > 280">
+            {{post.content | slice:0:280}}
+            <span class="read-more" *ngIf="post.content.length > 280">... ver más</span>
           </p>
-          <div class="pub-meta">
-            ⭐ {{ pub.likes }} · 💬 {{ pub.comentarios }} comentarios
+          <!-- Imágenes temporalmente deshabilitadas para evitar errores de Angular 19 -->
+          <div class="post-media-placeholder" *ngIf="post.images && post.images.length > 0">
+            <p>📷 {{post.images.length}} imagen(es) adjunta(s)</p>
+          </div>
+        </div>
+
+        <!-- Estadísticas de interacción -->
+        <div class="post-stats">
+          <span class="stat-item" (click)="showLikes(post)" *ngIf="(post.likes || 0) > 0">
+            <strong>{{post.likes || 0}}</strong> Me gusta
+          </span>
+          <span class="stat-item" (click)="openPostDetail(post)">
+            <strong>{{post.comments ? post.comments.length : 0}}</strong> Comentarios
+          </span>
+        </div>
+
+        <!-- Botones de interacción -->
+        <div class="post-actions">
+          <button (click)="likePost(post)" [class.liked]="post.isLiked || false">
+            <span class="material-symbols-outlined">{{(post.isLiked || false) ? 'favorite' : 'favorite_border'}}</span>
+            <span class="action-text">Me gusta</span>
+          </button>
+          <button (click)="focusComment(post)">
+            <span class="material-symbols-outlined">chat_bubble_outline</span>
+            <span class="action-text">Comentar</span>
+          </button>
+          <button (click)="sharePost(post)">
+            <span class="material-symbols-outlined">share</span>
+            <span class="action-text">Compartir</span>
+          </button>
+        </div>
+
+        <!-- Vista previa de comentarios -->
+        <div class="comments-preview">
+          <!-- Mostrar total de comentarios si hay más de 3 -->
+          <div class="view-all-comments" *ngIf="post.comments && post.comments.length > 3" (click)="openPostDetail(post)">
+            Ver los {{post.comments.length}} comentarios
+          </div>
+
+          <!-- Mostrar últimos 3 comentarios -->
+          <div class="comment-item" *ngFor="let comment of (post.comments || []).slice(-3).reverse()">
+            <img [src]="comment.userPhoto || 'assets/images/default-avatar.png'" [alt]="comment.userName || 'Usuario'" class="comment-avatar">
+            <div class="comment-content">
+              <span class="comment-author">{{comment.userName || 'Cargando...'}}</span>
+              <span class="comment-text">{{comment.content}}</span>
+              <div class="comment-meta">
+                <span class="comment-time">{{comment.createdAt | date:'shortTime'}}</span>
+                <button class="reply-comment">Responder</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input para nuevo comentario -->
+          <div class="new-comment">
+            <img [src]="userPhoto" [alt]="userName" class="comment-avatar">
+            <form (ngSubmit)="submitComment(post)" #commentForm="ngForm" class="comment-form">
+              <input type="text"
+                     [placeholder]="'Comentar como ' + userName"
+                     [(ngModel)]="commentTexts[post.id]"
+                     name="commentInput"
+                     class="comment-input">
+              <button type="submit" class="send-comment" [disabled]="!commentTexts[post.id]">
+                <span class="material-symbols-outlined">send</span>
+              </button>
+            </form>
           </div>
         </div>
       </div>
     </div>
 
-    <button class="btn-ver-mas" type="button">
-      Mostrar todas las publicaciones →
-    </button>
-  </div>
+    <!-- Modal de detalle de post -->
+    <div class="post-detail-modal" *ngIf="selectedPost" (click)="closePostDetail($event)">
+      <div class="modal-content" (click)="$event.stopPropagation()">
+        <button class="close-modal" (click)="closePostDetail()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+
+        <div class="modal-layout">
+          <!-- Imágenes temporalmente deshabilitadas -->
+          <div class="modal-media-placeholder" *ngIf="selectedPost && selectedPost.images && selectedPost.images.length > 0">
+            <p>📷 Imágenes disponibles: {{selectedPost.images.length}}</p>
+          </div>
+
+          <!-- Contenido y comentarios -->
+          <div class="modal-details">
+            <!-- Cabecera -->
+            <div class="modal-header">
+              <img [src]="selectedPost.authorPhoto" [alt]="selectedPost.authorName" class="post-avatar">
+              <div class="post-info">
+                <span class="author-name">{{selectedPost.authorName}}</span>
+                <span class="post-date">{{selectedPost.createdAt | date:'medium'}}</span>
+              </div>
+            </div>
+
+            <!-- Contenido -->
+            <div class="modal-content-text">
+              <p>{{selectedPost.content}}</p>
+            </div>
+
+            <!-- Lista completa de comentarios -->
+            <div class="comments-list">
+              <div class="comment-item" *ngFor="let comment of selectedPost.comments">
+                <img [src]="comment.userPhoto" [alt]="comment.userName" class="comment-avatar">
+                <div class="comment-content">
+                  <span class="comment-author">{{comment.userName}}</span>
+                  <span class="comment-text">{{comment.content}}</span>
+                  <div class="comment-meta">
+                    <span class="comment-time">{{comment.createdAt | date:'short'}}</span>
+                    <button class="reply-comment">Responder</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Input para nuevo comentario -->
+            <div class="modal-comment-input">
+              <img [src]="userPhoto" [alt]="userName" class="comment-avatar">
+              <form (ngSubmit)="submitComment(selectedPost)" #modalCommentForm="ngForm" class="comment-form">
+                <input type="text"
+                       [placeholder]="'Comentar como ' + userName"
+                       [(ngModel)]="commentTexts[selectedPost.id]"
+                       name="modalCommentInput"
+                       class="comment-input">
+                <button type="submit" class="send-comment" [disabled]="!commentTexts[selectedPost.id]">
+                  <span class="material-symbols-outlined">send</span>
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 </section>

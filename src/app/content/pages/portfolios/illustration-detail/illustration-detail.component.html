@@ -1,0 +1,43 @@
+<div class="detail-container">
+  <button class="back-button" (click)="goBack()">
+    <span class="material-symbols-outlined">arrow_back</span>
+  </button>
+
+  <div class="loading" *ngIf="loading">
+    <span class="material-symbols-outlined spinning">progress_activity</span>
+    <p>Cargando ilustración...</p>
+  </div>
+
+  <div class="content" *ngIf="!loading && illustration">
+    <div class="illustration-section">
+      <div class="image-container">
+        <img [src]="illustration.urlImagen" [alt]="illustration.titulo" />
+      </div>
+      
+      <div class="info-section">
+        <h1 class="title">{{ illustration.titulo }}</h1>
+        <p class="description" *ngIf="illustration.descripcion">{{ illustration.descripcion }}</p>
+        
+        <div class="metadata">
+          <div class="meta-item" *ngIf="illustration.categoria">
+            <span class="material-symbols-outlined">category</span>
+            <span>{{ illustration.categoria }}</span>
+          </div>
+          <div class="meta-item" *ngIf="illustration.fechaPublicacion">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span>{{ illustration.fechaPublicacion | date:'dd/MM/yyyy' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rating-section">
+      <app-illustration-rating [illustrationId]="illustrationId"></app-illustration-rating>
+    </div>
+  </div>
+
+  <div class="error" *ngIf="!loading && !illustration">
+    <span class="material-symbols-outlined">error</span>
+    <p>No se pudo cargar la ilustración</p>
+  </div>
+</div>

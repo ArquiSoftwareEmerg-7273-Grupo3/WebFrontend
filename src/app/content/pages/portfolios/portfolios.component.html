@@ -1,35 +1,139 @@
 <div class="portfolio-container">
-  <div class="content-wrapper">
-    <button class="back-button" (click)="goBack()">
-      <span class="material-symbols-outlined">arrow_back</span>
-    </button>
+  <button class="back-button" (click)="goBack()">
+    <span class="material-symbols-outlined">arrow_back</span>
+    <span class="back-text">Volver</span>
+  </button>
 
-    <!-- Summary Panel -->
-    <div class="summary-panel">
-      <div class="avatar">
-        <div class="image-wrapper large-hero">
-          <img [src]="portfolio.urlImagen || 'assets/placeholder.png'" alt="Portfolio image" loading="lazy" />
+  <div class="content-wrapper" *ngIf="portfolio">
+    <!-- Hero Banner -->
+    <div class="portfolio-hero">
+      <div class="hero-image">
+        <img [src]="portfolio?.urlImagen || 'assets/placeholder.png'" alt="Portfolio cover" />
+        <div class="hero-overlay"></div>
+      </div>
+      
+      <div class="hero-info">
+        <div class="hero-badge">
+          <span class="material-symbols-outlined">workspace_premium</span>
+          <span>Portafolio Destacado</span>
+        </div>
+        
+        <h1 class="portfolio-title">{{ portfolio?.titulo || 'Sin título' }}</h1>
+        <p class="portfolio-description">{{ portfolio?.descripcion || 'Sin descripción' }}</p>
+        
+        <div class="portfolio-meta">
+          <div class="meta-item">
+            <span class="material-symbols-outlined">image</span>
+            <span>{{ portfolio?.galleryItems?.length || 0 }} Ilustraciones</span>
+          </div>
+          <div class="meta-item">
+            <span class="material-symbols-outlined">category</span>
+            <span>{{ categories?.length || 0 }} Categorías</span>
+          </div>
+          <div class="meta-item">
+            <span class="material-symbols-outlined">visibility</span>
+            <span>0 Vistas</span>
+          </div>
         </div>
       </div>
-      <h1 class="title">{{ portfolio.titulo}}</h1>
-      <h4 class="description">{{ portfolio.descripcion}}</h4>
+    </div>
+
+    <!-- Categories Filter -->
+    <div class="categories-section" *ngIf="categories.length > 0">
+      <div class="section-header">
+        <h2 class="section-title">
+          <span class="material-symbols-outlined">category</span>
+          Explorar por Categoría
+        </h2>
+      </div>
+      
+      <div class="categories-carousel">
+        <button
+          class="category-chip"
+          [class.active]="!selectedCategory"
+          (click)="clearCategoryFilter()">
+          <span class="chip-icon material-symbols-outlined">apps</span>
+          <span class="chip-label">Todas</span>
+          <span class="chip-count">{{ portfolio.galleryItems?.length || 0 }}</span>
+        </button>
+        
+        <button
+          class="category-chip"
+          *ngFor="let cat of categories"
+          [class.active]="selectedCategory?.id === cat.id"
+          (click)="selectCategory(cat)">
+          <span class="chip-icon material-symbols-outlined">folder</span>
+          <span class="chip-label">{{ cat.nombre }}</span>
+          <span class="chip-count">{{ cat.ilustraciones?.length || 0 }}</span>
+        </button>
+      </div>
     </div>
 
     <!-- Gallery Section -->
-    <div class="gallery">
-      <div class="gallery-grid">
-        <div class="gallery-card" *ngFor="let item of portfolio.galleryItems">
-          <div class="rating">☆☆☆☆☆</div>
-          <div class="image-wrapper gallery-item">
-            <img [ngSrc]="item.urlImagen || 'assets/placeholder.png'" [alt]="item.title" loading="lazy" />
+    <div class="gallery-section">
+      <div class="gallery-header">
+        <h2 class="gallery-title">
+          <span *ngIf="!selectedCategory">Todas las Ilustraciones</span>
+          <span *ngIf="selectedCategory">{{ selectedCategory?.nombre }}</span>
+        </h2>
+        <p class="gallery-subtitle" *ngIf="selectedCategory?.descripcion">
+          {{ selectedCategory?.descripcion }}
+        </p>
+      </div>
+      
+      <div class="gallery-grid" *ngIf="getFilteredIllustrations().length > 0">
+        <div class="illustration-card" *ngFor="let item of getFilteredIllustrations()">
+          <div class="card-image-wrapper">
+            <img [src]="item?.urlImagen || 'assets/placeholder.png'" [alt]="item?.titulo || item?.title || 'Ilustración'" />
+            <div class="card-overlay">
+              <button class="quick-view-btn">
+                <span class="material-symbols-outlined">visibility</span>
+              </button>
+              <button class="like-btn">
+                <span class="material-symbols-outlined">favorite</span>
+              </button>
+            </div>
           </div>
-          <div class="item-title">{{ item.title }}</div>
+          
+          <div class="card-info">
+            <h3 class="card-title">{{ item?.titulo || item?.title || 'Sin título' }}</h3>
+            <p class="card-description" *ngIf="item?.descripcion">{{ item.descripcion }}</p>
+            
+            <div class="card-rating">
+              <div class="stars">
+                <span class="star filled">★</span>
+                <span class="star filled">★</span>
+                <span class="star filled">★</span>
+                <span class="star filled">★</span>
+                <span class="star">★</span>
+              </div>
+              <span class="rating-text">4.0</span>
+            </div>
+          </div>
         </div>
       </div>
+      
+      <div class="empty-state" *ngIf="getFilteredIllustrations().length === 0">
+        <div class="empty-icon">
+          <span class="material-symbols-outlined">image</span>
+        </div>
+        <h3>No hay ilustraciones</h3>
+        <p>{{ selectedCategory ? 'Esta categoría aún no tiene ilustraciones' : 'Comienza agregando tu primera ilustración' }}</p>
+        <button class="add-illustration-btn" (click)="goToCreateIllustration()">
+          <span class="material-symbols-outlined">add</span>
+          Agregar Ilustración
+        </button>
+      </div>
     </div>
-
-    <button class="floating-button" (click)="goToCreateIllustration()">
-      <span class="material-symbols-outlined">add</span>
-    </button>
   </div>
+
+  <!-- Loading State -->
+  <div class="loading-state" *ngIf="!portfolio">
+    <div class="spinner"></div>
+    <p>Cargando portafolio...</p>
+  </div>
+
+  <button class="floating-button" (click)="goToCreateIllustration()" title="Agregar ilustración">
+    <span class="material-symbols-outlined">add</span>
+  </button>
 </div>
