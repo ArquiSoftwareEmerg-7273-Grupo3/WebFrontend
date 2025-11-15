@@ -55,12 +55,14 @@ export class MiniTutorialService {
   }
 
   start(steps: MiniTutorialStep[], startIndex = 0) {
+    console.debug('[mini-tutorial] start called, stepsLength=', steps?.length, 'startIndex=', startIndex);
     this._steps$.next(steps);
     this._index$.next(Math.max(0, Math.min(startIndex, steps.length - 1)));
     this._isOpen$.next(true);
   }
 
   stop() {
+    console.debug('[mini-tutorial] stop called');
     this._isOpen$.next(false);
     this._steps$.next(null);
     this._index$.next(0);

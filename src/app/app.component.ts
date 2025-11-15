@@ -77,7 +77,13 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.tutorialOpenSub = this.miniTutorialService.isOpen$.subscribe(open => {
       if (open) {
-        this.wasTutorialOpen = true;
+        // Solo marcar "wasTutorialOpen" si el componente está montado en el DOM
+        const el = document.querySelector('app-mini-tutorial');
+        if (el) {
+          this.wasTutorialOpen = true;
+        } else {
+          console.warn('[mini-tutorial] intento de abrir pero componente no está en DOM -> no marcar como visto');
+        }
       } else if (!open && this.wasTutorialOpen) {
         (async () => {
           const key = await this.currentUserStorageKey();
@@ -104,7 +110,7 @@ export class AppComponent implements OnInit, OnDestroy {
     try {
       const id = await firstValueFrom(
         this.authenticationService.currentUserId.pipe(
-          filter(id => id != null && typeof id === 'number' && id > 0),
+          filter(id => id != null && true && id > 0),
           take(1)
         )
       );
@@ -152,7 +158,21 @@ export class AppComponent implements OnInit, OnDestroy {
 
     if (completed) return;
 
-    setTimeout(() => this.miniTutorialService.start(this.steps), 300);
+    // esperar hasta que el host del tutorial esté en el DOM (timeout total ~2s)
+    const waitForHost = async (timeoutMs = 2000, interval = 100) => {
+      const max = Math.ceil(timeoutMs / interval);
+      for (let i = 0; i < max; i++) {
+        if (document.querySelector('app-mini-tutorial')) return true;
+        await new Promise(r => setTimeout(r, interval));
+      }
+      return false;
+    };
+
+    const hostPresent = await waitForHost();
+    if (!hostPresent) {
+      console.warn('[mini-tutorial] host no presente tras esperar -> lanzando fallback');
+    }
+    setTimeout(() => this.miniTutorialService.start(this.steps), hostPresent ? 300 : 0);
   }
 
   getName(){
