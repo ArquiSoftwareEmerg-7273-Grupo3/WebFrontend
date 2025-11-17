@@ -48,7 +48,6 @@ export class CreateIlustrationComponent implements OnInit {
     
     this.authService.getIlustradorId$().subscribe((id: number | null) => {
       this.ilustradorId = id;
-      console.log('Suscripción ilustradorId ->', this.ilustradorId);
     });
 
     // Cargar categorías del portafolio
@@ -77,8 +76,7 @@ export class CreateIlustrationComponent implements OnInit {
     
     this.selectedFile = file;
     this.selectedFileName = file.name;
-    console.log('Archivo seleccionado:', file);
-        console.log('Archivo seleccionado:', file.name);
+
     // Crear vista previa local
     this.createImagePreview(file);
     this.uploadImage(file);
@@ -121,10 +119,8 @@ export class CreateIlustrationComponent implements OnInit {
     this.portfolioService.getCategoriesByPortfolio(this.portfolioIdNum).subscribe({
       next: (categories) => {
         this.categories = categories || [];
-        console.log('Categorías cargadas:', this.categories);
       },
       error: (err) => {
-        console.error('Error cargando categorías:', err);
         this.categories = [];
       }
     });
@@ -186,13 +182,12 @@ export class CreateIlustrationComponent implements OnInit {
       this.portfolioService.addIllustrationToCategory(this.selectedCategory, ilustrationData).subscribe({
         next: () => {
           this.isLoading = false;
-          alert('✅ Ilustración agregada a la categoría exitosamente');
+          alert('Ilustración agregada a la categoría exitosamente');
           this.location.back();
         },
         error: (err: any) => {
           this.isLoading = false;
           console.error(err);
-          alert('❌ Error al agregar la ilustración: ' + (err?.error || err?.message || 'Error desconocido'));
         }
       });
     } else {
@@ -224,13 +219,12 @@ export class CreateIlustrationComponent implements OnInit {
       ).subscribe({
         next: () => {
           this.isLoading = false;
-          alert('✅ Ilustración creada y asignada al portafolio con éxito');
+          alert('Ilustración creada y asignada al portafolio con éxito');
           this.location.back();
         },
         error: (err: any) => {
           this.isLoading = false;
           console.error(err);
-          alert('❌ Error al crear la ilustración: ' + (err?.message || JSON.stringify(err)));
         }
       });
     }

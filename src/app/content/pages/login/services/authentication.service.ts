@@ -66,7 +66,6 @@ export class AuthenticationService {
       this.http.get<UserInfoResponse>(`${this.basePath}/api/v1/users/me`, this.httpOptions)
         .subscribe({
           next: (response) => {
-            console.log('✔️ Información del usuario obtenida:', response);
             this.userInfo.next(response);
 
             // Determinar el rol basado en la información específica presente
@@ -77,7 +76,6 @@ export class AuthenticationService {
             resolve(response);
           },
           error: (error) => {
-            console.error('❌ Error al obtener la información del usuario:', error);
             if (error.status === 401) {
               console.warn('Token inválido -> cerrando sesión.');
               this.signOut();
@@ -130,12 +128,10 @@ export class AuthenticationService {
       this.http.post(`${this.basePath}/api/v1/authentication/sign-up`, signUpRequest, this.httpOptions)
         .subscribe({
           next: (response) => {
-            console.log(`✔️ Usuario registrado exitosamente`);
             alert('Registro exitoso');
             this.router.navigate(['/sign-in']).then(() => resolve());
           },
           error: (error) => {
-            console.error(`❌ Error while signing up: ${error.message}`);
             alert(`Error: ${error.message}`);
             reject(error);
           }
@@ -154,7 +150,6 @@ export class AuthenticationService {
             this.signedInRole.next(response.role);
             this.signedInUsername.next(response.username);
             localStorage.setItem('token', response.token);
-            console.log(`✔️ Signed In as ${response.username} with token: ${response.token}`);
 
             // Cargar información completa del usuario
             this.loadUserInformation()
@@ -171,7 +166,6 @@ export class AuthenticationService {
             this.signedInUserId.next(0);
             this.signedInUsername.next('');
             localStorage.removeItem('token');
-            console.error(`❌ Error while signing in: ${error.message}`);
             this.router.navigate(['/sign-in']).then(() => reject(error));
           }
         });

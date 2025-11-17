@@ -128,4 +128,19 @@ export class JobsService {
       })
     );
   }
+
+  // Crear proyecto (para Escritores)
+  createProyecto(proyectoData: any): Observable<ProyectoResource> {
+    const token = localStorage.getItem('token');
+    const headers = token 
+      ? new HttpHeaders({ Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }) 
+      : this.httpOptions.headers;
+    
+    return this.http.post<ProyectoResource>(`${this.basePath}/proyectos`, proyectoData, { headers }).pipe(
+      catchError(error => {
+        console.error('Error al crear proyecto:', error);
+        return throwError(() => error);
+      })
+    );
+  }
 }

@@ -1,31 +1,119 @@
-<div class="chat-title-wrapper">
-  <h1 class="chat-title">Mis <br> <span class="highlight">Mensajes</span></h1>
-</div>
-<div class="chat-container">
-  <div class="chat-wrapper">
-    <div class="sidebar">
-      <h2>Últimos chats</h2>
-      <div class="chat-list">
-        <div class="chat-user" *ngFor="let user of users" (click)="selectUser(user.id)">
-          <button class="icon-button circle">
-            <span class="material-symbols-outlined">person</span>
-          </button>
-          <span>{{ user.name }}</span>
-        </div>
+<div class="chats-page">
+  <!-- Hero Section -->
+  <div class="chats-hero">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <span class="material-symbols-outlined">chat_bubble</span>
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-title">Mis <span class="gradient-text">Mensajes</span></h1>
+        <p class="hero-subtitle">Mantén la comunicación con tus colaboradores</p>
       </div>
     </div>
-    <div class="chat-box">
-      <div class="chat-header">
-        <button class="icon-button circle">
-          <span class="material-symbols-outlined">person</span>
-        </button>
-        <span class="username">{{ selectedUser?.name }}</span>
+  </div>
+
+  <!-- Chat Container -->
+  <div class="chat-container">
+    <div class="chat-wrapper">
+      <!-- Sidebar - Contactos -->
+      <div class="chat-sidebar">
+        <div class="sidebar-header">
+          <h2>
+            <span class="material-symbols-outlined">forum</span>
+            Conversaciones
+          </h2>
+          <button class="new-chat-btn" title="Nueva conversación">
+            <span class="material-symbols-outlined">add</span>
+          </button>
+        </div>
+        
+        <div class="search-chats">
+          <span class="material-symbols-outlined">search</span>
+          <input type="text" placeholder="Buscar conversaciones..." />
+        </div>
+
+        <div class="chat-list">
+          <div 
+            class="chat-item" 
+            *ngFor="let user of users" 
+            [class.active]="selectedUser?.id === user.id"
+            (click)="selectUser(user.id)">
+            <div class="chat-avatar">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <div class="chat-info">
+              <div class="chat-name-row">
+                <span class="chat-name">{{ user.name }}</span>
+                <span class="chat-time">Ahora</span>
+              </div>
+              <p class="chat-preview">Último mensaje de la conversación...</p>
+            </div>
+            <div class="chat-badge" *ngIf="user">{{ user }}</div>
+          </div>
+        </div>
       </div>
-      <div class="chat-messages">
-        <!-- Aquí irán los mensajes -->
-      </div>
-      <div class="chat-input">
-        <input type="text" placeholder="Escribir....">
+
+      <!-- Chat Box - Mensajes -->
+      <div class="chat-box">
+        <div class="chat-box-header" *ngIf="selectedUser">
+          <div class="header-user">
+            <div class="user-avatar">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <div class="user-info">
+              <h3>{{ selectedUser?.name || 'Usuario' }}</h3>
+              <span class="user-status">En línea</span>
+            </div>
+          </div>
+          <div class="header-actions">
+            <button class="action-btn" title="Llamar">
+              <span class="material-symbols-outlined">call</span>
+            </button>
+            <button class="action-btn" title="Video llamada">
+              <span class="material-symbols-outlined">videocam</span>
+            </button>
+            <button class="action-btn" title="Más opciones">
+              <span class="material-symbols-outlined">more_vert</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="chat-messages" *ngIf="selectedUser">
+          <div class="empty-messages">
+            <span class="material-symbols-outlined">chat_bubble_outline</span>
+            <p>No hay mensajes aún</p>
+            <span>Comienza la conversación enviando un mensaje</span>
+          </div>
+        </div>
+
+        <div class="chat-empty-state" *ngIf="!selectedUser">
+          <div class="empty-icon">
+            <span class="material-symbols-outlined">chat_bubble_outline</span>
+          </div>
+          <h3>Selecciona una conversación</h3>
+          <p>Elige un contacto de la lista para comenzar a chatear</p>
+        </div>
+
+        <div class="chat-input-container" *ngIf="selectedUser">
+          <div class="input-actions">
+            <button class="attach-btn" title="Adjuntar archivo">
+              <span class="material-symbols-outlined">attach_file</span>
+            </button>
+            <button class="attach-btn" title="Emoji">
+              <span class="material-symbols-outlined">mood</span>
+            </button>
+          </div>
+          <div class="input-wrapper">
+            <input 
+              type="text" 
+              placeholder="Escribe un mensaje..." 
+              class="message-input"
+            />
+          </div>
+          <button class="send-btn" title="Enviar">
+            <span class="material-symbols-outlined">send</span>
+          </button>
+        </div>
       </div>
     </div>
   </div>

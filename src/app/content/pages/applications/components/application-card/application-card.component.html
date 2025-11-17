@@ -1,20 +1,37 @@
-<div class="card" [ngClass]="{ 'rejected': state === 'Rechazado' }" (click)="goToProject()">
-  <div class="image-wrapper">
-    <img [src]="imageSrc" alt="Project image" />
-  </div>
-  <div class="info">
-    <div class="header">
-      <h2 class="title">{{ title }}</h2>
-      <span class="date">Fecha de Postulación: {{ dateApplication }}</span>
+<div class="application-card" [ngClass]="getStateClass()" (click)="goToProject()">
+  <div class="card-image-wrapper">
+    <img [src]="imageSrc" alt="Project image" class="card-image" />
+    <div class="card-overlay">
+      <button class="view-btn" (click)="goToProject(); $event.stopPropagation()">
+        <span class="material-symbols-outlined">visibility</span>
+        Ver Proyecto
+      </button>
     </div>
-    <div class="author-status">
-      <div class="author-icon">
-        <button class="icon-button circle">
-          <span class="material-symbols-outlined">person</span>
-        </button>
-        <span class="author">{{ author }}</span>
+    <div class="state-badge" [ngClass]="getStateClass()">
+      <span class="material-symbols-outlined">{{ getStateIcon() }}</span>
+      <span>{{ state }}</span>
+    </div>
+  </div>
+  
+  <div class="card-content">
+    <div class="card-header">
+      <h3 class="card-title">{{ title }}</h3>
+      <div class="postulation-date">
+        <span class="material-symbols-outlined">calendar_today</span>
+        <span>Postulado: {{ dateApplication }}</span>
       </div>
-      <span class="status">Estado: {{ state }}</span>
+    </div>
+    
+    <div class="card-author">
+      <div class="author-info">
+        <div class="author-avatar">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <div class="author-details">
+          <span class="author-label">Escritor</span>
+          <span class="author-name">{{ author }}</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>

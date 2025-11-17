@@ -84,7 +84,6 @@
   position:absolute;
   top:-12px; right:16px;
   background: #0b815b;
-);
   color:#fff;
   font-size:.72rem;
   font-weight:700;
@@ -130,7 +129,6 @@
 
 .btn-primary{
   background: #0b815b;
-);
   color:#fff;
   box-shadow:0 12px 28px rgba(37,99,235,.25);
 }

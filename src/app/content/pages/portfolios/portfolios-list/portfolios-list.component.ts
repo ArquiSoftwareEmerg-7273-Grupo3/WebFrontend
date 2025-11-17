@@ -178,7 +178,6 @@ export class PortfoliosListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error actualizando portafolio:', err);
-        alert('Error al actualizar el portafolio: ' + (err?.error || err?.message || 'Error desconocido'));
       }
     });
   }

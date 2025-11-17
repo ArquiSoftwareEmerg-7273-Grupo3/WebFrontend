@@ -1,24 +1,90 @@
-<div class="application-title">
-  <div class="application-content">
-    <h1>Mis <span class="cyan"> postulaciones</span></h1>
-    <!--
-    <h1>Postulaciones<span class="cyan"> recibidas</span></h1>
-    -->
-    <hr>
+<div class="applications-page">
+  <!-- Hero Section -->
+  <div class="applications-hero">
+    <div class="hero-background">
+      <div class="hero-pattern"></div>
+      <div class="hero-gradient"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-icon">
+        <span class="material-symbols-outlined">assignment</span>
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-title">Mis <span class="gradient-text">Postulaciones</span></h1>
+        <p class="hero-description">
+          Revisa el estado de tus candidaturas y mantente al día con tus oportunidades
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">{{ projects.length }}</span>
+            <span class="stat-label">Total</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getPendingCount() }}</span>
+            <span class="stat-label">Pendientes</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getApprovedCount() }}</span>
+            <span class="stat-label">Aprobadas</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="application-container" >
-    <app-application-card
-      *ngFor="let project of projects"
-      [title]="project.title"
-      [author]="project.author"
-      [dateApplication]="project.applicationDate"
-      [imageSrc]="project.imageSrc"
-      [state]="project.state"
-      [id]="project.id">
-    </app-application-card>
-    <!--
-    Postulaciones recibidas
-    -->
+  <!-- Filters Section -->
+  <div class="filters-section">
+    <div class="filters-container">
+      <div class="filter-tabs">
+        <button class="filter-tab active" (click)="filterByState('all')">
+          <span class="material-symbols-outlined">apps</span>
+          Todas
+        </button>
+        <button class="filter-tab" (click)="filterByState('pending')">
+          <span class="material-symbols-outlined">schedule</span>
+          Pendientes
+        </button>
+        <button class="filter-tab" (click)="filterByState('approved')">
+          <span class="material-symbols-outlined">check_circle</span>
+          Aprobadas
+        </button>
+        <button class="filter-tab" (click)="filterByState('rejected')">
+          <span class="material-symbols-outlined">cancel</span>
+          Rechazadas
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Applications Container -->
+  <div class="applications-container">
+    <div class="applications-grid" *ngIf="filteredProjects.length > 0">
+      <app-application-card
+        *ngFor="let project of filteredProjects; trackBy: trackByProjectId"
+        [title]="project.title"
+        [author]="project.author"
+        [dateApplication]="project.applicationDate"
+        [imageSrc]="project.imageSrc"
+        [state]="project.state"
+        [id]="project.id"
+        class="fade-in">
+      </app-application-card>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredProjects.length === 0">
+      <div class="empty-icon">
+        <span class="material-symbols-outlined">inbox</span>
+      </div>
+      <h3>No hay postulaciones</h3>
+      <p *ngIf="selectedFilter === 'all'">Aún no has postulado a ningún proyecto. ¡Explora las oportunidades disponibles!</p>
+      <p *ngIf="selectedFilter !== 'all'">No hay postulaciones con este estado.</p>
+      <button class="btn-primary" *ngIf="selectedFilter === 'all'" routerLink="/jobs">
+        <span class="material-symbols-outlined">work</span>
+        Explorar Proyectos
+      </button>
+    </div>
   </div>
 </div>

@@ -1,28 +1,325 @@
-<div class="container">
-
+<div class="create-project-container">
+  <!-- Back Button -->
   <button class="back-button" (click)="goBack()">
     <span class="material-symbols-outlined">arrow_back</span>
+    <span class="back-text">Volver</span>
   </button>
 
-  <h1>Nuevo <br> <span class="cyan">Proyecto</span></h1>
+  <!-- Header -->
+  <div class="page-header">
+    <div class="header-icon">
+      <span class="material-symbols-outlined">work</span>
+    </div>
+    <div class="header-text">
+      <h1 class="page-title">
+        Crear Nuevo <span class="gradient-text">Proyecto</span>
+      </h1>
+      <p class="page-subtitle">
+        Completa los detalles de tu proyecto para recibir postulaciones de ilustradores
+      </p>
+    </div>
+  </div>
 
+  <!-- Form Card -->
   <div class="form-card">
-    <div class="form-content">
-      <div class="form-left">
-        <input type="text" placeholder="Título" [(ngModel)]="title" />
-        <textarea placeholder="Descripción" [(ngModel)]="description"></textarea>
+    <div class="form-grid">
+      <!-- Left Column - Basic Info -->
+      <div class="form-column">
+        <div class="form-section">
+          <h3 class="section-title">
+            <span class="material-symbols-outlined">info</span>
+            Información Básica
+          </h3>
+
+          <div class="form-group">
+            <label for="titulo">
+              Título del Proyecto *
+              <span class="required-badge">Requerido</span>
+            </label>
+            <input
+              id="titulo"
+              type="text"
+              [(ngModel)]="titulo"
+              placeholder="Ej: Ilustrador para campaña publicitaria..."
+              class="form-input"
+              maxlength="150"
+            />
+            <span class="char-count">{{ titulo.length }}/150</span>
+          </div>
+
+          <div class="form-group">
+            <label for="descripcion">
+              Descripción del Proyecto *
+              <span class="required-badge">Requerido</span>
+            </label>
+            <textarea
+              id="descripcion"
+              [(ngModel)]="descripcion"
+              placeholder="Describe el proyecto, objetivos, entregables esperados..."
+              class="form-textarea"
+              rows="5"
+              maxlength="1000"
+            ></textarea>
+            <span class="char-count">{{ descripcion.length }}/1000</span>
+          </div>
+
+          <div class="form-group">
+            <label for="requisitos">
+              Requisitos y Habilidades
+              <span class="optional-badge">Opcional</span>
+            </label>
+            <textarea
+              id="requisitos"
+              [(ngModel)]="requisitos"
+              placeholder="Especifica requisitos técnicos, experiencia necesaria, software..."
+              class="form-textarea"
+              rows="4"
+              maxlength="500"
+            ></textarea>
+            <span class="char-count">{{ requisitos.length }}/500</span>
+          </div>
+        </div>
       </div>
 
-      <div class="form-right">
-        <div class="upload-wrapper">
-          <input type="text" placeholder="Subir Imagen" [(ngModel)]="image" />
-          <span class="material-symbols-outlined upload-icon">upload</span>
+      <!-- Right Column - Project Details -->
+      <div class="form-column">
+        <div class="form-section">
+          <h3 class="section-title">
+            <span class="material-symbols-outlined">settings</span>
+            Detalles del Proyecto
+          </h3>
+
+          <div class="form-group">
+            <label for="especialidad">
+              Especialidad Requerida *
+              <span class="required-badge">Requerido</span>
+            </label>
+            <div class="select-wrapper">
+              <span class="material-symbols-outlined select-icon">palette</span>
+              <select
+                id="especialidad"
+                [(ngModel)]="especialidadProyecto"
+                class="form-select"
+              >
+                <option [value]="null">Selecciona una especialidad</option>
+                <option *ngFor="let esp of especialidades" [value]="esp">
+                  {{ especialidadLabels[esp] }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="modalidad">
+              Modalidad de Trabajo *
+              <span class="required-badge">Requerido</span>
+            </label>
+            <div class="select-wrapper">
+              <span class="material-symbols-outlined select-icon">location_on</span>
+              <select
+                id="modalidad"
+                [(ngModel)]="modalidadProyecto"
+                class="form-select"
+              >
+                <option [value]="null">Selecciona una modalidad</option>
+                <option *ngFor="let mod of modalidades" [value]="mod">
+                  {{ modalidadLabels[mod] }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="contrato">
+              Tipo de Contrato *
+              <span class="required-badge">Requerido</span>
+            </label>
+            <div class="select-wrapper">
+              <span class="material-symbols-outlined select-icon">description</span>
+              <select
+                id="contrato"
+                [(ngModel)]="contratoProyecto"
+                class="form-select"
+              >
+                <option [value]="null">Selecciona un tipo de contrato</option>
+                <option *ngFor="let cont of contratos" [value]="cont">
+                  {{ contratoLabels[cont] }}
+                </option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="presupuesto">
+              Presupuesto (PEN) *
+              <span class="required-badge">Requerido</span>
+            </label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">attach_money</span>
+              <input
+                id="presupuesto"
+                type="number"
+                [(ngModel)]="presupuesto"
+                placeholder="0.00"
+                class="form-input with-icon"
+                min="0"
+                step="0.01"
+              />
+            </div>
+            <p class="input-hint">
+              <span class="material-symbols-outlined">info</span>
+              Ingresa el presupuesto total del proyecto
+            </p>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="fechaInicio">
+                Fecha de Inicio *
+                <span class="required-badge">Requerido</span>
+              </label>
+              <div class="input-with-icon">
+                <span class="material-symbols-outlined input-icon">calendar_today</span>
+                <input
+                  id="fechaInicio"
+                  type="date"
+                  [(ngModel)]="fechaInicio"
+                  class="form-input with-icon"
+                  [min]="fechaInicio"
+                />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="fechaFin">
+                Fecha de Fin *
+                <span class="required-badge">Requerido</span>
+              </label>
+              <div class="input-with-icon">
+                <span class="material-symbols-outlined input-icon">event</span>
+                <input
+                  id="fechaFin"
+                  type="date"
+                  [(ngModel)]="fechaFin"
+                  class="form-input with-icon"
+                  [min]="getMinEndDate()"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="maxPostulaciones">
+              Máximo de Postulaciones
+              <span class="optional-badge">Opcional</span>
+            </label>
+            <div class="input-with-icon">
+              <span class="material-symbols-outlined input-icon">people</span>
+              <input
+                id="maxPostulaciones"
+                type="number"
+                [(ngModel)]="maxPostulaciones"
+                placeholder="10"
+                class="form-input with-icon"
+                min="1"
+                max="100"
+              />
+            </div>
+            <p class="input-hint">
+              <span class="material-symbols-outlined">info</span>
+              Número máximo de ilustradores que pueden postularse
+            </p>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="button-wrapper">
-      <button (click)="createProject()">Crear Proyecto</button>
+    <!-- Preview Section -->
+    <div class="preview-section">
+      <h3 class="section-title">
+        <span class="material-symbols-outlined">visibility</span>
+        Vista Previa del Proyecto
+      </h3>
+
+      <div class="preview-card">
+        <div class="preview-header">
+          <h4 class="preview-title">{{ titulo || 'Título del proyecto' }}</h4>
+          <div class="preview-badges">
+            <span class="badge badge-primary" *ngIf="especialidadProyecto">
+              <span class="material-symbols-outlined">palette</span>
+              {{ especialidadLabels[especialidadProyecto] }}
+            </span>
+            <span class="badge badge-secondary" *ngIf="modalidadProyecto">
+              <span class="material-symbols-outlined">location_on</span>
+              {{ modalidadLabels[modalidadProyecto] }}
+            </span>
+            <span class="badge badge-tertiary" *ngIf="contratoProyecto">
+              <span class="material-symbols-outlined">description</span>
+              {{ contratoLabels[contratoProyecto] }}
+            </span>
+          </div>
+        </div>
+
+        <div class="preview-body">
+          <p class="preview-description" *ngIf="descripcion">{{ descripcion }}</p>
+          <p class="preview-description empty" *ngIf="!descripcion">Sin descripción</p>
+
+          <div class="preview-info-grid">
+            <div class="info-item">
+              <span class="material-symbols-outlined">attach_money</span>
+              <div>
+                <span class="info-label">Presupuesto</span>
+                <span class="info-value">{{ presupuesto ? 'S/ ' + presupuesto.toFixed(2) : 'No especificado' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="material-symbols-outlined">calendar_today</span>
+              <div>
+                <span class="info-label">Inicio</span>
+                <span class="info-value">{{ fechaInicio || 'No especificado' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="material-symbols-outlined">event</span>
+              <div>
+                <span class="info-label">Fin</span>
+                <span class="info-value">{{ fechaFin || 'No especificado' }}</span>
+              </div>
+            </div>
+
+            <div class="info-item">
+              <span class="material-symbols-outlined">people</span>
+              <div>
+                <span class="info-label">Máx. Postulaciones</span>
+                <span class="info-value">{{ maxPostulaciones }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="preview-requisitos" *ngIf="requisitos">
+            <h5>
+              <span class="material-symbols-outlined">checklist</span>
+              Requisitos
+            </h5>
+            <p>{{ requisitos }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Actions -->
+    <div class="form-actions">
+      <button class="btn-cancel" (click)="goBack()" [disabled]="isLoading">
+        <span class="material-symbols-outlined">close</span>
+        Cancelar
+      </button>
+      <button class="btn-submit" (click)="createProject()" [disabled]="isLoading">
+        <span class="material-symbols-outlined" *ngIf="!isLoading">check</span>
+        <span class="spinner-small" *ngIf="isLoading"></span>
+        {{ isLoading ? 'Creando...' : 'Crear Proyecto' }}
+      </button>
     </div>
   </div>
 </div>

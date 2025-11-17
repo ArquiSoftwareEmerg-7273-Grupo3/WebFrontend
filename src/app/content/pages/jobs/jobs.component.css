@@ -98,6 +98,37 @@
   opacity: 0.95;
 }
 
+.hero-features {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-top: 1.5rem;
+}
+
+.feature-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.feature-badge:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
+.feature-badge .material-symbols-outlined {
+  font-size: 18px;
+}
+
 .highlight {
   font-weight: 600;
   color: #e0f2f1;
@@ -215,6 +246,17 @@
   100% { transform: rotate(360deg); }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .loading-container p {
   margin: 0;
   font-size: 16px;
@@ -295,19 +337,42 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 25px;
-  padding: 0 5px;
+  padding: 16px 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.results-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .results-count {
   font-size: 16px;
   font-weight: 600;
-  color: #333;
+  color: #2c3e50;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.results-count .material-symbols-outlined {
+  font-size: 20px;
+  color: #429f95;
+}
+
+.results-count strong {
+  color: #429f95;
+  font-size: 1.1em;
 }
 
 .filter-info {
   font-size: 14px;
   color: #64748b;
-  margin-left: 8px;
   font-weight: 400;
 }
 
@@ -432,6 +497,7 @@
   position: relative;
   overflow: hidden;
   box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  animation: fadeIn 0.6s ease-out;
 }
 
 .job-card:hover {
@@ -603,8 +669,39 @@
 .job-description p {
   color: #555;
   line-height: 1.6;
-  margin: 0;
+  margin: 0 0 12px 0;
   font-size: 15px;
+}
+
+.job-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.tag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: #f1f5f9;
+  color: #475569;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.tag:hover {
+  background: #e8f1f0;
+  border-color: #429f95;
+  color: #429f95;
+}
+
+.tag .material-symbols-outlined {
+  font-size: 14px;
 }
 
 /* Job Requirements */

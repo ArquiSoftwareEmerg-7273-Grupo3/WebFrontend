@@ -37,7 +37,6 @@ export class PortfoliosComponent {
 
     this.portfolioService.getPortafolio().subscribe({
       next: (p: any) => {
-        console.log('Datos recibidos del servicio:', p);
         const item = Array.isArray(p) ? p[0] : p;
         
         if (item) {
@@ -79,7 +78,6 @@ export class PortfoliosComponent {
     this.portfolioService.getCategoriesByPortfolio(this.id).subscribe({
       next: (categories: any[]) => {
         this.categories = categories || [];
-        console.log('Categorías cargadas:', this.categories);
       },
       error: (err: any) => {
         console.error('Error cargando categorías', err);

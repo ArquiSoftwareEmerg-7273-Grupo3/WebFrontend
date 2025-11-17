@@ -26,4 +26,20 @@ export class ApplicationCardComponent {
     this.router.navigate(['/information/project', this.id]);
   }
 
+  getStateClass(): string {
+    const stateLower = this.state.toLowerCase();
+    if (stateLower.includes('pendiente')) return 'state-pending';
+    if (stateLower.includes('aprobado') || stateLower.includes('aceptado')) return 'state-approved';
+    if (stateLower.includes('rechazado')) return 'state-rejected';
+    return 'state-default';
+  }
+
+  getStateIcon(): string {
+    const stateLower = this.state.toLowerCase();
+    if (stateLower.includes('pendiente')) return 'schedule';
+    if (stateLower.includes('aprobado') || stateLower.includes('aceptado')) return 'check_circle';
+    if (stateLower.includes('rechazado')) return 'cancel';
+    return 'help';
+  }
+
 }

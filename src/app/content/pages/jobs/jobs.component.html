@@ -17,10 +17,24 @@
           <span *ngIf="userRole !== 'ILLUSTRATOR'">Oportunidades <span class="gradient-text">Laborales</span></span>
         </h1>
         <p class="hero-description">
-          <span *ngIf="userRole === 'ILLUSTRATOR'">Encuentra proyectos increíbles y postúlate como ilustrador.</span>
-          <span *ngIf="userRole !== 'ILLUSTRATOR'">Encuentra el proyecto perfecto para ti.</span>
-          <span class="highlight">¡Tu próxima oportunidad te espera!</span>
+          <span *ngIf="userRole === 'ILLUSTRATOR'">Descubre proyectos increíbles de escritores que buscan tu talento. <span class="highlight">Conecta, colabora y crea</span> obras extraordinarias juntos.</span>
+          <span *ngIf="userRole !== 'ILLUSTRATOR'">Encuentra el ilustrador perfecto para dar vida a tus historias. <span class="highlight">Tu próxima colaboración te espera.</span></span>
         </p>
+        
+        <div class="hero-features" *ngIf="userRole === 'ILLUSTRATOR'">
+          <div class="feature-badge">
+            <span class="material-symbols-outlined">verified</span>
+            <span>Proyectos verificados</span>
+          </div>
+          <div class="feature-badge">
+            <span class="material-symbols-outlined">payments</span>
+            <span>Pagos seguros</span>
+          </div>
+          <div class="feature-badge">
+            <span class="material-symbols-outlined">support_agent</span>
+            <span>Soporte 24/7</span>
+          </div>
+        </div>
         
         <div class="hero-stats">
           <div class="stat-item">
@@ -108,8 +122,15 @@
 
   <!-- Results Header -->
   <div *ngIf="!loading" class="results-header">
-    <span class="results-count">{{totalProyectos}} proyectos encontrados</span>
-    <span *ngIf="filteredProyectos.length !== totalProyectos" class="filter-info">({{filteredProyectos.length}} con filtros aplicados)</span>
+    <div class="results-info">
+      <span class="results-count">
+        <span class="material-symbols-outlined">work</span>
+        <strong>{{filteredProyectos.length}}</strong> {{filteredProyectos.length === 1 ? 'proyecto encontrado' : 'proyectos encontrados'}}
+      </span>
+      <span *ngIf="filteredProyectos.length !== totalProyectos" class="filter-info">
+        ({{totalProyectos}} totales)
+      </span>
+    </div>
     <div class="view-options">
   <span
     class="material-symbols-outlined"
@@ -169,6 +190,20 @@
 
       <div class="job-description">
         <p>{{proyecto.descripcion}}</p>
+        <div class="job-tags">
+          <span class="tag">
+            <span class="material-symbols-outlined">category</span>
+            {{ EspecialidadProyectoLabel[proyecto.especialidadProyecto] }}
+          </span>
+          <span class="tag">
+            <span class="material-symbols-outlined">work</span>
+            {{ ModalidadProyectoLabel[proyecto.modalidadProyecto] }}
+          </span>
+          <span class="tag">
+            <span class="material-symbols-outlined">description</span>
+            {{ ContratoProyectoLabel[proyecto.contratoProyecto] }}
+          </span>
+        </div>
       </div>
 
       <div class="job-requirements" *ngIf="getRequirementsList(proyecto.requisitos).length > 0">

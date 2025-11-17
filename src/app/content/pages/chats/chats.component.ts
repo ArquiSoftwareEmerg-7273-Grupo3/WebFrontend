@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
-import {NgForOf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 
 @Component({
   selector: 'app-chats',
   standalone: true,
   imports: [
-    NgForOf
+    NgForOf,
+    NgIf
   ],
   templateUrl: './chats.component.html',
   styleUrl: './chats.component.css'

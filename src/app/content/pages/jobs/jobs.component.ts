@@ -36,6 +36,11 @@ export class JobsComponent implements OnInit {
   error: string = '';
   totalProyectos: number = 0;
   placeholderImage = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&h=400&fit=crop';
+
+  // Exponer los labels para el template
+  EspecialidadProyectoLabel = EspecialidadProyectoLabel;
+  ModalidadProyectoLabel = ModalidadProyectoLabel;
+  ContratoProyectoLabel = ContratoProyectoLabel;
   
   especialidades = [
     { value: '', label: 'Todas las especialidades' },

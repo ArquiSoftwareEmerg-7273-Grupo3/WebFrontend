@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
+import {RouterLink} from "@angular/router";
 import {ProjectCardComponent} from "../home/components/project-card/project-card.component";
 import {ApplicationCardComponent} from './components/application-card/application-card.component';
 import {
@@ -11,6 +12,8 @@ import {
   standalone: true,
   imports: [
     NgForOf,
+    NgIf,
+    RouterLink,
     ApplicationCardComponent,
   ],
   templateUrl: './applications.component.html',
@@ -86,9 +89,43 @@ export class ApplicationsComponent implements OnInit {
       description: 'Este proyecto tiene como objetivo desarrollar cuentos ilustrados que promuevan la inclusión y el respeto por las diferencias. A través de relatos protagonizados por niños y niñas de diferentes culturas, capacidades y contextos, se busca construir una visión más abierta y comprensiva del mundo. El enfoque será pedagógico y emocional, incorporando actividades complementarias para padres y educadores.'
     }
   ];
+  selectedFilter: string = 'all';
+  filteredProjects: any[] = [];
+
   ngOnInit() {
     const storedRole = localStorage.getItem('role');
     this.role = storedRole === '1' ? 'Ilustrador' : storedRole === '2' ? 'Escritor' : 'Invitado';
+    this.filteredProjects = this.projects;
+  }
+
+  filterByState(state: string): void {
+    this.selectedFilter = state;
+    if (state === 'all') {
+      this.filteredProjects = this.projects;
+    } else {
+      this.filteredProjects = this.projects.filter(p => {
+        const stateLower = p.state.toLowerCase();
+        if (state === 'pending') return stateLower.includes('pendiente');
+        if (state === 'approved') return stateLower.includes('aprobado') || stateLower.includes('aceptado');
+        if (state === 'rejected') return stateLower.includes('rechazado');
+        return true;
+      });
+    }
+  }
+
+  getPendingCount(): number {
+    return this.projects.filter(p => p.state.toLowerCase().includes('pendiente')).length;
+  }
+
+  getApprovedCount(): number {
+    return this.projects.filter(p => 
+      p.state.toLowerCase().includes('aprobado') || 
+      p.state.toLowerCase().includes('aceptado')
+    ).length;
+  }
+
+  trackByProjectId(index: number, project: any): number {
+    return project.id;
   }
 
 }

@@ -38,7 +38,6 @@ export class LoginComponent {
 
     this.authService.signIn(signInRequest)
       .then(() => {
-        console.log('Login exitoso');
       })
       .catch(error => {
         console.error('Error en el login:', error);

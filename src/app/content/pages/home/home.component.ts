@@ -459,6 +459,11 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.loadFeed();
   }
 
+  // TrackBy para mejorar rendimiento de ngFor
+  trackByPostId(index: number, post: DisplayPost): number {
+    return post.id;
+  }
+
   // Método para obtener posts trending
   loadTrendingPosts(): void {
     const trendingSub = this.socialFeedService.getTrendingPosts().subscribe({

@@ -1,16 +1,58 @@
+<!-- Hero Section para Home -->
+<div class="home-hero-section">
+  <div class="hero-background">
+    <div class="hero-pattern"></div>
+    <div class="hero-gradient"></div>
+  </div>
+  <div class="hero-content-wrapper">
+    <div class="hero-content">
+      <div class="hero-icon">
+        <span class="material-symbols-outlined">groups</span>
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Bienvenido a <span class="gradient-text">ArtCollab</span>
+        </h1>
+        <p class="hero-description">
+          La plataforma donde <span class="highlight">ilustradores y escritores</span> se conectan para crear proyectos increíbles juntos
+        </p>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">+500</span>
+            <span class="stat-label">Usuarios Activos</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">+200</span>
+            <span class="stat-label">Proyectos Completados</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div class="social-container">
   <!-- Columna Izquierda - Usuarios sugeridos -->
   <div class="sidebar left-sidebar">
     <div class="sidebar-section">
-      <h3>Artistas Sugeridos</h3>
+      <h3>
+        <span class="material-symbols-outlined">person_add</span>
+        Artistas Sugeridos
+      </h3>
       <div class="suggested-users">
         <div class="user-card" *ngFor="let user of suggestedUsers">
-          <img [src]="user.photo || 'assets/images/default-avatar.png'" [alt]="user.name" class="user-avatar">
+<img [src]="'https://i.pinimg.com/1200x/f0/cf/c7/f0cfc71ad649cbcdb690a6dccee2af7c.jpg'"
+     [alt]="user.name"
+     class="user-avatar">
           <div class="user-info">
             <span class="user-name">{{user.name}}</span>
             <span class="user-role">{{user.role}}</span>
           </div>
-          <button class="follow-btn" (click)="followUser(user.id)">Seguir</button>
+          <button class="follow-btn" (click)="followUser(user.id)">
+            <span class="material-symbols-outlined">add</span>
+            Seguir
+          </button>
         </div>
       </div>
     </div>
@@ -24,18 +66,26 @@
     <div class="create-post">
       <img [src]="userPhoto" [alt]="userName" class="avatar">
       <div class="post-input">
+        <div class="create-post-header">
+          <h3>Comparte tu creatividad</h3>
+          <p>Comparte tus proyectos, ideas o inspiración con la comunidad</p>
+        </div>
         <textarea
           [(ngModel)]="newPostContent"
-          placeholder="¿Qué quieres compartir hoy?"
-          rows="3"></textarea>
+          placeholder="¿Qué quieres compartir hoy? Cuéntanos sobre tu proyecto, inspiración o logros..."
+          rows="4"></textarea>
         <div class="post-actions">
-          <button class="attach-btn">
-            <i class="fas fa-image"></i> Añadir imagen
+          <button class="attach-btn" title="Añadir imagen">
+            <span class="material-symbols-outlined">image</span>
+            <span>Añadir imagen</span>
           </button>
           <button class="refresh-btn" (click)="refreshFeed()" title="Refrescar feed">
             <span class="material-symbols-outlined">refresh</span>
           </button>
-          <button class="post-btn" (click)="createPost()">Publicar</button>
+          <button class="post-btn" (click)="createPost()" [disabled]="!newPostContent.trim()">
+            <span class="material-symbols-outlined">send</span>
+            Publicar
+          </button>
         </div>
       </div>
     </div>
@@ -54,7 +104,7 @@
 
     <!-- Feed de publicaciones -->
     <div class="posts-feed" *ngIf="!isLoadingPosts && posts.length > 0">
-      <div class="post-card" *ngFor="let post of posts">
+      <div class="post-card" *ngFor="let post of posts; trackBy: trackByPostId">
         <!-- Cabecera del post -->
         <div class="post-header" (click)="openPostDetail(post)">
           <img [src]="post.authorPhoto" [alt]="post.authorName" class="post-avatar">

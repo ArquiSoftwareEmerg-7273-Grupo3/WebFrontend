@@ -1,40 +1,83 @@
 <form [formGroup]="form">
   <div class="login-page">
-    <div class="logo-container">
-      <img
-        src="https://raw.githubusercontent.com/diegooo01/HidraNet/refs/heads/main/public/brand-logo/art-collab-logo.png"
-        alt="ArtCollab Logo"
-        class="logo"
-      />
+    <div class="login-background">
+      <div class="background-pattern"></div>
+      <div class="background-gradient"></div>
     </div>
-
-    <div class="login-box">
-      <h2>Iniciar sesión</h2>
-
-      <div class="form-group">
-        <input type="username" placeholder="Correo electrónico*" required formControlName="username" />
-        <span class="material-symbols-outlined icon">mail</span>
-      </div>
-
-      <div class="form-group">
-        <input
-          [type]="showPassword ? 'text' : 'password'"
-          placeholder="Contraseña*"
-          required formControlName="password"
+    
+    <div class="login-content">
+      <div class="logo-container">
+        <img
+          src="https://github.com/ArquiSoftwareEmerg-7273-Grupo3/WebFrontend/blob/main/src/assets/images/logos/artcollablogo.png?raw=true"
+          alt="ArtCollab Logo"
+          class="logo"
         />
-        <span
-          class="material-symbols-outlined icon"
-          (click)="togglePasswordVisibility()"
-        >
-          {{ showPassword ? 'visibility_off' : 'visibility' }}
-        </span>
+        <p class="logo-tagline">Conecta con creativos y haz realidad tus proyectos</p>
       </div>
 
-      <div class="redirect-link">
-        ¿No tienes una cuenta? <a routerLink="/register">Regístrate</a>
-      </div>
+      <div class="login-box">
+        <div class="login-header">
+          <h2>Bienvenido de vuelta</h2>
+          <p>Inicia sesión para continuar</p>
+        </div>
 
-      <button class="login-button" (click)="onSubmit()">Iniciar sesión</button>
+        <div class="form-group">
+          <label for="username">Correo electrónico</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined input-icon">mail</span>
+            <input 
+              id="username"
+              type="email" 
+              placeholder="tu@correo.com" 
+              required 
+              formControlName="username"
+              class="form-input"
+            />
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <div class="input-wrapper">
+            <span class="material-symbols-outlined input-icon">lock</span>
+            <input
+              id="password"
+              [type]="showPassword ? 'text' : 'password'"
+              placeholder="••••••••"
+              required 
+              formControlName="password"
+              class="form-input"
+            />
+            <span
+              class="material-symbols-outlined toggle-password"
+              (click)="togglePasswordVisibility()"
+            >
+              {{ showPassword ? 'visibility_off' : 'visibility' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" />
+            <span>Recordarme</span>
+          </label>
+          <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <button class="login-button" (click)="onSubmit()">
+          <span>Iniciar sesión</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+
+        <div class="divider">
+          <span>o</span>
+        </div>
+
+        <div class="redirect-link">
+          <p>¿No tienes una cuenta? <a routerLink="/register">Regístrate ahora</a></p>
+        </div>
+      </div>
     </div>
   </div>
 </form>
