@@ -6,6 +6,7 @@ import {AuthenticationService} from '../../services/authentication.service';
 import {SignUpRequest} from '../../model/sign-up.request';
 import {Router, RouterLink} from '@angular/router';
 import {HttpClient} from '@angular/common/http';
+import {trigger, transition, style, animate} from '@angular/animations';
 
 @Component({
   selector: 'app-sign-up',
@@ -16,7 +17,18 @@ import {HttpClient} from '@angular/common/http';
     RouterLink,
   ],
   templateUrl: './sign-up.component.html',
-  styleUrl: './sign-up.component.css'
+  styleUrl: './sign-up.component.css',
+  animations: [
+    trigger('slideInOut', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateX(20px)' }),
+        animate('400ms ease-out', style({ opacity: 1, transform: 'translateX(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ opacity: 0, transform: 'translateX(-20px)' }))
+      ])
+    ])
+  ]
 })
 export class SignUpComponent implements OnInit {
   form!: FormGroup;
@@ -175,6 +187,42 @@ export class SignUpComponent implements OnInit {
       }
       this.step = 4;
       return;
+    }
+  }
+
+  goToPreviousStep() {
+    if (this.step > 1) {
+      this.step--;
+    }
+  }
+
+  getStepTitle(): string {
+    switch (this.step) {
+      case 1:
+        return 'Crea tu cuenta';
+      case 2:
+        return '¿Dónde te encuentras?';
+      case 3:
+        return 'Información de contacto';
+      case 4:
+        return 'Completa tu perfil';
+      default:
+        return 'Registro';
+    }
+  }
+
+  getStepDescription(): string {
+    switch (this.step) {
+      case 1:
+        return 'Completa tus datos básicos para comenzar';
+      case 2:
+        return 'Cuéntanos tu ubicación';
+      case 3:
+        return 'Agrega tu información de contacto';
+      case 4:
+        return 'Personaliza tu perfil (opcional)';
+      default:
+        return '';
     }
   }
 

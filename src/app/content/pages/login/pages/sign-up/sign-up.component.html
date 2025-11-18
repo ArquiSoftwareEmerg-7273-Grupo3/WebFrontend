@@ -1,106 +1,288 @@
+<form [formGroup]="form">
+  <div class="signup-page">
+    <div class="signup-background">
+      <div class="background-pattern"></div>
+      <div class="background-gradient"></div>
+    </div>
+    
+    <div class="signup-layout">
+      <div class="left-panel">
+      <div class="logo-container">
+        <img
+          src="https://i.postimg.cc/pX1X7Drt/artcollablogo.png"
+          alt="ArtCollab Logo"
+          class="logo"
+        />
+        <p class="logo-tagline">Únete a nuestra comunidad creativa</p>
+      </div>
+      </div>
 
-<div class="signup-container">
-  <div class="signup-left">
-    <img src="https://raw.githubusercontent.com/diegooo01/HidraNet/refs/heads/main/public/brand-logo/art-collab-logo.png" alt="ArtCollab Logo" class="logo" />
-  </div>
-  <div class="signup-right">
-    <form [formGroup]="form">
-      <div class="login-box">
-        <h2>Registrarse</h2>
+      <div class="right-panel">
+      <div class="signup-box">
+        <!-- Progress Indicator -->
+        <div class="progress-indicator">
+          <div class="progress-steps">
+            <div class="step-item" [class.active]="step >= 1" [class.completed]="step > 1">
+              <div class="step-number">1</div>
+              <div class="step-label">Datos</div>
+            </div>
+            <div class="step-connector" [class.completed]="step > 1"></div>
+            <div class="step-item" [class.active]="step >= 2" [class.completed]="step > 2">
+              <div class="step-number">2</div>
+              <div class="step-label">Ubicación</div>
+            </div>
+            <div class="step-connector" [class.completed]="step > 2"></div>
+            <div class="step-item" [class.active]="step >= 3" [class.completed]="step > 3">
+              <div class="step-number">3</div>
+              <div class="step-label">Contacto</div>
+            </div>
+            <div class="step-connector" [class.completed]="step > 3"></div>
+            <div class="step-item" [class.active]="step >= 4" [class.completed]="step > 4">
+              <div class="step-number">4</div>
+              <div class="step-label">Perfil</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="signup-header">
+          <h2>{{ getStepTitle() }}</h2>
+          <p>{{ getStepDescription() }}</p>
+        </div>
 
         <!-- Paso 1: Datos básicos -->
-        <div *ngIf="step === 1">
-          <div class="form-row">
-            <div class="form-group">
-              <input type="text" placeholder="Usuario*" formControlName="username" required />
+        <div class="step-content" *ngIf="step === 1" [@slideInOut]>
+          <div class="form-group">
+            <label for="username">Correo electrónico</label>
+            <div class="input-wrapper">
+              <span class="material-symbols-outlined input-icon">person</span>
+              <input 
+                id="username"
+                type="text" 
+                placeholder="Correo electrónico" 
+                required 
+                formControlName="username"
+                class="form-input"
+              />
             </div>
           </div>
+
           <div class="form-row">
             <div class="form-group">
-              <input type="text" placeholder="Nombres*" formControlName="nombres" required />
+              <label for="nombres">Nombres</label>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined input-icon">badge</span>
+                <input 
+                  id="nombres"
+                  type="text" 
+                  placeholder="Tus nombres" 
+                  required 
+                  formControlName="nombres"
+                  class="form-input"
+                />
+              </div>
             </div>
             <div class="form-group">
-              <input type="text" placeholder="Apellidos*" formControlName="apellidos" required />
+              <label for="apellidos">Apellidos</label>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined input-icon">badge</span>
+                <input 
+                  id="apellidos"
+                  type="text" 
+                  placeholder="Tus apellidos" 
+                  required 
+                  formControlName="apellidos"
+                  class="form-input"
+                />
+              </div>
             </div>
           </div>
-          <div class="form-row">
-            <div class="form-group">
-              <input [type]="showPassword ? 'text' : 'password'" placeholder="Contraseña*" formControlName="password" />
-              <span class="material-symbols-outlined icon" (click)="togglePasswordVisibility()">
+
+          <div class="form-group">
+            <label for="password">Contraseña</label>
+            <div class="input-wrapper">
+              <span class="material-symbols-outlined input-icon">lock</span>
+              <input
+                id="password"
+                [type]="showPassword ? 'text' : 'password'"
+                placeholder="••••••••"
+                required 
+                formControlName="password"
+                class="form-input"
+              />
+              <span
+                class="material-symbols-outlined toggle-password"
+                (click)="togglePasswordVisibility()"
+              >
                 {{ showPassword ? 'visibility_off' : 'visibility' }}
               </span>
             </div>
           </div>
+
           <div class="redirect-link">
-            ¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión</a>
+            <p>¿Ya tienes una cuenta? <a routerLink="/login">Inicia sesión</a></p>
           </div>
-          <button class="login-button" type="button" (click)="goToNextStep()">Siguiente</button>
+
+          <button class="signup-button" type="button" (click)="goToNextStep()">
+            <span>Siguiente</span>
+            <span class="material-symbols-outlined">arrow_forward</span>
+          </button>
         </div>
 
         <!-- Paso 2: Ubicación -->
-        <div *ngIf="step === 2">
-          <div class="form-row">
-            <div class="form-group">
-              <input type="text" placeholder="Ubicación*" formControlName="ubicacion" required />
+        <div class="step-content" *ngIf="step === 2" [@slideInOut]>
+          <div class="form-group">
+            <label for="ubicacion">Ubicación</label>
+            <div class="input-wrapper">
+              <span class="material-symbols-outlined input-icon">location_on</span>
+              <input 
+                id="ubicacion"
+                type="text" 
+                placeholder="Ciudad, País" 
+                required 
+                formControlName="ubicacion"
+                class="form-input"
+              />
             </div>
           </div>
-          <button class="login-button" type="button" (click)="goToNextStep()">Siguiente</button>
+
+          <div class="button-group">
+            <button class="signup-button secondary" type="button" (click)="goToPreviousStep()">
+              <span class="material-symbols-outlined">arrow_back</span>
+              <span>Atrás</span>
+            </button>
+            <button class="signup-button" type="button" (click)="goToNextStep()">
+              <span>Siguiente</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
         </div>
 
         <!-- Paso 3: Información de contacto -->
-        <div *ngIf="step === 3">
+        <div class="step-content" *ngIf="step === 3" [@slideInOut]>
           <div class="form-row">
             <div class="form-group">
-              <input type="tel" placeholder="Teléfono*" formControlName="telefono" required />
-            </div>
-            <div class="form-group">
-              <input type="date" placeholder="Fecha de nacimiento*" formControlName="fechaNacimiento" required />
-            </div>
-          </div>
-            <div class="form-row">
-              <div class="form-group">
-                <label for="photo-upload" class="file-upload-label">
-                  <span class="material-symbols-outlined">add_photo_alternate</span>
-                  <span>{{ selectedFileName || 'Seleccionar foto de perfil (opcional)' }}</span>
-                </label>
+              <label for="telefono">Teléfono</label>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined input-icon">phone</span>
                 <input 
-                  type="file" 
-                  id="photo-upload" 
-                  accept="image/*" 
-                  (change)="onFileSelected($event)"
-                  style="display: none;"
+                  id="telefono"
+                  type="tel" 
+                  placeholder="+1234567890" 
+                  required 
+                  formControlName="telefono"
+                  class="form-input"
                 />
               </div>
             </div>
-          <button class="login-button" type="button" (click)="goToNextStep()">Siguiente</button>
-        </div>
-
-        <!-- Paso 4: Redes sociales y descripción -->
-        <div *ngIf="step === 4">
-          <!-- Descripción -->
-          <div class="form-group full-width">
-            <textarea rows="4" placeholder="Descripción" formControlName="descripcion" class="description-input"></textarea>
-          </div>
-
-          <!-- Redes Sociales Simplificadas -->
-          <div class="form-group full-width">
-            <div class="social-networks-section">
-              <h3>Redes sociales (Opcional)</h3>
-              <div class="form-group">
-                <input type="url" placeholder="Instagram" formControlName="additionalProp1" />
-              </div>
-              <div class="form-group">
-                <input type="url" placeholder="Twitter" formControlName="additionalProp2" />
-              </div>
-              <div class="form-group">
-                <input type="url" placeholder="LinkedIn" formControlName="additionalProp3" />
+            <div class="form-group">
+              <label for="fechaNacimiento">Fecha de nacimiento</label>
+              <div class="input-wrapper">
+                <span class="material-symbols-outlined input-icon">calendar_today</span>
+                <input 
+                  id="fechaNacimiento"
+                  type="date" 
+                  required 
+                  formControlName="fechaNacimiento"
+                  class="form-input"
+                />
               </div>
             </div>
           </div>
 
-          <button class="login-button" type="button" (click)="onSubmitFinal()">Finalizar Registro</button>
+          <div class="form-group">
+            <label for="photo-upload" class="file-upload-label">
+              <span class="material-symbols-outlined">add_photo_alternate</span>
+              <span>{{ selectedFileName || 'Seleccionar foto de perfil (opcional)' }}</span>
+            </label>
+            <input 
+              type="file" 
+              id="photo-upload" 
+              accept="image/*" 
+              (change)="onFileSelected($event)"
+              style="display: none;"
+            />
+          </div>
+
+          <div class="button-group">
+            <button class="signup-button secondary" type="button" (click)="goToPreviousStep()">
+              <span class="material-symbols-outlined">arrow_back</span>
+              <span>Atrás</span>
+            </button>
+            <button class="signup-button" type="button" (click)="goToNextStep()">
+              <span>Siguiente</span>
+              <span class="material-symbols-outlined">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Paso 4: Redes sociales y descripción -->
+        <div class="step-content" *ngIf="step === 4" [@slideInOut]>
+          <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <div class="input-wrapper textarea-wrapper">
+              <span class="material-symbols-outlined input-icon textarea-icon">description</span>
+              <textarea 
+                id="descripcion"
+                rows="4" 
+                placeholder="Cuéntanos sobre ti..." 
+                formControlName="descripcion"
+                class="form-input form-textarea"
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="section-label">Redes sociales (Opcional)</label>
+            <div class="social-networks-section">
+              <div class="form-group">
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined input-icon">photo_camera</span>
+                  <input 
+                    type="url" 
+                    placeholder="Instagram URL" 
+                    formControlName="additionalProp1"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined input-icon">chat</span>
+                  <input 
+                    type="url" 
+                    placeholder="Twitter URL" 
+                    formControlName="additionalProp2"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="input-wrapper">
+                  <span class="material-symbols-outlined input-icon">work</span>
+                  <input 
+                    type="url" 
+                    placeholder="LinkedIn URL" 
+                    formControlName="additionalProp3"
+                    class="form-input"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="button-group">
+            <button class="signup-button secondary" type="button" (click)="goToPreviousStep()">
+              <span class="material-symbols-outlined">arrow_back</span>
+              <span>Atrás</span>
+            </button>
+            <button class="signup-button" type="button" (click)="onSubmitFinal()">
+              <span>Finalizar Registro</span>
+              <span class="material-symbols-outlined">check_circle</span>
+            </button>
+          </div>
         </div>
       </div>
-    </form>
+    </div>
+    </div>
   </div>
-</div>
+</form>

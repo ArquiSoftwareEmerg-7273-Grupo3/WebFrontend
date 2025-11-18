@@ -2,19 +2,20 @@ html, body {
   height: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Evita scroll */
 }
 
 
 
 .login-page {
-  height: 100vh;       /* Ocupar el alto exacto */
-  max-height: 100vh;
+  min-height: 100vh;
+  height: 100%;
   position: relative;
   display: flex;
+  flex-direction: column; /* importante */
+  justify-content: flex-start; /* coloca el logo arriba y la box centrada */
   align-items: center;
-  justify-content: center;
   overflow: hidden;
+  padding: 0;  /* opcional pero recomendado */
 }
 
 .login-background {
@@ -27,17 +28,17 @@ html, body {
   position: absolute;
   inset: 0;
   background-image: 
-    radial-gradient(circle at 20% 50%, rgba(66, 159, 149, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(66, 159, 149, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 20% 50%, rgba(113, 238, 88, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(95, 212, 124, 0.1) 0%, transparent 50%);
 }
 
 .background-gradient {
   position: absolute;
   inset: 0;
   background: linear-gradient(135deg, 
-    rgba(66, 159, 149, 0.05) 0%, 
-    rgba(54, 138, 129, 0.08) 50%,
-    rgba(42, 110, 103, 0.05) 100%);
+    rgba(46, 223, 134, 0.05) 0%, 
+    rgba(46, 223, 134, 0.08) 50%,
+    rgba(46, 223, 134, 0.05) 100%);
 }
 
 .login-content {
@@ -56,10 +57,9 @@ html, body {
 }
 
 .logo {
-  max-width: 280px;
+  max-width: 350px;
   height: auto;
   width: 100%;
-  margin-bottom: 1rem;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
 }
 
@@ -68,6 +68,7 @@ html, body {
   font-size: 1rem;
   margin: 0;
   font-weight: 500;
+  margin-top: -2rem;
 }
 
 .login-box {
