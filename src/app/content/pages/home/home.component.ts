@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule, NgOptimizedImage} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {MiniTutorialService} from '../mini-tutorial/mini-tutorial/services/mini-tutorial.service';
 import {Subscription} from 'rxjs';
@@ -10,7 +10,7 @@ import { Post as ApiPost } from './services/posts.service';
 import { Comments } from './services/comments.service';
 import { UsersService, UserProfile } from './services/users.service';
 import { WebSocketService } from '../../../public/services/websocket.service';
-import { DisplayPost, DisplayComment, ApiPostResponse, PostsResponse, User, Event } 
+import { DisplayPost, DisplayComment, ApiPostResponse, PostsResponse, User, Event }
   from '../../../public/services/interface-feed';
 // Interface para la respuesta de la API que incluye paginación
 
@@ -22,7 +22,8 @@ import { DisplayPost, DisplayComment, ApiPostResponse, PostsResponse, User, Even
   imports: [
     CommonModule,
     FormsModule,
-    
+    NgOptimizedImage,
+
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
@@ -34,10 +35,10 @@ export class HomeComponent implements OnInit, OnDestroy {
   commentTexts: { [key: number]: string } = {};
   userPhoto: string = 'assets/images/default-avatar.png';
   userName: string = 'Usuario Actual';
-  
+
   // Variables para el estado de carga
   isLoadingPosts = false;
-  
+
   // Información del usuario actual
   currentUser: UserInfoResponse | null = null;
 
@@ -91,7 +92,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadUserInfo();
-    
+
     this.loadFeed();
 
     this.setupWebSocket();
@@ -100,16 +101,16 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private loadFeed(): void {
     this.isLoadingPosts = true;
-    
+
     if (!this.currentUser) {
       console.log('Esperando información del usuario...');
       setTimeout(() => this.loadFeed(), 500);
       return;
     }
-    
+
     const feedSub = this.socialFeedService['postsService'].getPosts(0, 10).subscribe({
       next: (response: any) => {
-        
+
         let posts: any[];
         if (response && response.content && Array.isArray(response.content)) {
           posts = response.content;
@@ -119,7 +120,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           console.error('Formato de respuesta inesperado:', response);
           posts = [];
         }
-        
+
         const basicPosts: DisplayPost[] = posts.map(post => {
           const now = new Date();
           return {
@@ -136,7 +137,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             viewsCount: post.views_count || post.viewsCount || 0,
             hasMedia: post.has_media || post.hasMedia || false,
             engagementRate: post.engagement_rate || post.engagementRate || 0,
-            
+
             authorName: 'Cargando...',
             authorPhoto: 'assets/images/default-avatar.png',
             images: [],
@@ -154,7 +155,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.isLoadingPosts = false;
 
         this.loadAuthorsInfo(basicPosts);
-        
+
         // Cargar comentarios existentes para cada post
         this.loadCommentsForPosts(basicPosts);
       },
@@ -163,7 +164,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.posts = [];
       }
     });
-    
+
     this.subs.add(feedSub);
   }
 
@@ -173,7 +174,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         this.currentUser = userInfo;
         this.userName = `${userInfo.nombres} ${userInfo.apellidos}`;
         this.userPhoto = userInfo.foto || 'assets/images/default-avatar.png';
-        
+
       }
     });
     this.subs.add(userInfoSub);
@@ -187,14 +188,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   private loadAuthorsInfo(posts: DisplayPost[]): void {
     const authorIds = [...new Set(posts.map(post => post.authorId).filter(id => id && id > 0))];
-    
+
     if (authorIds.length === 0) return;
 
 
     authorIds.forEach(authorId => {
       const authorSub = this.usersService.getUserById(authorId).subscribe({
         next: (authorProfile: UserProfile) => {
-          
+
           this.posts = this.posts.map(post => {
             if (post.authorId === authorId) {
               return {
@@ -208,7 +209,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           console.error(`Error al cargar información del autor ${authorId}:`, error);
-          
+
           this.posts = this.posts.map(post => {
             if (post.authorId === authorId) {
               return {
@@ -221,7 +222,7 @@ export class HomeComponent implements OnInit, OnDestroy {
           });
         }
       });
-      
+
       this.subs.add(authorSub);
     });
   }
@@ -234,7 +235,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       if (post.commentsCount > 0) {
         const commentsSub = this.socialFeedService['commentsService'].getCommentsForPost(post.id).subscribe({
           next: (response: any) => {
-            
+
             // Extraer el array de comentarios (puede venir en response.content o directamente)
             let comments: any[];
             if (response && response.content && Array.isArray(response.content)) {
@@ -245,13 +246,13 @@ export class HomeComponent implements OnInit, OnDestroy {
               console.warn('Formato de comentarios inesperado:', response);
               comments = [];
             }
-            
+
             // Convertir a DisplayComment
             const displayComments: DisplayComment[] = comments.map(comment => {
               const now = new Date();
               return {
                 id: comment.id,
-                userId: comment.userId || comment.author_id || comment.authorId || 0, 
+                userId: comment.userId || comment.author_id || comment.authorId || 0,
                 userName: 'Cargando...',
                 userPhoto: 'assets/images/default-avatar.png',
                 content: comment.content,
@@ -260,13 +261,13 @@ export class HomeComponent implements OnInit, OnDestroy {
                 likes: 0
               } as DisplayComment;
             });
-            
+
 
             // Actualizar el post con sus comentarios
             const postIndex = this.posts.findIndex(p => p.id === post.id);
             if (postIndex !== -1) {
               this.posts[postIndex].comments = displayComments;
-              
+
               // Cargar info de autores de comentarios
               if (displayComments.length > 0) {
                 this.loadCommentsAuthorsInfo(postIndex, displayComments);
@@ -277,7 +278,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             console.error(`Error al cargar comentarios del post ${post.id}:`, error);
           }
         });
-        
+
         this.subs.add(commentsSub);
       }
     });
@@ -288,16 +289,16 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   private loadCommentsAuthorsInfo(postIndex: number, comments: DisplayComment[]): void {
     const userIds = [...new Set(comments.map(c => c.userId).filter(id => id && id > 0))];
-    
+
     console.log('👥 Cargando autores de comentarios. UserIds:', userIds);
 
     userIds.forEach(userId => {
       console.log('🔍 Buscando usuario con ID:', userId);
-      
+
       const userSub = this.usersService.getUserById(userId).subscribe({
         next: (userProfile: UserProfile) => {
           console.log('✅ Usuario obtenido:', userProfile);
-          
+
           if (this.posts[postIndex]?.comments) {
             this.posts[postIndex].comments = this.posts[postIndex].comments!.map(comment => {
               if (comment.userId === userId) {
@@ -310,7 +311,7 @@ export class HomeComponent implements OnInit, OnDestroy {
               }
               return comment;
             });
-            
+
             // Forzar detección de cambios
             this.posts = [...this.posts];
             console.log('✨ Posts actualizados. Comentarios del post:', this.posts[postIndex].comments);
@@ -330,14 +331,14 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     const createSub = this.socialFeedService.createPost(this.newPostContent.trim()).subscribe({
       next: (newPost) => {
-     
+
         this.newPostContent = '';
       },
       error: (error) => {
         console.error('Error al crear post:', error);
       }
     });
-    
+
     this.subs.add(createSub);
   }
 
@@ -354,7 +355,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       error: (error) => {
       }
     });
-    
+
     this.subs.add(likeSub);
   }
 
@@ -368,7 +369,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.error('Error al compartir post:', error);
       }
     });
-    
+
     this.subs.add(shareSub);
   }
 
@@ -379,7 +380,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   openPostDetail(post: DisplayPost): void {
     this.selectedPost = post;
     document.body.style.overflow = 'hidden';
-    
+
     this.socialFeedService.viewPost(post.id).subscribe({
       next: () => console.log('Vista registrada para post:', post.id),
       error: (error) => console.error('Error al registrar vista:', error)
@@ -418,34 +419,34 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     const commentSub = this.socialFeedService.commentOnPost(post.id, commentContent.trim()).subscribe({
       next: (newComment) => {
-       
+
         this.commentTexts[post.id] = '';
       },
       error: (error) => {
         console.error('Error al crear comentario:', error);
       }
     });
-    
+
     this.subs.add(commentSub);
   }
 
   // Obtener información del rol del usuario
   getUserRole(): string {
     if (!this.currentUser) return 'Usuario';
-    
+
     if (this.currentUser.ilustrador) {
       return 'Ilustrador';
     } else if (this.currentUser.escritor) {
       return 'Escritor';
     }
-    
+
     return this.currentUser.roleName || 'Usuario';
   }
 
   // Obtener nombre completo del usuario
   getFullUserName(): string {
     if (!this.currentUser) return this.userName;
-    
+
     return `${this.currentUser.nombres} ${this.currentUser.apellidos}`;
   }
 
@@ -475,7 +476,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.error('Error al cargar posts trending:', error);
       }
     });
-    
+
     this.subs.add(trendingSub);
   }
 
@@ -489,7 +490,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    * Configurar WebSocket y suscribirse a eventos en tiempo real
    */
   private setupWebSocket(): void {
-    
+
     // Esperar a que el usuario esté cargado antes de conectar
     const userSub = this.authService.userInformation.subscribe(userInfo => {
       if (userInfo && !this.wsService.isConnected()) {
@@ -534,7 +535,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    * Manejar nuevo post recibido por WebSocket
    */
   private handleNewPostReceived(newPost: any): void {
-    
+
     // Verificar si el post ya existe (evitar duplicados)
     if (this.posts.some(p => p.id === newPost.id)) {
       return;
@@ -543,10 +544,10 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Convertir a DisplayPost con todos los campos garantizados
     const now = new Date();
     const authorId = newPost.author_id || newPost.authorId || 0;
-    
+
     // Si es el post del usuario actual, usar su información
     const isOwnPost = authorId === this.currentUser?.id;
-    
+
     const displayPost: DisplayPost = {
       // Campos base de ApiPostResponse
       id: newPost.id || 0,
@@ -562,7 +563,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       viewsCount: newPost.views_count || newPost.viewsCount || 0,
       hasMedia: newPost.has_media || newPost.hasMedia || false,
       engagementRate: newPost.engagement_rate || newPost.engagementRate || 0,
-      
+
       // Campos adicionales para el template - usar info del usuario actual si es su post
       authorName: isOwnPost ? this.userName : 'Cargando...',
       authorPhoto: isOwnPost ? this.userPhoto : 'assets/images/default-avatar.png',
@@ -578,12 +579,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // Agregar al inicio del feed sin mutar directamente
     this.posts = [displayPost, ...this.posts];
-    
+
     // Si no es del usuario actual, cargar info del autor
     if (!isOwnPost && authorId > 0) {
       this.loadAuthorsInfo([displayPost]);
     }
-    
+
     // Mostrar notificación visual
     this.showNotification('Nuevo post disponible');
   }
@@ -592,7 +593,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    * Manejar nuevo comentario recibido por WebSocket
    */
   private handleNewCommentReceived(postId: number, comment: any): void {
-    
+
     const postIndex = this.posts.findIndex(p => p.id === postId);
     if (postIndex === -1) {
       console.warn('Post no encontrado para el comentario');
@@ -612,16 +613,16 @@ export class HomeComponent implements OnInit, OnDestroy {
     if (!this.posts[postIndex].comments) {
       this.posts[postIndex].comments = [];
     }
-    
+
     // Evitar duplicados
     if (!this.posts[postIndex].comments!.some(c => c.id === displayComment.id)) {
       this.posts[postIndex].comments!.push(displayComment);
       this.posts[postIndex].commentsCount++;
-      
+
       // Forzar detección de cambios
       this.posts = [...this.posts];
       console.log('Comentario agregado. Total comentarios:', this.posts[postIndex].comments!.length);
-      
+
       // Cargar info del autor del comentario si es necesario
       if (displayComment.userId > 0) {
         this.loadCommentAuthorInfo(postIndex, displayComment.userId);
@@ -634,7 +635,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   private handleLikeUpdated(postId: number, likesCount: number, userId: number): void {
     console.log('Procesando actualización de like. Post ID:', postId, 'Likes:', likesCount);
-    
+
     const postIndex = this.posts.findIndex(p => p.id === postId);
     if (postIndex === -1) {
       console.warn('⚠️ Post no encontrado para actualizar likes');
@@ -644,12 +645,12 @@ export class HomeComponent implements OnInit, OnDestroy {
     // Actualizar contador de likes
     this.posts[postIndex].likes = likesCount;
     this.posts[postIndex].reactionsCount = likesCount;
-    
+
     // Si el like es del usuario actual, actualizar el estado
     if (userId === this.currentUser?.id) {
       this.posts[postIndex].isLiked = !this.posts[postIndex].isLiked;
     }
-    
+
     // Forzar detección de cambios
     this.posts = [...this.posts];
     console.log(' Likes actualizados:', likesCount);
@@ -660,10 +661,10 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   private handlePostDeleted(postId: number): void {
     console.log('🗑️ Procesando eliminación de post. Post ID:', postId);
-    
+
     const initialLength = this.posts.length;
     this.posts = this.posts.filter(p => p.id !== postId);
-    
+
     if (this.posts.length < initialLength) {
       console.log('Post eliminado del feed');
     }
@@ -674,7 +675,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   private handlePostUpdated(updatedPost: any): void {
     console.log('Procesando actualización de post:', updatedPost);
-    
+
     const postIndex = this.posts.findIndex(p => p.id === updatedPost.id);
     if (postIndex === -1) {
       console.warn(' Post no encontrado para actualizar');
@@ -688,7 +689,7 @@ export class HomeComponent implements OnInit, OnDestroy {
       updatedAt: updatedPost.updated_at || updatedPost.updatedAt || new Date().toISOString(),
       tags: updatedPost.tags || this.posts[postIndex].tags
     };
-    
+
     // Forzar detección de cambios
     this.posts = [...this.posts];
     console.log(' Post actualizado');
@@ -711,7 +712,7 @@ export class HomeComponent implements OnInit, OnDestroy {
             }
             return comment;
           });
-          
+
           // Forzar detección de cambios
           this.posts = [...this.posts];
         }
@@ -720,7 +721,7 @@ export class HomeComponent implements OnInit, OnDestroy {
         console.error(`Error al cargar información del autor ${authorId}:`, error);
       }
     });
-    
+
     this.subs.add(authorSub);
   }
 
@@ -740,7 +741,7 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subs.unsubscribe();
-    this.wsService.disconnect(); 
+    this.wsService.disconnect();
   }
 
 }

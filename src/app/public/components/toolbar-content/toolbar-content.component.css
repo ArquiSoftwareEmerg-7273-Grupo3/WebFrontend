@@ -3,7 +3,8 @@
   top: 0;
   left: 0;
   width: 100%;
-  background-color: #429f95;
+  height: 90px;
+  background-color: #58cabb;
   z-index: 1000;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   scroll-behavior: smooth;
@@ -21,7 +22,7 @@
   }
 
   .logo img {
-    height: 60px; 
+    height: 60px;
     width: 170px;
     object-fit: contain;
     cursor: pointer;
@@ -47,7 +48,7 @@
       min-width: 80px;
 
       .material-symbols-outlined {
-        font-size: 1.5rem;
+        font-size: 2rem;
         margin-bottom: 4px;
       }
 

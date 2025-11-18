@@ -1,9 +1,17 @@
 <!-- Hero Section para Home -->
 <div class="home-hero-section">
   <div class="hero-background">
-    <div class="hero-pattern"></div>
+    <div class="hero-pattern">
+      <img src="https://i.postimg.cc/tC1y7khR/Whats-App-Image-2025-11-17-at-10-11-52-PM.jpg"
+      alt="Patrón creativo de ArtCollab"
+      class="hero-pattern-image"
+      />
+    </div>
+
+    <!-- Capa de degradado -->
     <div class="hero-gradient"></div>
   </div>
+
   <div class="hero-content-wrapper">
     <div class="hero-content">
       <div class="hero-icon">
@@ -11,16 +19,16 @@
       </div>
       <div class="hero-text">
         <h1 class="hero-title">
-          Bienvenido a <span class="gradient-text">ArtCollab</span>
+          Une talentos. Crea mundos.
         </h1>
         <p class="hero-description">
-          La plataforma donde <span class="highlight">ilustradores y escritores</span> se conectan para crear proyectos increíbles juntos
+          Descubre ideas, historias y proyectos en curso
         </p>
-       
       </div>
     </div>
   </div>
 </div>
+
 
 <div class="social-container">
   <!-- Columna Izquierda - Usuarios sugeridos -->
@@ -50,35 +58,66 @@
 
   <!-- Columna Central - Feed de publicaciones -->
   <div class="main-content">
-   
+
 
     <!-- Crear nueva publicación -->
     <div class="create-post">
-      <img [src]="userPhoto" [alt]="userName" class="avatar">
-      <div class="post-input">
-        <div class="create-post-header">
-          <h3>Comparte tu creatividad</h3>
-          <p>Comparte tus proyectos, ideas o inspiración con la comunidad</p>
+      <div class="create-post-inner">
+        <div class="create-post-user">
+          <img [src]="userPhoto" [alt]="userName" class="avatar">
+
+          <div class="user-label">
+        <span class="user-label-pill">
+          <strong>{{ userName }}</strong>
+        </span>
+          </div>
         </div>
-        <textarea
-          [(ngModel)]="newPostContent"
-          placeholder="¿Qué quieres compartir hoy? Cuéntanos sobre tu proyecto, inspiración o logros..."
-          rows="4"></textarea>
-        <div class="post-actions">
-          <button class="attach-btn" title="Añadir imagen">
-            <span class="material-symbols-outlined">image</span>
-            <span>Añadir imagen</span>
-          </button>
-          <button class="refresh-btn" (click)="refreshFeed()" title="Refrescar feed">
-            <span class="material-symbols-outlined">refresh</span>
-          </button>
-          <button class="post-btn" (click)="createPost()" [disabled]="!newPostContent.trim()">
-            <span class="material-symbols-outlined">send</span>
-            Publicar
-          </button>
+
+        <!-- Área de entrada del post -->
+        <div class="post-input">
+          <div class="create-post-header">
+            <div class="create-post-title-row">
+              <h3>Comparte tu creatividad</h3>
+              <span class="create-post-badge">
+            Nuevo post
+          </span>
+            </div>
+            <p>Comparte tus proyectos, ideas o inspiración con la comunidad</p>
+          </div>
+
+          <textarea
+            [(ngModel)]="newPostContent"
+            placeholder="¿Qué quieres compartir hoy? Cuéntanos sobre tu proyecto, inspiración o logros..."
+            rows="4">
+      </textarea>
+
+          <div class="post-footer">
+            <div class="post-actions-left">
+              <button class="attach-btn" title="Añadir imagen">
+                <span class="material-symbols-outlined">image</span>
+                <span>Añadir imagen</span>
+              </button>
+            </div>
+
+            <div class="post-actions-center">
+              <button class="refresh-btn" (click)="refreshFeed()" title="Refrescar feed">
+                <span class="material-symbols-outlined">refresh</span>
+              </button>
+            </div>
+
+            <div class="post-actions-right">
+              <button class="post-btn"
+                      (click)="createPost()"
+                      [disabled]="!newPostContent.trim()">
+                <span class="material-symbols-outlined">send</span>
+                Publicar
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
+
 
     <!-- Indicador de carga -->
     <div class="loading-container" *ngIf="isLoadingPosts">
@@ -254,32 +293,27 @@
 
   <!-- Columna Derecha - Tendencias y eventos -->
   <div class="sidebar right-sidebar">
-    <div class="sidebar-section">
-      <h3>Publicidad</h3>
-      <div class="ad-space">
-        <div class="ad-placeholder">
-          <img src="https://marketplace.canva.com/EAF8xSUqJFE/1/0/900w/canva-tu-historia-publicidad-producto-tecnol%C3%B3gico-llamativo-verde-x_9-vJW3LB8.jpg" alt="Anuncio">
-        </div>
+    <div class="sidebar-section ads-section">
+      <div class="ad-card">
+        <img src="https://marketplace.canva.com/EAF8xSUqJFE/1/0/900w/canva-tu-historia-publicidad-producto-tecnol%C3%B3gico-llamativo-verde-x_9-vJW3LB8.jpg" alt="Anuncio">
       </div>
-       <div class="ad-space">
-        <div class="ad-placeholder">
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOGnOVdvMCkombHMTpz2XcMXNqnFtlU3BT3Q&s" alt="Anuncio">
-        </div>
+
+      <div class="ad-card">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSOGnOVdvMCkombHMTpz2XcMXNqnFtlU3BT3Q&s" alt="Anuncio">
       </div>
     </div>
 
-    <div class="sidebar-section">
-      <h3>Próximos Eventos</h3>
-      <div class="events-list">
-        <div class="event-card" *ngFor="let event of events">
-          <div class="event-date">
-            <span class="date">{{event.date | date:'d'}}</span>
-            <span class="month">{{event.date | date:'MMM'}}</span>
-          </div>
-          <div class="event-info">
-            <h4>{{event.title}}</h4>
-            <p>{{event.description}}</p>
-          </div>
+
+    <div class="events-list">
+      <div class="event-card" *ngFor="let event of events">
+        <div class="event-date">
+          <span class="date">{{event.date | date:'d'}}</span>
+          <span class="month">{{event.date | date:'MMM'}}</span>
+        </div>
+
+        <div class="event-info">
+          <h4>{{event.title}}</h4>
+          <p>{{event.description}}</p>
         </div>
       </div>
     </div>
