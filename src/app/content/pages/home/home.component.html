@@ -14,9 +14,6 @@
 
   <div class="hero-content-wrapper">
     <div class="hero-content">
-      <div class="hero-icon">
-        <span class="material-symbols-outlined">groups</span>
-      </div>
       <div class="hero-text">
         <h1 class="hero-title">
           Une talentos. Crea mundos.
@@ -33,28 +30,38 @@
 <div class="social-container">
   <!-- Columna Izquierda - Usuarios sugeridos -->
   <div class="sidebar left-sidebar">
-    <div class="sidebar-section">
+    <div class="sidebar-section suggested-section">
       <h3>
         <span class="material-symbols-outlined">person_add</span>
         Artistas Sugeridos
       </h3>
+
       <div class="suggested-users">
         <div class="user-card" *ngFor="let user of suggestedUsers">
-<img [src]="'https://i.pinimg.com/1200x/f0/cf/c7/f0cfc71ad649cbcdb690a6dccee2af7c.jpg'"
-     [alt]="user.name"
-     class="user-avatar">
+
+          <div class="user-avatar-wrapper">
+            <img
+              [src]="'https://i.pinimg.com/1200x/f0/cf/c7/f0cfc71ad649cbcdb690a6dccee2af7c.jpg'"
+              [alt]="user.name"
+              class="user-avatar"
+            >
+          </div>
+
           <div class="user-info">
             <span class="user-name">{{user.name}}</span>
             <span class="user-role">{{user.role}}</span>
           </div>
+
           <button class="follow-btn" (click)="followUser(user.id)">
             <span class="material-symbols-outlined">add</span>
             Seguir
           </button>
+
         </div>
       </div>
     </div>
   </div>
+
 
   <!-- Columna Central - Feed de publicaciones -->
   <div class="main-content">
@@ -67,9 +74,6 @@
           <img [src]="userPhoto" [alt]="userName" class="avatar">
 
           <div class="user-label">
-        <span class="user-label-pill">
-          <strong>{{ userName }}</strong>
-        </span>
           </div>
         </div>
 
