@@ -21,7 +21,7 @@ import {OptionsIconService} from '../../services/options-icon.service';
     OptionsIconComponent
   ],
   templateUrl: './toolbar-content.component.html',
-  styleUrl: './toolbar-content.component.css'
+  styleUrls: ['./toolbar-content.component.css']
 })
 export class ToolbarContentComponent implements OnInit, OnDestroy {
   menuOpen = false;
@@ -63,13 +63,26 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
 
   openOptionsIcon(event: MouseEvent) {
     event.stopPropagation();
-    const target = event.currentTarget as HTMLElement || (event.target as HTMLElement);
+    const target = (event.currentTarget as HTMLElement) || (event.target as HTMLElement);
     const rect = target.getBoundingClientRect();
+
     const width = 200;
-    let x = rect.right  + window.scrollX - width + 20;
+    const popupHeightEstimate = 240;
+
+    let x = rect.right + window.scrollX - width + 20;
     x = Math.min(Math.max(x, 8), window.innerWidth - width - 8);
-    const verticalOffset = 14;
-    const y = rect.bottom + window.scrollY + verticalOffset;
+
+    let y: number;
+    if (this.isCompact) {
+      const offsetAbove = 70;
+      y = rect.top + window.scrollY - popupHeightEstimate - offsetAbove;
+      y = Math.max(y, 8);
+    } else {
+      const verticalOffset = 8;
+      y = rect.bottom + window.scrollY + verticalOffset;
+      y = Math.min(y, window.innerHeight - 48);
+    }
+
     this.optionsIconService.toggle({ x, y });
   }
 
@@ -181,6 +194,14 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
 
   logout() {
     this.authService.signOut();
+  }
+
+  isCompact = false;
+  private compactThreshold = 80;
+
+  @HostListener('window:scroll', [])
+  onWindowScroll(): void {
+    this.isCompact = window.pageYOffset > this.compactThreshold;
   }
 
   @HostListener('window:resize', ['$event'])

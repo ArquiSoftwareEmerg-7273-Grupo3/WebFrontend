@@ -1,4 +1,4 @@
-<header class="toolbar">
+<header class="toolbar" [class.compact]="isCompact">
   <div class="toolbar-content">
     <div class="logo">
       <a [routerLink]="['/home']" (click)="closeMenu(); scrollToTop()">
