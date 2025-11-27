@@ -48,11 +48,6 @@
 
   <!-- Main Content -->
   <div class="main-content">
-    <!-- Mensaje de error -->
-    <div *ngIf="error" class="error-message">
-      <span class="material-symbols-outlined">warning</span>
-      <p>{{ error }}</p>
-    </div>
 
     <!-- Indicador de carga -->
     <div *ngIf="loading" class="loading-container">
@@ -88,7 +83,7 @@
               </button>
             </div>
           </div>
-          
+
           <div class="project-body">
             <p class="project-description">{{ proyecto.descripcion }}</p>
             <div class="project-info">
@@ -157,13 +152,13 @@
                 {{ getEstadoLabel(postulacion.estado) }}
               </span>
             </div>
-            
+
             <div class="postulacion-body">
               <div class="postulacion-details">
                 <p><strong>Ilustrador ID:</strong> {{ postulacion.ilustradorId }}</p>
                 <p><strong>Proyecto ID:</strong> {{ postulacion.proyectoId }}</p>
               </div>
-              
+
               <div *ngIf="postulacion.estado === 'PENDIENTE'" class="postulacion-actions">
                 <button class="btn-approve" (click)="abrirModalAprobar(postulacion)">
                   <span class="material-symbols-outlined">check</span>
@@ -208,9 +203,9 @@
         <p>¿Deseas aprobar esta postulación?</p>
         <div class="form-group">
           <label for="respuesta">Respuesta (opcional):</label>
-          <textarea 
-            id="respuesta" 
-            [(ngModel)]="respuestaAprobacion" 
+          <textarea
+            id="respuesta"
+            [(ngModel)]="respuestaAprobacion"
             placeholder="Escribe un mensaje para el ilustrador..."
             rows="4">
           </textarea>
@@ -236,9 +231,9 @@
         <p>¿Deseas rechazar esta postulación?</p>
         <div class="form-group">
           <label for="razon">Razón del rechazo:</label>
-          <textarea 
-            id="razon" 
-            [(ngModel)]="razonRechazo" 
+          <textarea
+            id="razon"
+            [(ngModel)]="razonRechazo"
             placeholder="Explica la razón del rechazo..."
             rows="4"
             required>

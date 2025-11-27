@@ -12,17 +12,14 @@
       <ng-container *ngIf="isNoRole">
         <a [routerLink]="['/home']" (click)="closeMenu(); scrollToTop()">
           <span class="material-symbols-outlined">home</span>
-          <br />
           <span>Inicio</span>
         </a>
         <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
           <span class="material-symbols-outlined">notifications</span>
-          <br />
           <span>Notificaciones</span>
         </a>
         <a (click)="openBusinessMiniVentana($event)" data-test="btn-negocios" >
           <span class="material-symbols-outlined">business</span>
-          <br />
           <span>Negocios</span>
         </a>
         <app-business-mini-ventana></app-business-mini-ventana>
