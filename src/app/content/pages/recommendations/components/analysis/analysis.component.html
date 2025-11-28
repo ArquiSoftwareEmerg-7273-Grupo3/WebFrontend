@@ -1,0 +1,120 @@
+<div class="rec-analysis-page">
+  <div class="rec-analysis-container">
+    <header class="rec-analysis-header">
+      <h1>Análisis de proyectos</h1>
+      <p>
+        Revisa los proyectos que ya fueron analizados y elige uno para ver
+        los postulantes recomendados.
+      </p>
+
+      <div class="rec-analysis-filter">
+        <label for="portfolioSelect">Portafolio</label>
+        <select id="portfolioSelect">
+          <option>Seleccionar portafolio</option>
+          <option>Portafolio infantil</option>
+          <option>Cómic y novela gráfica</option>
+          <option>Editorial juvenil</option>
+        </select>
+      </div>
+    </header>
+
+    <section class="rec-analysis-list">
+      <article class="rec-analysis-card">
+        <div class="rec-analysis-thumb">
+          <img
+            src="https://images.pexels.com/photos/1989783/pexels-photo-1989783.jpeg?auto=compress&w=300"
+            alt="Colaboración en creación de un cómic"
+          />
+        </div>
+
+        <div class="rec-analysis-body">
+          <div class="rec-analysis-top">
+            <h2>Colaboración de creación de un cómic</h2>
+            <div class="rec-analysis-tags">
+              <span class="rec-chip-status done">Análisis terminado</span>
+              <span class="rec-chip-type">Cómic y novela gráfica</span>
+            </div>
+          </div>
+
+          <div class="rec-analysis-bottom">
+            <p class="rec-analysis-date">
+              <span class="material-symbols-outlined">event</span>
+              Fecha de publicación: 12/09/2025
+            </p>
+            <button
+              type="button"
+              class="rec-analysis-btn"
+              [routerLink]="['/recommendations','analysis', '1', 'applicants']"
+            >
+              Ver postulantes recomendados
+              <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="rec-analysis-card">
+        <div class="rec-analysis-thumb">
+          <img
+            src="https://images.pexels.com/photos/235554/pexels-photo-235554.jpeg?auto=compress&w=300"
+            alt="Creación libro infantil ilustrado"
+          />
+        </div>
+
+        <div class="rec-analysis-body">
+          <div class="rec-analysis-top">
+            <h2>Creación de un libro infantil ilustrado</h2>
+            <div class="rec-analysis-tags">
+              <span class="rec-chip-status done">Análisis terminado</span>
+              <span class="rec-chip-type">Ilustración infantil</span>
+            </div>
+          </div>
+
+          <div class="rec-analysis-bottom">
+            <p class="rec-analysis-date">
+              <span class="material-symbols-outlined">event</span>
+              Fecha de publicación: 12/09/2025
+            </p>
+            <button
+              type="button"
+              class="rec-analysis-btn"
+              [routerLink]="['/recommendations','analysis', '2', 'applicants']"
+            >
+              Ver postulantes recomendados
+              <span class="material-symbols-outlined">chevron_right</span>
+            </button>
+          </div>
+        </div>
+      </article>
+
+      <article class="rec-analysis-card">
+        <div class="rec-analysis-thumb">
+          <img
+            src="https://images.pexels.com/photos/207732/pexels-photo-207732.jpeg?auto=compress&w=300"
+            alt="Diseño portadas novela gráfica"
+          />
+        </div>
+
+        <div class="rec-analysis-body">
+          <div class="rec-analysis-top">
+            <h2>Diseño de portadas para novela gráfica</h2>
+            <div class="rec-analysis-tags">
+              <span class="rec-chip-status progress">Análisis en progreso</span>
+              <span class="rec-chip-type">Novela gráfica</span>
+            </div>
+          </div>
+
+          <div class="rec-analysis-bottom">
+            <p class="rec-analysis-date">
+              <span class="material-symbols-outlined">event</span>
+              Fecha de publicación: 20/09/2025
+            </p>
+            <button class="rec-analysis-btn" disabled>
+              Analizando...
+            </button>
+          </div>
+        </div>
+      </article>
+    </section>
+  </div>
+</div>

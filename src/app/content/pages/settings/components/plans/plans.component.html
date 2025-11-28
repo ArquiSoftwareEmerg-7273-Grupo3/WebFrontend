@@ -1,0 +1,94 @@
+<div class="settings-page">
+  <!-- SIDEBAR -->
+  <aside class="settings-sidebar">
+    <h2 class="sidebar-title">Configuración</h2>
+
+    <nav class="sidebar-menu">
+      <button class="sidebar-item">
+        <span class="material-symbols-outlined">person</span>
+        <span>Preferencias de la cuenta</span>
+      </button>
+
+      <button class="sidebar-item">
+        <span class="material-symbols-outlined">visibility</span>
+        <span>Visibilidad</span>
+      </button>
+
+      <button class="sidebar-item">
+        <span class="material-symbols-outlined">notifications</span>
+        <span>Notificaciones</span>
+      </button>
+
+      <button class="sidebar-item">
+        <span class="material-symbols-outlined">auto_awesome</span>
+        <span>Recomendaciones</span>
+      </button>
+
+      <!-- Opción activa -->
+      <button class="sidebar-item active">
+        <span class="material-symbols-outlined">workspace_premium</span>
+        <span>Plan</span>
+      </button>
+    </nav>
+  </aside>
+
+  <!-- CONTENIDO PRINCIPAL -->
+  <main class="settings-content">
+    <section class="plan-section">
+      <header class="plan-header">
+        <div>
+          <h1>Elige tu plan</h1>
+          <p>Selecciona el plan que mejor se adapte a cómo usas ArtCollab.</p>
+        </div>
+        <span class="plan-hint">Puedes cambiar o cancelar cuando quieras.</span>
+      </header>
+
+      <div class="plans-grid">
+        <!-- Plan Free -->
+        <article class="plan-card">
+          <div class="plan-badge free">Actual</div>
+          <h2 class="plan-name">Plan Freemium</h2>
+          <p class="plan-price">
+            <span class="currency">S/.</span>
+            <span class="amount">0.00</span>
+            <span class="period">/mes</span>
+          </p>
+
+          <ul class="plan-features">
+            <li>Publicar proyectos y portafolios básicos</li>
+            <li>Acceso a ofertas laborales estándar</li>
+            <li>Mensajes limitados por mes</li>
+          </ul>
+
+          <button class="plan-btn outline">Seguir con este plan</button>
+        </article>
+
+        <!-- Plan Premium -->
+        <article class="plan-card premium">
+          <div class="plan-badge premium-tag">Recomendado</div>
+          <h2 class="plan-name">Plan Premium</h2>
+          <p class="plan-price">
+            <span class="currency">S/.</span>
+            <span class="amount">50.00</span>
+            <span class="period">/mes</span>
+          </p>
+
+          <ul class="plan-features">
+            <li>Mayor visibilidad en búsquedas y listados</li>
+            <li>Recomendaciones inteligentes mejoradas</li>
+            <li>Destacar proyectos y portafolios en el feed</li>
+            <li>Soporte prioritario</li>
+          </ul>
+
+          <button class="plan-btn primary" routerLink="/suscription/payment-gateway">
+            Empezar plan Premium
+          </button>
+        </article>
+      </div>
+
+      <p class="plan-footnote">
+        Los precios están en soles peruanos (S/). Los cargos se realizan de manera recurrente cada mes.
+      </p>
+    </section>
+  </main>
+</div>

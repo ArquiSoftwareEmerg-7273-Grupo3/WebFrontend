@@ -45,6 +45,12 @@ import {
 } from './content/pages/business/components/profile-analysis/profile-analysis.component';
 import {AdvertisingComponent} from './content/pages/business/components/advertising/advertising.component';
 import {PlanComponent} from './content/pages/business/components/plan/plan.component';
+import {AnalysisComponent} from './content/pages/recommendations/components/analysis/analysis.component';
+import {ApplicantsComponent} from './content/pages/recommendations/components/applicants/applicants.component';
+import {
+  PaymentGatewayComponent
+} from './content/pages/suscriptions/components/payment-gateway/payment-gateway.component';
+import {PlansComponent} from './content/pages/settings/components/plans/plans.component';
 
 
 export const routes: Routes = [
@@ -81,6 +87,10 @@ export const routes: Routes = [
   { path: 'jobs', component: JobsComponent },
   { path: 'jobs/:id', component: JobDetailComponent },
   { path: 'jobs/writer/my-projects', component: WriterProjectsComponent, canActivate: [authenticationGuard] },
+  { path: 'recommendations/analysis/:id', component: AnalysisComponent, canActivate: [authenticationGuard] },
+  { path: 'recommendations/analysis/:id/applicants', component: ApplicantsComponent, canActivate: [authenticationGuard]},
+  { path: 'suscription/payment-gateway', component: PaymentGatewayComponent },
+  { path: 'settings/plans', component: PlansComponent },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

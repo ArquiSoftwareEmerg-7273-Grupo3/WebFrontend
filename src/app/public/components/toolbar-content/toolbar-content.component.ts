@@ -214,4 +214,8 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
   goToPortfolio() {
     this.router.navigate(['/portfolios']);
   }
+
+  goToRecommendations() {
+    this.router.navigate(['recommendations/analysis/:id']);
+  }
 }
