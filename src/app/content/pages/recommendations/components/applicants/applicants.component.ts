@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { RecommendationService } from '../../../../../public/services/recommendation.service';
-import { Artist, RecommendationResult } from '../../../../../models/recommentation.model';
+import { Artist } from '../../../../../models/recommentation.model';
 
 @Component({
   selector: 'app-applicants',
