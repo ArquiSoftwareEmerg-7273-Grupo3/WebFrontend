@@ -53,7 +53,7 @@ export class WebSocketService {
       },
 
       // Callback cuando se conecta
-      onConnect: (frame) => {
+      onConnect: (frame: any) => {
         
         this.connected$.next(true);
         
@@ -62,19 +62,19 @@ export class WebSocketService {
       },
 
       // Callback cuando se desconecta
-      onDisconnect: (frame) => {
+      onDisconnect: (frame: any) => {
 
         this.connected$.next(false);
       },
 
       // Callback cuando hay error
-      onStompError: (frame) => {
+      onStompError: (frame: any) => {
         
         this.connected$.next(false);
       },
 
       // Callback cuando hay error de conexión WebSocket
-      onWebSocketError: (event) => {
+      onWebSocketError: (event: any) => {
         this.connected$.next(false);
       }
     });

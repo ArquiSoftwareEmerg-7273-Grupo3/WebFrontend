@@ -1,6 +1,6 @@
-<div class="applications-page">
+<div class="applications-container">
   <!-- Hero Section -->
-  <div class="applications-hero">
+  <div class="hero-section">
     <div class="hero-background">
       <div class="hero-pattern"></div>
       <div class="hero-gradient"></div>
@@ -10,13 +10,15 @@
         <span class="material-symbols-outlined">assignment</span>
       </div>
       <div class="hero-text">
-        <h1 class="hero-title">Mis <span class="gradient-text">Postulaciones</span></h1>
+        <h1 class="hero-title">
+          <span class="gradient-text">Mis Postulaciones</span>
+        </h1>
         <p class="hero-description">
-          Revisa el estado de tus candidaturas y mantente al día con tus oportunidades
+          Revisa el estado de tus <span class="highlight">postulaciones a proyectos</span>
         </p>
         <div class="hero-stats">
           <div class="stat-item">
-            <span class="stat-number">{{ projects.length }}</span>
+            <span class="stat-number">{{ postulaciones.length }}</span>
             <span class="stat-label">Total</span>
           </div>
           <div class="stat-divider"></div>
@@ -29,62 +31,245 @@
             <span class="stat-number">{{ getApprovedCount() }}</span>
             <span class="stat-label">Aprobadas</span>
           </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">{{ getRejectedCount() }}</span>
+            <span class="stat-label">Rechazadas</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Filters Section -->
-  <div class="filters-section">
-    <div class="filters-container">
-      <div class="filter-tabs">
-        <button class="filter-tab active" (click)="filterByState('all')">
-          <span class="material-symbols-outlined">apps</span>
-          Todas
-        </button>
-        <button class="filter-tab" (click)="filterByState('pending')">
-          <span class="material-symbols-outlined">schedule</span>
-          Pendientes
-        </button>
-        <button class="filter-tab" (click)="filterByState('approved')">
-          <span class="material-symbols-outlined">check_circle</span>
-          Aprobadas
-        </button>
-        <button class="filter-tab" (click)="filterByState('rejected')">
-          <span class="material-symbols-outlined">cancel</span>
-          Rechazadas
-        </button>
-      </div>
+  <!-- Toolbar Section -->
+  <div class="toolbar-section">
+    <div class="toolbar-left">
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'all'"
+        (click)="filterByState('all')">
+        <span class="material-symbols-outlined">list</span>
+        Todas
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'pending'"
+        (click)="filterByState('pending')">
+        <span class="material-symbols-outlined">schedule</span>
+        Pendientes
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'approved'"
+        (click)="filterByState('approved')">
+        <span class="material-symbols-outlined">check_circle</span>
+        Aprobadas
+      </button>
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedFilter === 'rejected'"
+        (click)="filterByState('rejected')">
+        <span class="material-symbols-outlined">cancel</span>
+        Rechazadas
+      </button>
     </div>
   </div>
 
-  <!-- Applications Container -->
-  <div class="applications-container">
-    <div class="applications-grid" *ngIf="filteredProjects.length > 0">
-      <app-application-card
-        *ngFor="let project of filteredProjects; trackBy: trackByProjectId"
-        [title]="project.title"
-        [author]="project.author"
-        [dateApplication]="project.applicationDate"
-        [imageSrc]="project.imageSrc"
-        [state]="project.state"
-        [id]="project.id"
-        class="fade-in">
-      </app-application-card>
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- Error Message -->
+    <div *ngIf="error" class="error-message">
+      <span class="material-symbols-outlined">error</span>
+      {{ error }}
     </div>
 
-    <!-- Empty State -->
-    <div class="empty-state" *ngIf="filteredProjects.length === 0">
-      <div class="empty-icon">
-        <span class="material-symbols-outlined">inbox</span>
+    <!-- Indicador de carga -->
+    <div *ngIf="loading" class="loading-container">
+      <div class="spinner"></div>
+      <p>Cargando postulaciones...</p>
+    </div>
+
+    <!-- Lista de Postulaciones -->
+    <div *ngIf="!loading && filteredPostulaciones.length > 0" class="applications-content" [class.with-selection]="postulacionSeleccionada">
+      <div class="applications-column">
+        <div *ngFor="let item of filteredPostulaciones; trackBy: trackByPostulacionId" 
+             class="application-card" 
+             [class.active]="postulacionSeleccionada && postulacionSeleccionada.postulacion.id === item.postulacion.id">
+          
+          <div class="card-header">
+            <div class="card-title-section">
+              <h3 class="card-title">{{ item.proyecto.titulo }}</h3>
+              <span class="estado-badge" [ngClass]="getEstadoClass(item.postulacion.estado)">
+                {{ getEstadoLabel(item.postulacion.estado) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="card-content">
+            <p class="card-description">{{ item.proyecto.descripcion }}</p>
+
+            <div class="card-meta">
+              <div class="meta-item">
+                <span class="material-symbols-outlined">calendar_today</span>
+                <span>Postulado: {{ item.postulacion.fechaPostulacion | date:'dd/MM/yyyy' }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="material-symbols-outlined">payments</span>
+                <span>Presupuesto: ${{ item.proyecto.presupuesto }}</span>
+              </div>
+              <div class="meta-item">
+                <span class="material-symbols-outlined">event</span>
+                <span>Inicio: {{ item.proyecto.fechaInicio | date:'dd/MM/yyyy' }}</span>
+              </div>
+            </div>
+
+            <div class="card-actions">
+              <button class="btn-view" (click)="verDetalles(item)">
+                <span class="material-symbols-outlined">visibility</span>
+                Ver Detalles
+              </button>
+              <button class="btn-project" (click)="goToProject(item.proyecto.id)">
+                <span class="material-symbols-outlined">open_in_new</span>
+                Ver Proyecto
+              </button>
+              <button 
+                *ngIf="item.postulacion.estado === 'PENDIENTE'" 
+                class="btn-cancel" 
+                (click)="cancelarPostulacion(item)">
+                <span class="material-symbols-outlined">close</span>
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
-      <h3>No hay postulaciones</h3>
-      <p *ngIf="selectedFilter === 'all'">Aún no has postulado a ningún proyecto. ¡Explora las oportunidades disponibles!</p>
-      <p *ngIf="selectedFilter !== 'all'">No hay postulaciones con este estado.</p>
-      <button class="btn-primary" *ngIf="selectedFilter === 'all'" routerLink="/jobs">
-        <span class="material-symbols-outlined">work</span>
-        Explorar Proyectos
-      </button>
+
+      <!-- Sección de Detalles -->
+      <div class="detail-column">
+        <div *ngIf="!postulacionSeleccionada" class="detail-placeholder">
+          <span class="material-symbols-outlined">dashboard_customize</span>
+          <h3>Selecciona una postulación</h3>
+          <p>El panel mostrará los detalles y el estado de tu postulación.</p>
+        </div>
+
+        <div *ngIf="postulacionSeleccionada" class="detail-section">
+          <div class="detail-header">
+            <div>
+              <h2>{{ postulacionSeleccionada.proyecto.titulo }}</h2>
+              <p class="subtitle">Detalles de la postulación</p>
+            </div>
+            <button class="btn-close-section" (click)="postulacionSeleccionada = null">
+              <span class="material-symbols-outlined">close</span>
+            </button>
+          </div>
+
+          <div class="detail-body">
+            <div class="detail-info">
+              <div class="info-section">
+                <h4>Estado de la Postulación</h4>
+                <span class="estado-badge large" [ngClass]="getEstadoClass(postulacionSeleccionada.postulacion.estado)">
+                  {{ getEstadoLabel(postulacionSeleccionada.postulacion.estado) }}
+                </span>
+              </div>
+
+              <div class="info-section">
+                <h4>Información del Proyecto</h4>
+                <div class="info-grid">
+                  <div class="info-item">
+                    <span class="material-symbols-outlined">calendar_today</span>
+                    <div>
+                      <span class="info-label">Fecha de Postulación</span>
+                      <span class="info-value">{{ postulacionSeleccionada.postulacion.fechaPostulacion | date:'dd/MM/yyyy HH:mm' }}</span>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <span class="material-symbols-outlined">event</span>
+                    <div>
+                      <span class="info-label">Inicio del Proyecto</span>
+                      <span class="info-value">{{ postulacionSeleccionada.proyecto.fechaInicio | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <span class="material-symbols-outlined">event_available</span>
+                    <div>
+                      <span class="info-label">Fin del Proyecto</span>
+                      <span class="info-value">{{ postulacionSeleccionada.proyecto.fechaFin | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <span class="material-symbols-outlined">payments</span>
+                    <div>
+                      <span class="info-label">Presupuesto</span>
+                      <span class="info-value">${{ postulacionSeleccionada.proyecto.presupuesto }}</span>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <span class="material-symbols-outlined">work</span>
+                    <div>
+                      <span class="info-label">Modalidad</span>
+                      <span class="info-value">{{ postulacionSeleccionada.proyecto.modalidadProyecto }}</span>
+                    </div>
+                  </div>
+                  <div class="info-item">
+                    <span class="material-symbols-outlined">description</span>
+                    <div>
+                      <span class="info-label">Tipo de Contrato</span>
+                      <span class="info-value">{{ postulacionSeleccionada.proyecto.contratoProyecto }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="info-section">
+                <h4>Descripción del Proyecto</h4>
+                <p class="project-description">{{ postulacionSeleccionada.proyecto.descripcion }}</p>
+              </div>
+
+              <div class="info-section" *ngIf="postulacionSeleccionada.proyecto.requisitos">
+                <h4>Requisitos</h4>
+                <p class="project-description">{{ postulacionSeleccionada.proyecto.requisitos }}</p>
+              </div>
+
+              <div class="detail-actions">
+                <button class="btn-primary" (click)="goToProject(postulacionSeleccionada.proyecto.id)">
+                  <span class="material-symbols-outlined">open_in_new</span>
+                  Ver Proyecto Completo
+                </button>
+                <button 
+                  *ngIf="postulacionSeleccionada.postulacion.estado === 'PENDIENTE'" 
+                  class="btn-danger" 
+                  (click)="cancelarPostulacion(postulacionSeleccionada)">
+                  <span class="material-symbols-outlined">close</span>
+                  Cancelar Postulación
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sin postulaciones -->
+    <div *ngIf="!loading && filteredPostulaciones.length === 0 && selectedFilter === 'all'" class="no-applications">
+      <div class="no-applications-content">
+        <span class="material-symbols-outlined">inbox</span>
+        <h3>No tienes postulaciones aún</h3>
+        <p>Explora proyectos disponibles y postúlate para comenzar</p>
+        <button class="btn-primary" routerLink="/jobs">
+          <span class="material-symbols-outlined">search</span>
+          Explorar Proyectos
+        </button>
+      </div>
+    </div>
+
+    <!-- Sin resultados del filtro -->
+    <div *ngIf="!loading && filteredPostulaciones.length === 0 && selectedFilter !== 'all'" class="no-applications">
+      <div class="no-applications-content">
+        <span class="material-symbols-outlined">filter_list_off</span>
+        <h3>No hay postulaciones con este estado</h3>
+        <p>Intenta con otro filtro</p>
+      </div>
     </div>
   </div>
 </div>

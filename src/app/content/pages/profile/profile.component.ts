@@ -509,11 +509,11 @@ private loadAuthorsInfo(posts: DisplayPost[]): void {
   }
 
   goToMiPortafolio() {
-    this.router.navigate(['/portfolio/my-portfolio']);
+    this.router.navigate(['/portfolios']);
   }
 
   goToMisPostulaciones() {
-    this.router.navigate(['/applications/my-applications']);
+    this.router.navigate(['/applications']);
   }
    get isIllustrator(): boolean {
     return this.userRole === 'ILUSTRADOR';

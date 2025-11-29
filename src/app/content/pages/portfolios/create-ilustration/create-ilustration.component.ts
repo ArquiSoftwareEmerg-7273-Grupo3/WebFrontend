@@ -187,7 +187,15 @@ export class CreateIlustrationComponent implements OnInit {
         },
         error: (err: any) => {
           this.isLoading = false;
-          console.error(err);
+          console.error('Error agregando ilustración a categoría:', err);
+          
+          // Si el error es 200 o 202, tratarlo como éxito
+          if (err.status === 200 || err.status === 202) {
+            alert('Ilustración agregada a la categoría exitosamente');
+            this.location.back();
+          } else {
+            alert('Error al agregar la ilustración: ' + (err?.error?.message || err?.message || 'Error desconocido'));
+          }
         }
       });
     } else {
@@ -224,7 +232,15 @@ export class CreateIlustrationComponent implements OnInit {
         },
         error: (err: any) => {
           this.isLoading = false;
-          console.error(err);
+          console.error('Error creando ilustración:', err);
+          
+          // Si el error es 200 o 202, tratarlo como éxito
+          if (err.status === 200 || err.status === 202) {
+            alert('Ilustración creada y asignada al portafolio con éxito');
+            this.location.back();
+          } else {
+            alert('Error al crear la ilustración: ' + (err?.error?.message || err?.message || 'Error desconocido'));
+          }
         }
       });
     }

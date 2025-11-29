@@ -134,7 +134,7 @@
         <span class="material-symbols-outlined">folder_open</span>
       </div>
       <h3>No tienes portafolios aún</h3>
-      <p>Crea tu primer portafolio y comienza a compartir tu arte</p>
+      <p>Crea tu primer portafolio y comienza a compartir tu arte con el mundo</p>
       <button class="create-first-btn" (click)="goToCreatePortfolio()">
         <span class="material-symbols-outlined">add</span>
         Crear Mi Primer Portafolio
@@ -192,6 +192,75 @@
       <div class="modal-footer">
         <button class="btn-secondary" (click)="closeCategoryModal()">Cancelar</button>
         <button class="btn-primary" (click)="saveCategoryModal()">Crear Categoría</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal para crear portafolio -->
+  <div class="modal-overlay" *ngIf="showCreatePortfolioModal" (click)="closeCreatePortfolioModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Crear Nuevo Portafolio</h2>
+        <button class="close-btn" (click)="closeCreatePortfolioModal()">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="portfolioTitle">Título del portafolio *</label>
+          <input
+            id="portfolioTitle"
+            type="text"
+            [(ngModel)]="newPortfolioTitle"
+            placeholder="Ej: Mi Portafolio de Ilustraciones"
+            class="form-input"
+            maxlength="100"
+          />
+        </div>
+        <div class="form-group">
+          <label for="portfolioDesc">Descripción</label>
+          <textarea
+            id="portfolioDesc"
+            [(ngModel)]="newPortfolioDescription"
+            placeholder="Describe tu portafolio..."
+            class="form-textarea"
+            rows="4"
+            maxlength="500"
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="portfolioImage">Imagen de portada (opcional)</label>
+          <div class="file-upload-container">
+            <input
+              id="portfolioImage"
+              type="file"
+              accept="image/*"
+              (change)="onPortfolioImageSelected($event)"
+              class="file-input"
+              #fileInput
+            />
+            <button 
+              type="button" 
+              class="file-upload-btn" 
+              (click)="fileInput.click()"
+              [disabled]="isUploadingImage"
+            >
+              <span class="material-symbols-outlined">upload</span>
+              <span *ngIf="!isUploadingImage && !selectedImageFileName">Seleccionar imagen</span>
+              <span *ngIf="isUploadingImage">Subiendo...</span>
+              <span *ngIf="!isUploadingImage && selectedImageFileName">{{ selectedImageFileName }}</span>
+            </button>
+            <small class="file-hint" *ngIf="!selectedImageFileName">Máximo 10MB - JPG, PNG, WebP</small>
+            <small class="file-success" *ngIf="selectedImageFileName && !isUploadingImage">
+              <span class="material-symbols-outlined">check_circle</span>
+              Imagen cargada exitosamente
+            </small>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" (click)="closeCreatePortfolioModal()">Cancelar</button>
+        <button class="btn-primary" (click)="saveNewPortfolio()">Crear Portafolio</button>
       </div>
     </div>
   </div>

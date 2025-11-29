@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {MiniTutorialService} from '../mini-tutorial/mini-tutorial/services/mini-tutorial.service';
 import {Subscription} from 'rxjs';
@@ -22,8 +22,6 @@ import { DisplayPost, DisplayComment, ApiPostResponse, PostsResponse, User, Even
   imports: [
     CommonModule,
     FormsModule,
-    NgOptimizedImage,
-
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']

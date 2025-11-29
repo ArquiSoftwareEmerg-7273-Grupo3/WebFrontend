@@ -1,11 +1,16 @@
-import {Component, OnInit} from '@angular/core';
-import {NgForOf, NgIf} from "@angular/common";
-import {RouterLink} from "@angular/router";
-import {ProjectCardComponent} from "../home/components/project-card/project-card.component";
-import {ApplicationCardComponent} from './components/application-card/application-card.component';
-import {
-  ApplicationCardReceivedComponent
-} from './components/application-card-received/application-card-received.component';
+import {Component, OnInit, OnDestroy} from '@angular/core';
+import {NgClass, NgForOf, NgIf, DatePipe} from "@angular/common";
+import {Router, RouterLink} from "@angular/router";
+import {FormsModule} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {JobsService} from '../jobs/services/jobs.service';
+import {PostulacionResource, ProyectoResource, EstadoPostulacion} from '../jobs/model/proyecto.model';
+import {Subscription, forkJoin} from 'rxjs';
+
+interface PostulacionWithProject {
+  postulacion: PostulacionResource;
+  proyecto: ProyectoResource;
+}
 
 @Component({
   selector: 'app-applications',
@@ -13,119 +18,167 @@ import {
   imports: [
     NgForOf,
     NgIf,
+    NgClass,
     RouterLink,
-    ApplicationCardComponent,
+    FormsModule,
+    CommonModule,
+    DatePipe
   ],
   templateUrl: './applications.component.html',
-  styleUrl: './applications.component.css'
+  styleUrls: ['./applications.component.css']
 })
-export class ApplicationsComponent implements OnInit {
-
-  role: string = '';
-
-
-  projects = [
-    {
-      id: 1,
-      title: 'Proyecto de Animales Fantásticos',
-      author: 'María López',
-      date: '10/05/2025',
-      applicationDate: '12/05/2025',
-      state: 'Pendiente',
-      imageSrc: 'https://s1.1zoom.me/b5050/281/Fantastic_world_Tigers_Magical_animals_518194_1920x1080.jpg',
-      description: 'Este proyecto trata sobre crear cuentos ilustrados con animales fantásticos que enseñen valores a los niños. A través de personajes mágicos y situaciones sorprendentes, se busca estimular la creatividad y la imaginación infantil. Además, se abordarán temas como la empatía, el respeto por la diversidad y la importancia de la amistad en un formato lúdico y educativo que permitirá a los niños aprender mientras se divierten.'
-    },
-    {
-      id: 2,
-      title: 'Cuentos sobre la Amistad',
-      author: 'Carlos Pérez',
-      date: '11/05/2025',
-      applicationDate: '12/05/2025',
-      state: 'Pendiente',
-      imageSrc: 'https://img.freepik.com/vector-gratis/fondo-degradado-celebracion-dia-internacional-amistad_23-2150515715.jpg',
-      description: 'En este proyecto exploraremos historias sobre la amistad para fomentar la empatía y la solidaridad en la infancia. A través de narraciones emotivas y personajes entrañables, los niños descubrirán el valor del compañerismo, el trabajo en equipo y la importancia de apoyarse mutuamente. Cada cuento estará diseñado para provocar reflexión y diálogo tanto en casa como en el aula.'
-    },
-    {
-      id: 3,
-      title: 'Historias de Inclusión y Diversidad',
-      author: 'Lucía Fernández',
-      date: '12/05/2025',
-      applicationDate: '12/05/2025',
-      state: 'Rechazado',
-      imageSrc: 'https://static.vecteezy.com/system/resources/previews/023/967/493/large_2x/world-day-for-cultural-diversity-for-dialogue-and-development-abstract-illustration-generative-ai-photo.jpg',
-      description: 'Este proyecto tiene como objetivo desarrollar cuentos ilustrados que promuevan la inclusión y el respeto por las diferencias. A través de relatos protagonizados por niños y niñas de diferentes culturas, capacidades y contextos, se busca construir una visión más abierta y comprensiva del mundo. El enfoque será pedagógico y emocional, incorporando actividades complementarias para padres y educadores.'
-    }
-  ];
-
-  applications = [
-    {
-      id: 1,
-      title: 'Proyecto de Animales Fantásticos',
-      author: 'Diego Perez',
-      date: '10/05/2025',
-      applicationDate: '12/05/2025',
-      state: 'Pendiente',
-      imageSrc: 'https://fundacionjuanjotorrejon.org/wp-content/uploads/2020/06/cuentos-1080x675.jpg',
-      description: 'Este proyecto trata sobre crear cuentos ilustrados con animales fantásticos que enseñen valores a los niños. A través de personajes mágicos y situaciones sorprendentes, se busca estimular la creatividad y la imaginación infantil. Además, se abordarán temas como la empatía, el respeto por la diversidad y la importancia de la amistad en un formato lúdico y educativo que permitirá a los niños aprender mientras se divierten.'
-    },
-    {
-      id: 2,
-      title: 'Cuentos sobre la Amistad',
-      author: 'Ramiro Pérez',
-      date: '11/05/2025',
-      applicationDate: '12/05/2025',
-      state: 'Pendiente',
-      imageSrc: 'https://vocalialogopedia.com/wp-content/uploads/2022/11/3583238-scaled.jpg',
-      description: 'En este proyecto exploraremos historias sobre la amistad para fomentar la empatía y la solidaridad en la infancia. A través de narraciones emotivas y personajes entrañables, los niños descubrirán el valor del compañerismo, el trabajo en equipo y la importancia de apoyarse mutuamente. Cada cuento estará diseñado para provocar reflexión y diálogo tanto en casa como en el aula.'
-    },
-    {
-      id: 3,
-      title: 'Historias de Inclusión y Diversidad',
-      author: 'Cristian Fernández',
-      date: '12/05/2025',
-      applicationDate: '12/05/2025',
-      state: 'Rechazado',
-      imageSrc: 'https://www.magisnet.com/wp-content/uploads/2019/02/storytelling.jpg',
-      description: 'Este proyecto tiene como objetivo desarrollar cuentos ilustrados que promuevan la inclusión y el respeto por las diferencias. A través de relatos protagonizados por niños y niñas de diferentes culturas, capacidades y contextos, se busca construir una visión más abierta y comprensiva del mundo. El enfoque será pedagógico y emocional, incorporando actividades complementarias para padres y educadores.'
-    }
-  ];
+export class ApplicationsComponent implements OnInit, OnDestroy {
+  loading: boolean = false;
+  error: string = '';
+  postulaciones: PostulacionWithProject[] = [];
+  filteredPostulaciones: PostulacionWithProject[] = [];
+  postulacionSeleccionada: PostulacionWithProject | null = null;
   selectedFilter: string = 'all';
-  filteredProjects: any[] = [];
+  
+  private subscriptions = new Subscription();
+
+  constructor(
+    private router: Router,
+    private jobsService: JobsService
+  ) {}
 
   ngOnInit() {
-    const storedRole = localStorage.getItem('role');
-    this.role = storedRole === '1' ? 'Ilustrador' : storedRole === '2' ? 'Escritor' : 'Invitado';
-    this.filteredProjects = this.projects;
+    this.loadPostulaciones();
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
+  }
+
+  loadPostulaciones(): void {
+    this.loading = true;
+    this.error = '';
+    
+    const sub = this.jobsService.getMisPostulaciones().subscribe({
+      next: (postulaciones) => {
+        // Cargar detalles de cada proyecto
+        const proyectoRequests = postulaciones.map(postulacion =>
+          this.jobsService.getProyectoById(postulacion.proyectoId)
+        );
+
+        if (proyectoRequests.length === 0) {
+          this.postulaciones = [];
+          this.filteredPostulaciones = [];
+          this.loading = false;
+          return;
+        }
+
+        forkJoin(proyectoRequests).subscribe({
+          next: (proyectos) => {
+            this.postulaciones = postulaciones.map((postulacion, index) => ({
+              postulacion,
+              proyecto: proyectos[index]
+            }));
+            this.filteredPostulaciones = this.postulaciones;
+            this.loading = false;
+          },
+          error: (error) => {
+            console.error('Error al cargar proyectos:', error);
+            this.error = 'Error al cargar los detalles de los proyectos';
+            this.loading = false;
+          }
+        });
+      },
+      error: (error) => {
+        console.error('Error al cargar postulaciones:', error);
+        this.error = 'Error al cargar tus postulaciones';
+        this.loading = false;
+      }
+    });
+
+    this.subscriptions.add(sub);
+  }
+
+  verDetalles(postulacion: PostulacionWithProject): void {
+    this.postulacionSeleccionada = postulacion;
   }
 
   filterByState(state: string): void {
     this.selectedFilter = state;
     if (state === 'all') {
-      this.filteredProjects = this.projects;
+      this.filteredPostulaciones = this.postulaciones;
     } else {
-      this.filteredProjects = this.projects.filter(p => {
-        const stateLower = p.state.toLowerCase();
-        if (state === 'pending') return stateLower.includes('pendiente');
-        if (state === 'approved') return stateLower.includes('aprobado') || stateLower.includes('aceptado');
-        if (state === 'rejected') return stateLower.includes('rechazado');
+      this.filteredPostulaciones = this.postulaciones.filter(p => {
+        const estadoPostulacion = p.postulacion.estado;
+        if (state === 'pending') return estadoPostulacion === EstadoPostulacion.PENDIENTE;
+        if (state === 'approved') return estadoPostulacion === EstadoPostulacion.APROBADA;
+        if (state === 'rejected') return estadoPostulacion === EstadoPostulacion.RECHAZADA;
         return true;
       });
     }
   }
 
   getPendingCount(): number {
-    return this.projects.filter(p => p.state.toLowerCase().includes('pendiente')).length;
+    return this.postulaciones.filter(p => p.postulacion.estado === EstadoPostulacion.PENDIENTE).length;
   }
 
   getApprovedCount(): number {
-    return this.projects.filter(p => 
-      p.state.toLowerCase().includes('aprobado') || 
-      p.state.toLowerCase().includes('aceptado')
-    ).length;
+    return this.postulaciones.filter(p => p.postulacion.estado === EstadoPostulacion.APROBADA).length;
   }
 
-  trackByProjectId(index: number, project: any): number {
-    return project.id;
+  getRejectedCount(): number {
+    return this.postulaciones.filter(p => p.postulacion.estado === EstadoPostulacion.RECHAZADA).length;
   }
 
+  getEstadoClass(estado: EstadoPostulacion): string {
+    switch (estado) {
+      case EstadoPostulacion.PENDIENTE:
+        return 'estado-pendiente';
+      case EstadoPostulacion.APROBADA:
+        return 'estado-aprobada';
+      case EstadoPostulacion.RECHAZADA:
+        return 'estado-rechazada';
+      case EstadoPostulacion.CANCELADA:
+        return 'estado-cancelada';
+      default:
+        return '';
+    }
+  }
+
+  getEstadoLabel(estado: EstadoPostulacion): string {
+    switch (estado) {
+      case EstadoPostulacion.PENDIENTE:
+        return 'Pendiente';
+      case EstadoPostulacion.APROBADA:
+        return 'Aprobada';
+      case EstadoPostulacion.RECHAZADA:
+        return 'Rechazada';
+      case EstadoPostulacion.CANCELADA:
+        return 'Cancelada';
+      default:
+        return estado;
+    }
+  }
+
+  goToProject(projectId: number): void {
+    this.router.navigate(['/jobs', projectId]);
+  }
+
+  cancelarPostulacion(postulacion: PostulacionWithProject): void {
+    if (!confirm('¿Estás seguro de que deseas cancelar esta postulación?')) {
+      return;
+    }
+
+    const sub = this.jobsService.cancelarPostulacion(postulacion.postulacion.id).subscribe({
+      next: () => {
+        // Recargar postulaciones
+        this.loadPostulaciones();
+      },
+      error: (error) => {
+        console.error('Error al cancelar postulación:', error);
+        alert('Error al cancelar la postulación');
+      }
+    });
+
+    this.subscriptions.add(sub);
+  }
+
+  trackByPostulacionId(index: number, item: PostulacionWithProject): number {
+    return item.postulacion.id;
+  }
 }

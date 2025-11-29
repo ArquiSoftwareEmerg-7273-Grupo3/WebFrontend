@@ -17,7 +17,12 @@ export class PortfolioService {
   constructor(private http: HttpClient) { }
 
   createPortfolio(portfolio: Portfolio): Observable<any> {
-    return this.http.post(`${this.basePath}/api/v1/portafolios`, portfolio, this.httpOptions);
+    return this.http.post(`${this.basePath}/api/v1/portafolios`, portfolio, this.httpOptions).pipe(
+      catchError(err => {
+        console.error('[PortfolioService.createPortfolio] error', err);
+        return throwError(() => err);
+      })
+    );
   }
 
   createIlustration(portfolioId: number, ilustradorId: number | null, payload: any): Observable<any> {
