@@ -4,101 +4,52 @@
       <h1>Postulantes recomendados</h1>
       <p>
         Proyecto seleccionado:
-        <span class="rec-project-pill">Colaboración de creación de un cómic</span>
+        <span class="rec-project-pill">{{ projectTitle }}</span>
       </p>
       <p class="rec-candidates-sub">
-        Estos ilustradores fueron seleccionados según su estilo, experiencia y
-        compatibilidad con tu proyecto.
+        Estos artistas fueron seleccionados por la IA basándose en la descripción semántica y requisitos de tu proyecto.
       </p>
     </header>
 
-    <section class="rec-candidates-grid">
-      <article class="rec-candidate-row">
+    <div *ngIf="isLoading" style="text-align: center; color: #666;">
+      Cargando recomendaciones...
+    </div>
+
+    <section class="rec-candidates-grid" *ngIf="!isLoading">
+
+      <article class="rec-candidate-row" *ngFor="let artist of artists">
         <div class="rec-candidate-main">
           <img
             class="rec-candidate-avatar"
-            src="https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&w=200"
-            alt="Gustavo Sandoval"
+            [src]="artist.image_path || 'https://ui-avatars.com/api/?name=' + artist.name + '&background=c2f2e4&color=165b52'"
+            [alt]="artist.name"
           />
           <div class="rec-candidate-info">
-            <h2>Gustavo Sandoval</h2>
+            <h2>{{ artist.name }}</h2>
             <p class="rec-candidate-role">
-              Ilustrador de cómics · 5 años de experiencia
+              Match IA: {{ (artist.score! * 100) | number:'1.0-0' }}% compatibilidad
             </p>
             <div class="rec-candidate-tags">
-              <span>Estilo cartoon</span>
-              <span>Narrativa visual</span>
-              <span>Secuencias dinámicas</span>
+              <span title="{{ artist.description }}">
+                {{ artist.description | slice:0:50 }}...
+              </span>
             </div>
           </div>
         </div>
 
         <div class="rec-candidate-buttons">
-          <button class="rec-btn-secondary">Ver portafolio</button>
+          <button class="rec-btn-secondary">Ver perfil</button>
           <button class="rec-btn-primary">
-            Invitar a colaborar
+            Contactar
             <span class="material-symbols-outlined">send</span>
           </button>
         </div>
       </article>
 
-      <!-- Puedes repetir el artículo para más postulantes -->
-      <article class="rec-candidate-row">
-        <div class="rec-candidate-main">
-          <img
-            class="rec-candidate-avatar"
-            src="https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&w=200"
-            alt="Valeria Romero"
-          />
-          <div class="rec-candidate-info">
-            <h2>Valeria Romero</h2>
-            <p class="rec-candidate-role">
-              Ilustradora editorial · Enfoque juvenil
-            </p>
-            <div class="rec-candidate-tags">
-              <span>Color vibrante</span>
-              <span>Expresiones fuertes</span>
-            </div>
-          </div>
-        </div>
+      <div *ngIf="artists.length === 0" style="grid-column: span 2; text-align: center;">
+        No se encontraron recomendaciones para este proyecto.
+      </div>
 
-        <div class="rec-candidate-buttons">
-          <button class="rec-btn-secondary">Ver portafolio</button>
-          <button class="rec-btn-primary">
-            Invitar a colaborar
-            <span class="material-symbols-outlined">send</span>
-          </button>
-        </div>
-      </article>
-
-      <article class="rec-candidate-row">
-        <div class="rec-candidate-main">
-          <img
-            class="rec-candidate-avatar"
-            src="https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?auto=compress&w=200"
-            alt="Javier Olivera"
-          />
-          <div class="rec-candidate-info">
-            <h2>Javier Olivera</h2>
-            <p class="rec-candidate-role">
-              Ilustrador freelance · Estilo semi-realista
-            </p>
-            <div class="rec-candidate-tags">
-              <span>Sombras dramáticas</span>
-              <span>Escenas de acción</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="rec-candidate-buttons">
-          <button class="rec-btn-secondary">Ver portafolio</button>
-          <button class="rec-btn-primary">
-            Invitar a colaborar
-            <span class="material-symbols-outlined">send</span>
-          </button>
-        </div>
-      </article>
     </section>
   </div>
 </div>
-
