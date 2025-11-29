@@ -2,59 +2,45 @@
   <div class="payment-container">
     <h1 class="payment-title">Para terminar, confirma tu pago</h1>
 
+    <!-- Mensajes de éxito/error -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+
     <div class="payment-layout">
       <div class="payment-form">
-        <button class="pay-method paypal-btn">
-          <img src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
-               alt="PayPal" />
+        <p class="payment-description">
+          Ingresa tu correo y serás redirigido al checkout seguro de Mercado Pago
+          donde podrás completar tu suscripción.
+        </p>
+
+        <!-- Formulario simple -->
+        <div class="form-group">
+          <label for="email">Correo electrónico</label>
+          <input id="email" type="email" [(ngModel)]="email" name="email" placeholder="tu-correo@ejemplo.com" required
+            [disabled]="loading" />
+        </div>
+
+        <!-- Botón de Mercado Pago -->
+        <button class="pay-method mercadopago-btn" (click)="redirectToCheckout()" [disabled]="loading || !email">
+          <img src="https://http2.mlstatic.com/frontend-assets/ui-navigation/5.18.9/mercadopago/logo__large@2x.png"
+            alt="Mercado Pago" style="height: 40px;" />
+          <span *ngIf="!loading">Continuar con Mercado Pago</span>
+          <span *ngIf="loading">Procesando...</span>
         </button>
-
-        <button class="pay-method gpay-btn">
-          <span>G&nbsp;Pay</span>
-        </button>
-
-        <div class="payment-divider">
-          <span>O paga con tarjeta</span>
-        </div>
-
-        <!-- Campos -->
-        <div class="form-group">
-          <label for="email">Correo</label>
-          <input id="email" type="email" placeholder="tu-correo@ejemplo.com" />
-        </div>
-
-        <div class="form-group">
-          <label>Información de la tarjeta</label>
-          <div class="card-number-row">
-            <input type="text" placeholder="1234  1234  1234  1234" />
-            <div class="card-brands">
-              <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Visa.svg" alt="Visa" />
-              <img src="https://brandemia.org/sites/default/files/sites/default/files/mastercard_pentagram_press-6.jpg" alt="Mastercard" />
-            </div>
-          </div>
-
-          <div class="card-extra-row">
-            <input type="text" placeholder="MM / YY" />
-            <input type="text" placeholder="CVC" />
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="card-name">Nombre de la tarjeta</label>
-          <input id="card-name" type="text" placeholder="Como aparece en la tarjeta" />
-        </div>
-
-        <div class="form-group">
-          <label for="country">País</label>
-          <input id="country" type="text" placeholder="Perú" />
-        </div>
-
-        <button class="subscribe-btn">Suscribirse</button>
 
         <p class="payment-terms">
-          Al confirmar su suscripción, autoriza el cargo de este pago a su tarjeta
-          y los pagos futuros, según los términos establecidos.
+          Al continuar, serás redirigido a Mercado Pago donde podrás elegir tu método de pago
+          y completar la suscripción de S/. 10.00 mensuales de forma segura.
         </p>
+
+        <div class="payment-security">
+          <span class="material-symbols-outlined">lock</span>
+          <span>Pago 100% seguro procesado por Mercado Pago</span>
+        </div>
       </div>
 
       <!-- COLUMNA DERECHA: RESUMEN DE PLAN -->
@@ -68,7 +54,7 @@
             <div class="plan-price-row">
               <div class="plan-price">
                 <span class="currency">S/.</span>
-                <span class="amount">50.00</span>
+                <span class="amount">10.00</span>
               </div>
               <span class="plan-period">por mes</span>
             </div>

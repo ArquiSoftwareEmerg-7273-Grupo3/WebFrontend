@@ -34,6 +34,31 @@
 
   <!-- CONTENIDO PRINCIPAL -->
   <main class="settings-content">
+    <!-- Mensajes -->
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+
+    <!-- Estado de suscripción actual -->
+    <div *ngIf="subscription && hasPremium" class="subscription-status">
+      <div class="status-header">
+        <h3>Tu suscripción Premium está activa</h3>
+        <span class="status-badge active">{{ subscription.status }}</span>
+      </div>
+      <p>ID de suscripción: {{ subscription.subscriptionId }}</p>
+      <div class="status-actions">
+        <button class="btn-secondary" (click)="pauseSubscription()" [disabled]="loading">
+          Pausar suscripción
+        </button>
+        <button class="btn-danger" (click)="cancelSubscription()" [disabled]="loading">
+          Cancelar suscripción
+        </button>
+      </div>
+    </div>
+
     <section class="plan-section">
       <header class="plan-header">
         <div>
@@ -45,8 +70,8 @@
 
       <div class="plans-grid">
         <!-- Plan Free -->
-        <article class="plan-card">
-          <div class="plan-badge free">Actual</div>
+        <article class="plan-card" [class.current]="!hasPremium">
+          <div class="plan-badge free" *ngIf="!hasPremium">Actual</div>
           <h2 class="plan-name">Plan Freemium</h2>
           <p class="plan-price">
             <span class="currency">S/.</span>
@@ -60,16 +85,18 @@
             <li>Mensajes limitados por mes</li>
           </ul>
 
-          <button class="plan-btn outline">Seguir con este plan</button>
+          <button class="plan-btn outline" *ngIf="!hasPremium">Seguir con este plan</button>
+          <button class="plan-btn outline" *ngIf="hasPremium" disabled>Plan básico</button>
         </article>
 
         <!-- Plan Premium -->
-        <article class="plan-card premium">
-          <div class="plan-badge premium-tag">Recomendado</div>
+        <article class="plan-card premium" [class.current]="hasPremium">
+          <div class="plan-badge premium-tag" *ngIf="hasPremium">Actual</div>
+          <div class="plan-badge premium-tag" *ngIf="!hasPremium">Recomendado</div>
           <h2 class="plan-name">Plan Premium</h2>
           <p class="plan-price">
             <span class="currency">S/.</span>
-            <span class="amount">50.00</span>
+            <span class="amount">1.00</span>
             <span class="period">/mes</span>
           </p>
 
@@ -80,8 +107,11 @@
             <li>Soporte prioritario</li>
           </ul>
 
-          <button class="plan-btn primary" routerLink="/suscription/payment-gateway">
+          <button class="plan-btn primary" routerLink="/suscription/payment-gateway" *ngIf="!hasPremium">
             Empezar plan Premium
+          </button>
+          <button class="plan-btn primary" *ngIf="hasPremium" disabled>
+            Plan activo
           </button>
         </article>
       </div>
