@@ -8,6 +8,8 @@ import { CreatePortfolioComponent } from './content/pages/portfolios/create-port
 import { PortfoliosComponent } from './content/pages/portfolios/portfolios.component';
 import { CreateIlustrationComponent } from './content/pages/portfolios/create-ilustration/create-ilustration.component';
 import { ProfileComponent } from './content/pages/profile/profile.component';
+import { UserProfileComponent } from './content/pages/profile/user-profile/user-profile.component';
+import { NotificationsComponent } from './content/pages/notifications/notifications.component';
 import { WriterIndividualComponent } from './content/pages/home/components/writer-individual/writer-individual.component';
 import { BookIndividualComponent } from './content/pages/home/components/book-individual/book-individual.component';
 import {
@@ -31,6 +33,7 @@ import {
 import { SignInComponent } from './content/pages/login/pages/sign-in/sign-in.component';
 import { SignUpComponent } from './content/pages/login/pages/sign-up/sign-up.component';
 import { authenticationGuard } from './content/pages/login/services/authentication.guard';
+import { premiumGuard } from './shared/guards/premium.guard';
 
 import { IlustradorFormComponent } from './content/pages/registration-forms/ilustrador-form/ilustrador-form.component';
 import { EscritorFormComponent } from './content/pages/registration-forms/escritor-form/escritor-form.component';
@@ -60,6 +63,8 @@ export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'login', component: SignInComponent },
   { path: 'profile', component: ProfileComponent, canActivate: [authenticationGuard] },
+  { path: 'profile/user/:id', component: UserProfileComponent },
+  { path: 'notifications', component: NotificationsComponent, canActivate: [authenticationGuard] },
   { path: 'register', component: SignUpComponent },
   { path: 'register/illustrator', component: IlustradorFormComponent, canActivate: [authenticationGuard] },
   { path: 'register/writer', component: EscritorFormComponent, canActivate: [authenticationGuard] },
@@ -90,11 +95,12 @@ export const routes: Routes = [
   { path: 'jobs', component: JobsComponent },
   { path: 'jobs/:id', component: JobDetailComponent },
   { path: 'jobs/writer/my-projects', component: WriterProjectsComponent, canActivate: [authenticationGuard] },
-  { path: 'recommendations/analysis/:id', component: AnalysisComponent, canActivate: [authenticationGuard] },
-  { path: 'recommendations/analysis/:id/applicants', component: ApplicantsComponent, canActivate: [authenticationGuard] },
+  { path: 'recommendations/analysis/:id', component: AnalysisComponent, canActivate: [authenticationGuard, premiumGuard] },
+  { path: 'recommendations/analysis/:id/applicants', component: ApplicantsComponent, canActivate: [authenticationGuard, premiumGuard] },
   { path: 'suscription/payment-gateway', component: PaymentGatewayComponent },
   { path: 'suscription/success', component: PaymentSuccessComponent },
   { path: 'settings/plans', component: PlansComponent },
+  { path: 'notifications', component: NotificationsComponent, canActivate: [authenticationGuard] },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: '**', pathMatch: 'full', redirectTo: 'login' }
 ];

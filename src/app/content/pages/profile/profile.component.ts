@@ -327,19 +327,15 @@ private loadAuthorsInfo(posts: DisplayPost[]): void {
   private loadCommentsAuthorsInfo(postIndex: number, comments: DisplayComment[]): void {
       const userIds = [...new Set(comments.map(c => c.userId).filter(id => id && id > 0))];
       
-      console.log('👥 Cargando autores de comentarios. UserIds:', userIds);
   
       userIds.forEach(userId => {
-        console.log('🔍 Buscando usuario con ID:', userId);
         
         const userSub = this.usersService.getUserById(userId).subscribe({
           next: (userProfile: UserProfile) => {
-            console.log('✅ Usuario obtenido:', userProfile);
             
             if (this.posts[postIndex]?.comments) {
               this.posts[postIndex].comments = this.posts[postIndex].comments!.map(comment => {
                 if (comment.userId === userId) {
-                  console.log(`🔄 Actualizando comentario ${comment.id} con usuario:`, userProfile.nombres);
                   return {
                     ...comment,
                     userName: `${userProfile.nombres} ${userProfile.apellidos}`,
@@ -351,11 +347,10 @@ private loadAuthorsInfo(posts: DisplayPost[]): void {
               
               // Forzar detección de cambios
               this.posts = [...this.posts];
-              console.log('✨ Posts actualizados. Comentarios del post:', this.posts[postIndex].comments);
             }
           },
           error: (error) => {
-            console.error(`❌ Error al cargar información del autor ${userId}:`, error);
+            console.error(`Error al cargar información del autor ${userId}:`, error);
           }
         });
   

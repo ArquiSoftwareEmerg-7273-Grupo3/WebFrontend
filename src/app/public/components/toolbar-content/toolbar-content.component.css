@@ -325,3 +325,52 @@ app-options-icon .options-popup,
     display: none;
   }
 }
+
+/* Notification Badge */
+.notification-link {
+  position: relative;
+}
+
+.notification-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: #ff4444;
+  color: white;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 11px;
+  font-weight: bold;
+  min-width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.toolbar.compact .notification-badge {
+  top: 4px;
+  right: 4px;
+  font-size: 10px;
+  padding: 1px 4px;
+  min-width: 16px;
+  height: 16px;
+}
+
+.burger-menu .notification-badge {
+  position: relative;
+  top: auto;
+  right: auto;
+  margin-left: auto;
+}

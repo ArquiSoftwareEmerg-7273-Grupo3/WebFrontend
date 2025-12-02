@@ -134,7 +134,6 @@ export class CreateProjectComponent implements OnInit {
     this.isLoading = true;
     this.error = '';
 
-    console.log('Datos del proyecto a crear:', proyectoData);
     
     this.jobsService.createProyecto(proyectoData).subscribe({
       next: (response) => {

@@ -1,6 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {CommonModule, NgOptimizedImage} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import {MiniTutorialService} from '../mini-tutorial/mini-tutorial/services/mini-tutorial.service';
 import {Subscription} from 'rxjs';
 import { AuthenticationService } from '../login/services/authentication.service';
@@ -21,9 +22,7 @@ import { DisplayPost, DisplayComment, ApiPostResponse, PostsResponse, User, Even
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
-    NgOptimizedImage,
-
+    FormsModule
   ],
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
@@ -48,6 +47,12 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   // Variables para el modal
   selectedPost: DisplayPost | null = null;
+
+  // Variables para búsqueda de usuarios
+  searchQuery: string = '';
+  searchResults: UserProfile[] = [];
+  searchLoading: boolean = false;
+  private searchTimeout: any;
 
   suggestedUsers: User[] = [
     {
@@ -84,7 +89,8 @@ export class HomeComponent implements OnInit, OnDestroy {
     private authService: AuthenticationService,
     private socialFeedService: SocialFeedService,
     private usersService: UsersService,
-    private wsService: WebSocketService
+    private wsService: WebSocketService,
+    private router: Router
   ) {
     // Los datos ahora se cargarán desde el servicio
     this.posts = [];
@@ -103,7 +109,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     this.isLoadingPosts = true;
 
     if (!this.currentUser) {
-      console.log('Esperando información del usuario...');
       setTimeout(() => this.loadFeed(), 500);
       return;
     }
@@ -201,7 +206,8 @@ export class HomeComponent implements OnInit, OnDestroy {
               return {
                 ...post,
                 authorName: `${authorProfile.nombres} ${authorProfile.apellidos}`,
-                authorPhoto: authorProfile.foto || 'assets/images/default-avatar.png'
+                authorPhoto: authorProfile.foto || 'assets/images/default-avatar.png',
+                authorPremium: authorProfile.ilustrador?.suscripcion === true
               };
             }
             return post;
@@ -215,7 +221,8 @@ export class HomeComponent implements OnInit, OnDestroy {
               return {
                 ...post,
                 authorName: `Usuario ${authorId}`,
-                authorPhoto: 'assets/images/default-avatar.png'
+                authorPhoto: 'assets/images/default-avatar.png',
+                authorPremium: false
               };
             }
             return post;
@@ -290,19 +297,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   private loadCommentsAuthorsInfo(postIndex: number, comments: DisplayComment[]): void {
     const userIds = [...new Set(comments.map(c => c.userId).filter(id => id && id > 0))];
 
-    console.log('👥 Cargando autores de comentarios. UserIds:', userIds);
 
     userIds.forEach(userId => {
-      console.log('🔍 Buscando usuario con ID:', userId);
 
       const userSub = this.usersService.getUserById(userId).subscribe({
         next: (userProfile: UserProfile) => {
-          console.log('✅ Usuario obtenido:', userProfile);
 
           if (this.posts[postIndex]?.comments) {
             this.posts[postIndex].comments = this.posts[postIndex].comments!.map(comment => {
               if (comment.userId === userId) {
-                console.log(`🔄 Actualizando comentario ${comment.id} con usuario:`, userProfile.nombres);
                 return {
                   ...comment,
                   userName: `${userProfile.nombres} ${userProfile.apellidos}`,
@@ -314,11 +317,10 @@ export class HomeComponent implements OnInit, OnDestroy {
 
             // Forzar detección de cambios
             this.posts = [...this.posts];
-            console.log('✨ Posts actualizados. Comentarios del post:', this.posts[postIndex].comments);
           }
         },
         error: (error) => {
-          console.error(`❌ Error al cargar información del autor ${userId}:`, error);
+          console.error(`Error al cargar información del autor ${userId}:`, error);
         }
       });
 
@@ -363,7 +365,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   sharePost(post: DisplayPost): void {
     const shareSub = this.socialFeedService.repostPost(post.id).subscribe({
       next: () => {
-        console.log('Post compartido exitosamente:', post.id);
       },
       error: (error) => {
         console.error('Error al compartir post:', error);
@@ -374,7 +375,63 @@ export class HomeComponent implements OnInit, OnDestroy {
   }
 
   followUser(userId: number) {
-    console.log('Siguiendo usuario:', userId);
+  }
+
+  // Búsqueda de usuarios
+  onSearchChange(): void {
+    // Limpiar timeout anterior
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
+
+    // Si la búsqueda está vacía, limpiar resultados
+    if (!this.searchQuery.trim()) {
+      this.searchResults = [];
+      return;
+    }
+
+    // Esperar 500ms antes de buscar (debounce)
+    this.searchTimeout = setTimeout(() => {
+      this.searchUsers();
+    }, 500);
+  }
+
+  searchUsers(): void {
+    if (!this.searchQuery.trim()) {
+      this.searchResults = [];
+      return;
+    }
+
+    this.searchLoading = true;
+    
+    const searchSub = this.usersService.searchUsers(this.searchQuery).subscribe({
+      next: (users) => {
+        this.searchResults = users;
+        this.searchLoading = false;
+      },
+      error: (error) => {
+        console.error('Error buscando usuarios:', error);
+        this.searchResults = [];
+        this.searchLoading = false;
+      }
+    });
+
+    this.subs.add(searchSub);
+  }
+
+  getUserRoleLabel(user: UserProfile): string {
+    if (user.ilustrador) {
+      return 'Ilustrador';
+    } else if (user.escritor) {
+      return 'Escritor';
+    }
+    return 'Usuario';
+  }
+
+  goToUserProfile(userId: number): void {
+    if (userId && userId > 0) {
+      this.router.navigate(['/profile/user', userId]);
+    }
   }
 
   openPostDetail(post: DisplayPost): void {
@@ -382,7 +439,6 @@ export class HomeComponent implements OnInit, OnDestroy {
     document.body.style.overflow = 'hidden';
 
     this.socialFeedService.viewPost(post.id).subscribe({
-      next: () => console.log('Vista registrada para post:', post.id),
       error: (error) => console.error('Error al registrar vista:', error)
     });
   }
@@ -469,7 +525,6 @@ export class HomeComponent implements OnInit, OnDestroy {
   loadTrendingPosts(): void {
     const trendingSub = this.socialFeedService.getTrendingPosts().subscribe({
       next: (trendingPosts) => {
-        console.log('Posts trending cargados:', trendingPosts);
         // Aquí podrías mostrar los trending posts en una sección especial
       },
       error: (error) => {
@@ -621,7 +676,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
       // Forzar detección de cambios
       this.posts = [...this.posts];
-      console.log('Comentario agregado. Total comentarios:', this.posts[postIndex].comments!.length);
 
       // Cargar info del autor del comentario si es necesario
       if (displayComment.userId > 0) {
@@ -634,11 +688,10 @@ export class HomeComponent implements OnInit, OnDestroy {
    * Manejar actualización de likes por WebSocket
    */
   private handleLikeUpdated(postId: number, likesCount: number, userId: number): void {
-    console.log('Procesando actualización de like. Post ID:', postId, 'Likes:', likesCount);
 
     const postIndex = this.posts.findIndex(p => p.id === postId);
     if (postIndex === -1) {
-      console.warn('⚠️ Post no encontrado para actualizar likes');
+      console.warn('Post no encontrado para actualizar likes');
       return;
     }
 
@@ -653,20 +706,17 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // Forzar detección de cambios
     this.posts = [...this.posts];
-    console.log(' Likes actualizados:', likesCount);
   }
 
   /**
    * Manejar post eliminado por WebSocket
    */
   private handlePostDeleted(postId: number): void {
-    console.log('🗑️ Procesando eliminación de post. Post ID:', postId);
 
     const initialLength = this.posts.length;
     this.posts = this.posts.filter(p => p.id !== postId);
 
     if (this.posts.length < initialLength) {
-      console.log('Post eliminado del feed');
     }
   }
 
@@ -674,7 +724,6 @@ export class HomeComponent implements OnInit, OnDestroy {
    * Manejar post actualizado por WebSocket
    */
   private handlePostUpdated(updatedPost: any): void {
-    console.log('Procesando actualización de post:', updatedPost);
 
     const postIndex = this.posts.findIndex(p => p.id === updatedPost.id);
     if (postIndex === -1) {
@@ -692,7 +741,6 @@ export class HomeComponent implements OnInit, OnDestroy {
 
     // Forzar detección de cambios
     this.posts = [...this.posts];
-    console.log(' Post actualizado');
   }
 
   /**
@@ -729,7 +777,6 @@ export class HomeComponent implements OnInit, OnDestroy {
    * Mostrar notificación de nuevo contenido
    */
   private showNotification(message: string): void {
-    console.log(' Notificación:', message);
     // TODO: Implementar toast o notificación visual
   }
 

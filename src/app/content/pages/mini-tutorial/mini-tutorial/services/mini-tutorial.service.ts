@@ -41,7 +41,6 @@ export class MiniTutorialService {
     );
     this.subs.add(
       this._steps$.subscribe(steps => {
-        console.log('Steps updated ->', steps ? steps.length : null);
         const idx = this._index$.value;
         if (steps && steps[idx]) {
           this.handleStep(steps[idx]);

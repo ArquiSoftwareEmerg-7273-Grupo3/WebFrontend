@@ -14,9 +14,10 @@
           <span class="material-symbols-outlined">home</span>
           <span>Inicio</span>
         </a>
-        <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+        <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()" class="notification-link">
           <span class="material-symbols-outlined">notifications</span>
           <span>Notificaciones</span>
+          <span class="notification-badge" *ngIf="unreadNotificationsCount > 0">{{ unreadNotificationsCount }}</span>
         </a>
         <a (click)="openBusinessMiniVentana($event)" data-test="btn-negocios" >
           <span class="material-symbols-outlined">business</span>
@@ -39,9 +40,10 @@
           <span class="material-symbols-outlined">palette</span>
           <span>Mi Portafolio</span>
         </a>
-        <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+        <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()" class="notification-link">
           <span class="material-symbols-outlined">notifications</span>
           <span>Notificaciones</span>
+          <span class="notification-badge" *ngIf="unreadNotificationsCount > 0">{{ unreadNotificationsCount }}</span>
         </a>
       </ng-container>
 
@@ -59,9 +61,10 @@
           <span class="material-symbols-outlined">stars</span>
           <span>Recomendaciones</span>
         </a>
-        <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+        <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()" class="notification-link">
           <span class="material-symbols-outlined">notifications</span>
           <span>Notificaciones</span>
+          <span class="notification-badge" *ngIf="unreadNotificationsCount > 0">{{ unreadNotificationsCount }}</span>
         </a>
       </ng-container>
     </nav>
@@ -95,9 +98,10 @@
         <span class="material-symbols-outlined">home</span>
         <span>Inicio</span>
       </a>
-      <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+      <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()" class="notification-link">
         <span class="material-symbols-outlined">notifications</span>
         <span>Notificaciones</span>
+        <span class="notification-badge" *ngIf="unreadNotificationsCount > 0">{{ unreadNotificationsCount }}</span>
       </a>
       <a [routerLink]="['/business']" (click)="closeMenu(); scrollToTop()" data-test="btn-negocios">
         <span class="material-symbols-outlined">business</span>
@@ -119,9 +123,10 @@
         <span class="material-symbols-outlined">palette</span>
         <span>Mi Portafolio</span>
       </a>
-      <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+      <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()" class="notification-link">
         <span class="material-symbols-outlined">notifications</span>
         <span>Notificaciones</span>
+        <span class="notification-badge" *ngIf="unreadNotificationsCount > 0">{{ unreadNotificationsCount }}</span>
       </a>
     </ng-container>
 
@@ -139,9 +144,10 @@
         <span class="material-symbols-outlined">stars</span>
         <span>Recomendaciones</span>
       </a>
-      <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()">
+      <a [routerLink]="['/notifications']" (click)="closeMenu(); scrollToTop()" class="notification-link">
         <span class="material-symbols-outlined">notifications</span>
         <span>Notificaciones</span>
+        <span class="notification-badge" *ngIf="unreadNotificationsCount > 0">{{ unreadNotificationsCount }}</span>
       </a>
     </ng-container>
   </div>

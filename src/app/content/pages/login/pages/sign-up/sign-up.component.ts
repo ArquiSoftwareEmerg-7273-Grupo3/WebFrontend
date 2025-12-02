@@ -249,7 +249,6 @@ export class SignUpComponent implements OnInit {
 
     this.authenticationService.signUp(signUpRequest)
       .then(() => {
-        console.log('Registro exitoso');
       })
       .catch(error => {
         console.error('Error en el registro:', error);

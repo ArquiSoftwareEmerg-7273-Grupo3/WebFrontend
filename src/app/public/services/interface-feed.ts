@@ -49,6 +49,7 @@ export interface ApiPostResponse {
 export interface DisplayPost extends ApiPostResponse {
   authorName?: string;
   authorPhoto?: string;
+  authorPremium?: boolean;
   images?: string[];
   likes?: number;
   isLiked?: boolean;

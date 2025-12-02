@@ -13,10 +13,12 @@ import {
   EstadoProyecto,
   ProyectoResource
 } from './model/proyecto.model';
+import { ApplicationModalComponent, ApplicationData } from './components/application-modal/application-modal.component';
+import { ToastService } from '../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-jobs',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, ApplicationModalComponent],
   templateUrl: './jobs.component.html',
   styleUrl: './jobs.component.css'
 })
@@ -52,9 +54,17 @@ export class JobsComponent implements OnInit {
 
   // Vista actual: 'list' o 'grid'
   viewMode: 'list' | 'grid' = 'list';
+  
+  // Modal de postulación
+  showApplicationModal: boolean = false;
+  selectedProject: ProyectoResource | null = null;
 
   setViewMode(mode: 'list' | 'grid') {
-  this.viewMode = mode;
+    this.viewMode = mode;
+  }
+  
+  isPremiumUser(): boolean {
+    return this.currentUser?.ilustrador?.suscripcion === true;
   }
 
   
@@ -77,7 +87,8 @@ export class JobsComponent implements OnInit {
   constructor(
     private jobsService: JobsService, 
     private router: Router,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit(): void {
@@ -197,21 +208,51 @@ export class JobsComponent implements OnInit {
       return;
     }
 
-    // Crear postulación
+    const project = this.proyectos.find(p => p.id === jobId);
+    if (project) {
+      this.selectedProject = project;
+      this.showApplicationModal = true;
+    }
+  }
+  
+  closeApplicationModal(): void {
+    this.showApplicationModal = false;
+    this.selectedProject = null;
+  }
+  
+  submitApplication(applicationData: ApplicationData): void {
+    if (!this.selectedProject) return;
+
+    // Convertir answers de array a objeto
+    const answersObject: { [key: string]: string } = {};
+    applicationData.answers.forEach(item => {
+      answersObject[item.question] = item.answer;
+    });
+
+    // Crear postulación con datos adicionales
     const postulacion = {
-      fecha: new Date().toISOString()
+      fecha: new Date().toISOString(),
+      coverLetter: applicationData.coverLetter,
+      estimatedTime: applicationData.estimatedTime,
+      proposedBudget: applicationData.proposedBudget,
+      portfolioLinks: applicationData.portfolioLinks,
+      answers: answersObject,
+      isPriority: this.isPremiumUser()
     };
 
-    this.jobsService.postularseAProyecto(jobId, postulacion).subscribe({
+    this.jobsService.postularseAProyecto(this.selectedProject.id, postulacion).subscribe({
       next: (response) => {
-        alert('¡Postulación enviada exitosamente!');
-        // Recargar proyectos para actualizar contadores
+        this.toastService.success(
+          '¡Felicidades!',
+          'Tu postulación ha sido enviada exitosamente. El escritor la revisará pronto y recibirás una notificación con su respuesta.'
+        );
+        this.closeApplicationModal();
         this.loadProyectos();
       },
       error: (error) => {
         console.error('Error al postularse:', error);
         const errorMessage = error.error?.message || error.message || 'Error al enviar la postulación.';
-        alert(errorMessage);
+        this.toastService.error('Error', errorMessage);
       }
     });
   }

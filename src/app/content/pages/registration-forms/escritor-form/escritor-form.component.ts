@@ -61,14 +61,20 @@ export class EscritorFormComponent {
     );
 
     this.profileRegistrationService.registerEscritor(escritor).subscribe({
+      
       next: () => {
         alert('Registro de escritor exitoso');
+        this.goToHome();
       },
       error: (err) => {
         console.error('Error al registrar escritor', err);
         alert(`Error al registrar escritor: ${err?.message || err}`);
       }
     });
+  }
+
+  goToHome() {
+    window.location.href = '/home';
   }
 
   onFileSelected(event: Event): void {

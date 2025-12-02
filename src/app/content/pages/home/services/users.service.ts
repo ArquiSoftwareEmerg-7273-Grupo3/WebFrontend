@@ -11,6 +11,19 @@ export interface UserProfile {
   email: string;
   foto?: string;
   role?: string;
+  ubicacion?: string;
+  descripcion?: string;
+  ilustrador?: {
+    id: number;
+    nombreArtistico?: string;
+    suscripcion: boolean;
+  } | null;
+  escritor?: {
+    id: number;
+    razonSocial?: string;
+    ruc?: string;
+    nombreComercial?: string;
+  } | null;
 }
 
 @Injectable({
@@ -100,5 +113,22 @@ export class UsersService {
   // Limpiar cache si es necesario
   clearCache(): void {
     this.usersCache.clear();
+  }
+
+  // Buscar usuarios por nombre
+  searchUsers(query: string): Observable<UserProfile[]> {
+    if (!query || query.trim().length < 2) {
+      return of([]);
+    }
+
+    return this.http.get<UserProfile[]>(
+      `${this.basePath}/api/v1/users/search?q=${encodeURIComponent(query)}`,
+      this.getHttpOptions()
+    ).pipe(
+      catchError(error => {
+        console.error('Error searching users:', error);
+        return of([]);
+      })
+    );
   }
 }

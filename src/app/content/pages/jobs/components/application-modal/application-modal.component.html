@@ -1,0 +1,146 @@
+<div class="modal-overlay" (click)="closeModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <div class="header-content">
+        <h2>Postular a Proyecto</h2>
+        <p class="project-title">{{ project.titulo }}</p>
+        <span class="premium-badge" *ngIf="isPremium">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M8 1.5L9.5 5.5L13.5 6L10.5 9L11.5 13L8 11L4.5 13L5.5 9L2.5 6L6.5 5.5L8 1.5Z" fill="#FFD700" stroke="#FFA500"/>
+          </svg>
+          Postulación Prioritaria
+        </span>
+      </div>
+      <button class="close-btn" (click)="closeModal()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+
+    <div class="progress-bar">
+      <div class="progress-fill" [style.width.%]="getProgressPercentage()"></div>
+    </div>
+
+    <div class="step-indicator">
+      <span class="step-text">Paso {{ currentStep }} de {{ totalSteps }}</span>
+    </div>
+
+    <div class="modal-body">
+      <!-- Paso 1: Carta de presentación -->
+      <div class="step-content" *ngIf="currentStep === 1">
+        <h3>Carta de Presentación</h3>
+        <p class="step-description">Cuéntale al escritor por qué eres el indicado para este proyecto</p>
+        <textarea 
+          [(ngModel)]="coverLetter"
+          placeholder="Escribe tu carta de presentación aquí... (mínimo 50 caracteres)"
+          rows="8"
+          class="form-textarea"></textarea>
+        <div class="char-count" [class.valid]="coverLetter.length >= 50">
+          {{ coverLetter.length }} / 50 caracteres mínimos
+        </div>
+      </div>
+
+      <!-- Paso 2: Tiempo y presupuesto -->
+      <div class="step-content" *ngIf="currentStep === 2">
+        <h3>Tiempo y Presupuesto</h3>
+        <p class="step-description">Proporciona una estimación realista</p>
+        
+        <div class="form-group">
+          <label>Tiempo estimado de entrega</label>
+          <input 
+            type="text" 
+            [(ngModel)]="estimatedTime"
+            placeholder="Ej: 2 semanas, 1 mes, etc."
+            class="form-input">
+        </div>
+
+        <div class="form-group">
+          <label>Presupuesto propuesto (opcional)</label>
+          <div class="input-with-prefix">
+            <span class="prefix">S/</span>
+            <input 
+              type="number" 
+              [(ngModel)]="proposedBudget"
+              placeholder="0.00"
+              class="form-input with-prefix">
+          </div>
+          <small class="form-hint">Si el proyecto tiene presupuesto definido, puedes ajustar tu propuesta</small>
+        </div>
+      </div>
+
+      <!-- Paso 3: Preguntas -->
+      <div class="step-content" *ngIf="currentStep === 3">
+        <h3>Preguntas del Proyecto</h3>
+        <p class="step-description">Responde estas preguntas para destacar tu postulación</p>
+        
+        <div class="question-group" *ngFor="let q of questions; let i = index">
+          <label>{{ i + 1 }}. {{ q.question }}</label>
+          <textarea 
+            [(ngModel)]="q.answer"
+            placeholder="Tu respuesta..."
+            rows="4"
+            class="form-textarea"></textarea>
+        </div>
+      </div>
+
+      <!-- Paso 4: Portfolio -->
+      <div class="step-content" *ngIf="currentStep === 4">
+        <h3>Enlaces a tu Portfolio</h3>
+        <p class="step-description">Comparte trabajos relevantes (opcional)</p>
+        
+        <div class="portfolio-links">
+          <div class="link-group" *ngFor="let link of portfolioLinks; let i = index">
+            <input 
+              type="url" 
+              [(ngModel)]="portfolioLinks[i]"
+              placeholder="https://..."
+              class="form-input">
+            <button 
+              class="remove-link-btn" 
+              (click)="removePortfolioLink(i)"
+              *ngIf="portfolioLinks.length > 1">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M5 5L15 15M15 5L5 15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+        
+        <button class="add-link-btn" (click)="addPortfolioLink()">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+            <path d="M10 5V15M5 10H15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Agregar otro enlace
+        </button>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button 
+        class="btn-secondary" 
+        (click)="previousStep()"
+        *ngIf="currentStep > 1">
+        Anterior
+      </button>
+      
+      <button 
+        class="btn-primary" 
+        (click)="nextStep()"
+        [disabled]="!canProceed()"
+        *ngIf="currentStep < totalSteps">
+        Siguiente
+      </button>
+      
+      <button 
+        class="btn-submit" 
+        (click)="submitApplication()"
+        *ngIf="currentStep === totalSteps">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+          <path d="M16 6L8 14L4 10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Enviar Postulación
+      </button>
+    </div>
+  </div>
+</div>

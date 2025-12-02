@@ -19,7 +19,7 @@
       </p>
 
       <p class="ubicacion" *ngIf="perfil.ubicacion" aria-label="Ubicación">
-        <i class="i-pin" aria-hidden="true">📍</i> {{ perfil.ubicacion }}
+        <i class="i-pin" aria-hidden="true">Ubicación: </i> {{ perfil.ubicacion }}
       </p>
 
       <p class="descripcion">
@@ -187,20 +187,6 @@
             </div>
           </div>
 
-          <!-- Input para nuevo comentario -->
-          <div class="new-comment">
-            <img [src]="userPhoto" [alt]="userName" class="comment-avatar">
-            <form (ngSubmit)="submitComment(post)" #commentForm="ngForm" class="comment-form">
-              <input type="text"
-                     [placeholder]="'Comentar como ' + userName"
-                     [(ngModel)]="commentTexts[post.id]"
-                     name="commentInput"
-                     class="comment-input">
-              <button type="submit" class="send-comment" [disabled]="!commentTexts[post.id]">
-                <span class="material-symbols-outlined">send</span>
-              </button>
-            </form>
-          </div>
         </div>
       </div>
     </div>

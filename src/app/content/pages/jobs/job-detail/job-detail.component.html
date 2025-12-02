@@ -114,3 +114,12 @@
   <p>{{ error }}</p>
   <button (click)="goBack()">Volver a trabajos</button>
 </div>
+
+<!-- Application Modal -->
+<app-application-modal
+  *ngIf="showApplicationModal && proyecto"
+  [project]="proyecto"
+  [isPremium]="isPremiumUser()"
+  (close)="closeApplicationModal()"
+  (submit)="submitApplication($event)">
+</app-application-modal>

@@ -36,7 +36,7 @@ export interface SubscriptionResponse {
     providedIn: 'root'
 })
 export class MercadopagoService {
-    private apiUrl = 'http://localhost:8085/api/mercadopago/subscriptions';
+    private apiUrl = 'http://localhost:8080/api/mercadopago/subscriptions';
 
     constructor(private http: HttpClient) { }
 
@@ -87,6 +87,6 @@ export class MercadopagoService {
      * Mejor para pruebas que suscripciones
      */
     createPreference(preferenceData: any): Observable<any> {
-        return this.http.post<any>('http://localhost:8085/api/mercadopago/preferences', preferenceData);
+        return this.http.post<any>('http://localhost:8080/api/mercadopago/preferences', preferenceData);
     }
 }

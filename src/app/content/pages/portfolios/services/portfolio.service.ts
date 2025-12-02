@@ -141,4 +141,27 @@ export class PortfolioService {
       })
     );
   }
+
+  getPortfoliosByUserId(userId: number): Observable<Portfolio[]> {
+    const url = `${this.basePath}/api/v1/portafolios/usuario/${userId}`;
+    return this.http.get<any>(url).pipe(
+      map(res => {
+        const list = Array.isArray(res) ? res : (res?.data ?? []);
+        return (list as any[]).map(item => {
+          const id = item?.id;
+          const titulo = item?.titulo ?? item?.title ?? '';
+          const descripcion = item?.descripcion ?? item?.description ?? '';
+          const urlImagen = item?.urlImagen ?? item?.image ?? item?.urlImage ?? '';
+          const categorias = item?.categorias ?? item?.galleryItems ?? [];
+          const cantidadCategorias = item?.cantidadCategorias ?? categorias.length;
+          let cantidadTotalIlustraciones = item?.cantidadTotalIlustraciones ?? 0;
+          return new Portfolio(titulo, descripcion, urlImagen, false, categorias, id, cantidadCategorias, cantidadTotalIlustraciones);
+        });
+      }),
+      catchError(err => {
+        console.error('[PortfolioService.getPortfoliosByUserId] error', err);
+        return throwError(() => err);
+      })
+    );
+  }
 }

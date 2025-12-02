@@ -10,6 +10,7 @@ import { UserRoleUtils} from '../../../content/pages/login/services/user-role.ut
 import { Subscription } from 'rxjs';
 import {OptionsIconComponent} from '../options-icon/options-icon.component';
 import {OptionsIconService} from '../../services/options-icon.service';
+import { NotificationService } from '../../../content/pages/notifications/services/notification.service';
 
 @Component({
   selector: 'app-toolbar-content',
@@ -32,6 +33,7 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
 
   userRole: string = 'GENERAL';
   userInfo: UserInfoResponse | null = null;
+  unreadNotificationsCount = 0;
   private subscriptions: Subscription[] = [];
 
   constructor(
@@ -40,7 +42,8 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
     private authService: AuthenticationService,
     private el: ElementRef,
     private businessMiniService: BusinessMiniService,
-    private optionsIconService: OptionsIconService
+    private optionsIconService: OptionsIconService,
+    private notificationService: NotificationService
   ) {
     // Comentamos la suscripción al servicio por ahora
     // this.authService.currentRole.subscribe(role => {
@@ -99,14 +102,38 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
       if (userInfo) {
         const role = UserRoleUtils.getUserRole(userInfo);
         this.userRole = this.mapBackendRoleToFrontend(role);
+        
+        // Cargar notificaciones no leídas
+        this.loadUnreadNotifications(userInfo.id);
       }
       this.cdr.detectChanges();
     });
 
-    this.subscriptions.push(roleSubscription, userInfoSubscription);
+    // Suscribirse al contador de notificaciones no leídas
+    const unreadCountSubscription = this.notificationService.unreadCount$.subscribe(count => {
+      this.unreadNotificationsCount = count;
+      this.cdr.detectChanges();
+    });
+
+    this.subscriptions.push(roleSubscription, userInfoSubscription, unreadCountSubscription);
 
     // Cargar información del usuario si está autenticado
     this.loadUserInfo();
+  }
+
+  private loadUnreadNotifications(userId: number) {
+    this.notificationService.getUnreadCount(userId).subscribe({
+      next: (count) => {
+        this.unreadNotificationsCount = count;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error loading unread notifications count:', error);
+      }
+    });
+    
+    // El polling se inicia desde el servicio, no desde aquí
+    // para evitar múltiples instancias
   }
 
   ngOnDestroy() {
@@ -157,7 +184,6 @@ export class ToolbarContentComponent implements OnInit, OnDestroy {
   private loadUserInfo() {
     this.authService.getUserInformation()
       .then(userInfo => {
-        console.log('✔️ Información del usuario cargada en toolbar:', userInfo);
       })
       .catch(error => {
         console.warn('No se pudo cargar la información del usuario:', error);

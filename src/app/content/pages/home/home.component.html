@@ -28,8 +28,52 @@
 
 
 <div class="social-container">
-  <!-- Columna Izquierda - Usuarios sugeridos -->
+  <!-- Columna Izquierda - Búsqueda y Usuarios sugeridos -->
   <div class="sidebar left-sidebar">
+    <!-- Búsqueda de usuarios -->
+    <div class="sidebar-section search-section">
+      <h3>
+        <span class="material-symbols-outlined">search</span>
+        Buscar Perfiles
+      </h3>
+      <div class="search-container">
+        <input 
+          type="text" 
+          [(ngModel)]="searchQuery"
+          (input)="onSearchChange()"
+          placeholder="Buscar ilustradores o escritores..."
+          class="search-input">
+        <span class="material-symbols-outlined search-icon">search</span>
+      </div>
+      
+      <!-- Resultados de búsqueda -->
+      <div class="search-results" *ngIf="searchResults.length > 0">
+        <div class="user-card" *ngFor="let user of searchResults" (click)="goToUserProfile(user.id)">
+          <div class="user-avatar-wrapper">
+            <img
+              [src]="user.foto || 'assets/images/default-avatar.png'"
+              [alt]="user.nombres"
+              class="user-avatar">
+          </div>
+          <div class="user-info">
+            <span class="user-name">{{user.nombres}} {{user.apellidos}}</span>
+            <span class="user-role">{{getUserRoleLabel(user)}}</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Mensaje cuando no hay resultados -->
+      <div class="no-results" *ngIf="searchQuery && searchResults.length === 0 && !searchLoading">
+        <p>No se encontraron usuarios</p>
+      </div>
+      
+      <!-- Loading -->
+      <div class="search-loading" *ngIf="searchLoading">
+        <p>Buscando...</p>
+      </div>
+    </div>
+  
+    <!-- Artistas Sugeridos -->
     <div class="sidebar-section suggested-section">
       <h3>
         <span class="material-symbols-outlined">person_add</span>
@@ -38,7 +82,6 @@
 
       <div class="suggested-users">
         <div class="user-card" *ngFor="let user of suggestedUsers">
-
           <div class="user-avatar-wrapper">
             <img
               [src]="'https://i.pinimg.com/1200x/f0/cf/c7/f0cfc71ad649cbcdb690a6dccee2af7c.jpg'"
@@ -56,7 +99,6 @@
             <span class="material-symbols-outlined">add</span>
             Seguir
           </button>
-
         </div>
       </div>
     </div>
@@ -140,9 +182,14 @@
       <div class="post-card" *ngFor="let post of posts; trackBy: trackByPostId">
         <!-- Cabecera del post -->
         <div class="post-header" (click)="openPostDetail(post)">
-          <img [src]="post.authorPhoto" [alt]="post.authorName" class="post-avatar">
+          <img [src]="post.authorPhoto" [alt]="post.authorName" class="post-avatar" (click)="goToUserProfile(post.authorId); $event.stopPropagation()">
           <div class="post-info">
-            <span class="author-name">{{post.authorName}}</span>
+            <span class="author-name" (click)="goToUserProfile(post.authorId); $event.stopPropagation()">
+              {{post.authorName}}
+              <svg *ngIf="post.authorPremium" width="16" height="16" viewBox="0 0 16 16" fill="none" class="premium-icon" title="Usuario Premium">
+                <path d="M8 1.5L9.5 5.5L13.5 6L10.5 9L11.5 13L8 11L4.5 13L5.5 9L2.5 6L6.5 5.5L8 1.5Z" fill="#FFD700" stroke="#FFA500" stroke-width="1"/>
+              </svg>
+            </span>
             <span class="post-meta">
               <span class="post-date">{{post.createdAt | date:'shortTime'}}</span>
               <span class="post-visibility" *ngIf="post.visibility">
@@ -156,6 +203,7 @@
         </div>
 
         <!-- Contenido del post -->
+
         <div class="post-content" (click)="openPostDetail(post)">
           <p [class.truncated]="post.content.length > 280">
             {{post.content | slice:0:280}}
@@ -295,8 +343,9 @@
     </div>
   </div>
 
-  <!-- Columna Derecha - Tendencias y eventos -->
+  <!-- Columna Derecha - Publicidad y Eventos -->
   <div class="sidebar right-sidebar">
+    <!-- Publicidad -->
     <div class="sidebar-section ads-section">
       <div class="ad-card">
         <img src="https://marketplace.canva.com/EAF8xSUqJFE/1/0/900w/canva-tu-historia-publicidad-producto-tecnol%C3%B3gico-llamativo-verde-x_9-vJW3LB8.jpg" alt="Anuncio">
@@ -307,7 +356,7 @@
       </div>
     </div>
 
-
+    <!-- Eventos -->
     <div class="events-list">
       <div class="event-card" *ngFor="let event of events">
         <div class="event-date">

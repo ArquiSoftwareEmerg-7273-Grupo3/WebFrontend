@@ -6,11 +6,13 @@ import { ContratoProyectoLabel, EspecialidadProyecto,ContratoProyecto, Especiali
 import { AuthenticationService } from '../../login/services/authentication.service';
 import { UserRoleUtils } from '../../login/services/user-role.utils';
 import { UserInfoResponse } from '../../login/model/user-info.response';
+import { ApplicationModalComponent, ApplicationData } from '../components/application-modal/application-modal.component';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-job-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ApplicationModalComponent],
   templateUrl: './job-detail.component.html',
   styleUrl: './job-detail.component.css'
 })
@@ -21,12 +23,14 @@ export class JobDetailComponent implements OnInit {
   currentUser: UserInfoResponse | null = null;
   userRole: 'ILLUSTRATOR' | 'WRITER' | 'GENERAL' = 'GENERAL';
   placeholderImage = 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&h=800&fit=crop';
+  showApplicationModal: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private jobsService: JobsService,
-    private authService: AuthenticationService
+    private authService: AuthenticationService,
+    private toastService: ToastService
   ) {}
 
   ngOnInit() {
@@ -91,21 +95,51 @@ export class JobDetailComponent implements OnInit {
       return;
     }
 
+    this.showApplicationModal = true;
+  }
+
+  closeApplicationModal(): void {
+    this.showApplicationModal = false;
+  }
+
+  submitApplication(applicationData: ApplicationData): void {
+    if (!this.proyecto) return;
+
+    // Convertir answers de array a objeto
+    const answersObject: { [key: string]: string } = {};
+    applicationData.answers.forEach(item => {
+      answersObject[item.question] = item.answer;
+    });
+
     const postulacion = {
-      fecha: new Date().toISOString()
+      fecha: new Date().toISOString(),
+      coverLetter: applicationData.coverLetter,
+      estimatedTime: applicationData.estimatedTime,
+      proposedBudget: applicationData.proposedBudget,
+      portfolioLinks: applicationData.portfolioLinks,
+      answers: answersObject,
+      isPriority: this.isPremiumUser()
     };
 
     this.jobsService.postularseAProyecto(this.proyecto.id, postulacion).subscribe({
       next: () => {
-        alert('¡Postulación enviada exitosamente!');
+        this.toastService.success(
+          '¡Felicidades!',
+          'Tu postulación ha sido enviada exitosamente. El escritor la revisará pronto y recibirás una notificación con su respuesta.'
+        );
+        this.closeApplicationModal();
         this.router.navigate(['/jobs']);
       },
       error: (error) => {
         console.error('Error al postularse:', error);
         const errorMessage = error.error?.message || error.message || 'Error al enviar la postulación.';
-        alert(errorMessage);
+        this.toastService.error('Error', errorMessage);
       }
     });
+  }
+
+  isPremiumUser(): boolean {
+    return this.currentUser?.ilustrador?.suscripcion === true;
   }
 
   goBack() {

@@ -253,3 +253,12 @@
     </div>
   </div>
 </div>
+
+<!-- Application Modal -->
+<app-application-modal
+  *ngIf="showApplicationModal && selectedProject"
+  [project]="selectedProject"
+  [isPremium]="isPremiumUser()"
+  (close)="closeApplicationModal()"
+  (submit)="submitApplication($event)">
+</app-application-modal>

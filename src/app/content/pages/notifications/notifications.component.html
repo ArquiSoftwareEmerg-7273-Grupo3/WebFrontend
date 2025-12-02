@@ -1,0 +1,73 @@
+<div class="notifications-page">
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-background">
+      <div class="hero-pattern"></div>
+      <div class="hero-gradient"></div>
+    </div>
+
+    <div class="hero-content">
+      <div class="hero-icon">
+        <i class="fas fa-bell"></i>
+      </div>
+
+      <div class="hero-text">
+        <h1 class="hero-title">
+          Tus <span class="gradient-text">Notificaciones</span>
+        </h1>
+        <p class="hero-description">
+          Mantente al día con las últimas novedades, mensajes y oportunidades.
+          <span class="highlight">No te pierdas nada importante.</span>
+        </p>
+
+      </div>
+
+      <button class="mark-all-read" (click)="markAllAsRead()" *ngIf="getUnreadCount() > 0">
+        <span class="material-symbols-outlined"
+          style="vertical-align: middle; font-size: 18px; margin-right: 4px;">done_all</span>
+        Marcar todas como leídas
+      </button>
+    </div>
+  </section>
+
+  <div class="notifications-container">
+    <div class="notifications-filters">
+      <button class="filter-btn" [class.active]="selectedFilter === 'all'" (click)="setFilter('all')">
+        Todas
+        <span class="count">{{ notifications.length }}</span>
+      </button>
+      <button class="filter-btn" [class.active]="selectedFilter === 'unread'" (click)="setFilter('unread')">
+        No leídas
+        <span class="count" *ngIf="getUnreadCount() > 0">{{ getUnreadCount() }}</span>
+      </button>
+    </div>
+
+    <div class="notifications-list" *ngIf="!loading">
+      <div class="notification-item" *ngFor="let notification of filteredNotifications"
+        [class.unread]="!notification.read" (click)="handleNotificationClick(notification)">
+        <div class="notification-icon">
+          <i [class]="getNotificationIcon(notification.type)"></i>
+        </div>
+        <div class="notification-content">
+          <div class="notification-title">{{ notification.title }}</div>
+          <div class="notification-message">{{ notification.message }}</div>
+          <div class="notification-time">{{ getTimeAgo(notification.timestamp) }}</div>
+        </div>
+        <button class="delete-btn" (click)="deleteNotification(notification, $event)" title="Eliminar notificación">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div class="empty-state" *ngIf="filteredNotifications.length === 0">
+        <span class="material-symbols-outlined"
+          style="font-size: 64px; color: #cbd5e1; margin-bottom: 1rem;">notifications_off</span>
+        <p>No hay notificaciones</p>
+      </div>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+      <div class="spinner"></div>
+      <p>Cargando notificaciones...</p>
+    </div>
+  </div>
+</div>

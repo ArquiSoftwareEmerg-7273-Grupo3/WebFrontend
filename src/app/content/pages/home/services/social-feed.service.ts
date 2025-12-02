@@ -41,7 +41,6 @@ export class SocialFeedService {
   getEnrichedFeed(): Observable<FeedPost[]> {
     return this.postsService.getFeed().pipe(
       map(posts => {
-        // Por ahora retornar los posts básicos, la información adicional se puede cargar bajo demanda
         return posts.map(post => ({
           ...post,
           commentsCount: 0,
@@ -53,16 +52,13 @@ export class SocialFeedService {
     );
   }
 
-  // Obtener información completa de un post específico
   getPostWithFullInfo(postId: number, currentUserId?: number): Observable<FeedPost> {
-    // Hacer múltiples llamadas en paralelo para obtener toda la información
     const postInfo$ = this.postsService.getPostById(postId);
     const reactionStats$ = this.reactionsService.getReactionStats(postId);
     const repostCount$ = this.repostsService.getRepostCount(postId);
     const repostStatus$ = this.repostsService.getRepostStatus(postId);
     const comments$ = this.commentsService.getCommentsForPost(postId, 0, 3); // Solo los primeros 3 comentarios
     
-    // Si tenemos el userId, obtener la reacción del usuario
     const userReaction$ = currentUserId 
       ? this.reactionsService.getUserReactionToPost(postId, currentUserId)
       : new Observable(observer => { observer.next(null); observer.complete(); });

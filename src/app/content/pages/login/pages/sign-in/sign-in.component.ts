@@ -42,8 +42,7 @@ export class SignInComponent extends BaseFormComponent implements OnInit {
     this.authenticationService.signIn(signInRequest)
       .then(() => {
         this.optionsService.requestUpdateOptions();
-        this.router.navigate(['/home']).then(r =>
-        console.log('Redirected to home after sign-in'));
+        this.router.navigate(['/home']);
       })
       .catch(error => {
         alert('Invalid username or password');

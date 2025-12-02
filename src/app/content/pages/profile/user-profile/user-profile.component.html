@@ -1,0 +1,85 @@
+<div class="user-profile-container" *ngIf="!loading && user">
+  <button class="back-button" (click)="goBack()">
+    <span class="material-symbols-outlined" style="font-size: 20px;">arrow_back</span>
+    Volver
+  </button>
+
+  <div class="profile-header">
+    <div class="avatar-section">
+      <img [src]="user.foto || 'assets/images/default-avatar.png'" alt="Avatar" class="profile-avatar">
+      <span class="premium-badge" *ngIf="isPremium()" title="Usuario Premium">
+        <span class="material-symbols-outlined" style="color: #f59e0b; font-size: 20px;">workspace_premium</span>
+      </span>
+    </div>
+
+    <div class="profile-details">
+      <h1 class="profile-name">
+        {{ user.nombres }} {{ user.apellidos }}
+        <svg *ngIf="isPremium()" width="20" height="20" viewBox="0 0 16 16" fill="none" class="premium-icon"
+          title="Usuario Premium">
+          <path d="M8 1.5L9.5 5.5L13.5 6L10.5 9L11.5 13L8 11L4.5 13L5.5 9L2.5 6L6.5 5.5L8 1.5Z" fill="#FFD700"
+            stroke="#FFA500" stroke-width="1" />
+        </svg>
+      </h1>
+      <p class="profile-role">{{ isIllustrator() ? 'Ilustrador' : 'Escritor' }}</p>
+      <p class="profile-location" *ngIf="user.ubicacion">
+        <span class="material-symbols-outlined" style="font-size: 18px;">location_on</span>
+        {{ user.ubicacion }}
+      </p>
+      <p class="profile-description">{{ user.descripcion || 'Sin descripción' }}</p>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <div class="tabs" *ngIf="isIllustrator()">
+      <button class="tab" [class.active]="activeTab === 'portfolio'" (click)="activeTab = 'portfolio'">
+        Portafolios
+      </button>
+    </div>
+
+    <div class="content-grid" *ngIf="isIllustrator() && activeTab === 'portfolio'">
+      <div class="portfolio-card" *ngFor="let portfolio of portfolios" (click)="goToPortfolio(portfolio.id)">
+        <div class="portfolio-image">
+          <img [src]="portfolio.imagen || 'assets/images/placeholder-portfolio.jpg'" alt="Portfolio">
+        </div>
+        <div class="portfolio-info">
+          <h3>{{ portfolio.titulo }}</h3>
+          <p>{{ portfolio.descripcion }}</p>
+        </div>
+      </div>
+      <div class="empty-state" *ngIf="portfolios.length === 0">
+        <span class="material-symbols-outlined"
+          style="font-size: 48px; margin-bottom: 1rem; color: #cbd5e1;">folder_off</span>
+        <p>Este usuario aún no tiene portafolios publicados</p>
+      </div>
+    </div>
+
+    <div class="content-grid" *ngIf="isWriter() && activeTab === 'projects'">
+      <div class="project-card" *ngFor="let project of projects" (click)="goToProject(project.id)">
+        <div class="project-image">
+          <img [src]="project.imagen || 'assets/images/placeholder-project.jpg'" alt="Project">
+        </div>
+        <div class="project-info">
+          <h3>{{ project.titulo }}</h3>
+          <p>{{ project.descripcion }}</p>
+        </div>
+      </div>
+      <div class="empty-state" *ngIf="projects.length === 0">
+        <span class="material-symbols-outlined"
+          style="font-size: 48px; margin-bottom: 1rem; color: #cbd5e1;">folder_off</span>
+        <p>Este usuario aún no tiene proyectos publicados</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="loading-container" *ngIf="loading">
+  <div class="spinner"></div>
+  <p>Cargando perfil...</p>
+</div>
+
+<div class="error-container" *ngIf="error && !loading">
+  <span class="material-symbols-outlined" style="font-size: 48px; color: #ef4444;">error_outline</span>
+  <p>{{ error }}</p>
+  <button (click)="goBack()">Volver</button>
+</div>

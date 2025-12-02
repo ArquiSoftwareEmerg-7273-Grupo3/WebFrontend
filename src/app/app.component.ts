@@ -7,11 +7,12 @@ import {HttpClientModule} from '@angular/common/http';
 import {NgIf} from '@angular/common';
 import {MiniTutorialComponent} from './content/pages/mini-tutorial/mini-tutorial/components/mini-tutorial/mini-tutorial.component';
 import {MiniTutorialService} from './content/pages/mini-tutorial/mini-tutorial/services/mini-tutorial.service';
+import {ToastContainerComponent} from './shared/components/toast-container/toast-container.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, ToolbarContentComponent, HttpClientModule, NgIf, MiniTutorialComponent],
+  imports: [RouterOutlet, ToolbarContentComponent, HttpClientModule, NgIf, MiniTutorialComponent, ToastContainerComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
@@ -177,7 +178,6 @@ export class AppComponent implements OnInit, OnDestroy {
 
   getName(){
     this.authenticationService.currentUsername.subscribe(username => this.username = username);
-    console.log(this.username);
   }
   getId(){
     this.authenticationService.currentUserId.subscribe(id => this.userId = id);

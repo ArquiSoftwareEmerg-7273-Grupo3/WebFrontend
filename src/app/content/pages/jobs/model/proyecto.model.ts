@@ -30,7 +30,10 @@ export interface PostulacionResource {
   proyectoId: number;
   ilustradorId: number;
   estado: EstadoPostulacion;
-  fechaPostulacion: string; 
+  fechaPostulacion: string;
+  mensaje?: string;
+  respuesta?: string;
+  fechaRespuesta?: string;
 }
 
 export enum EstadoPostulacion {
@@ -74,7 +77,13 @@ export enum EspecialidadProyecto {
 }
 
 export interface CreatePostulacionResource {
-  fecha: string; 
+  fecha: string;
+  coverLetter?: string;
+  estimatedTime?: string;
+  proposedBudget?: number;
+  portfolioLinks?: string[];
+  answers?: { [key: string]: string };
+  isPriority?: boolean;
 }
 
 export interface AprobarPostulacionResource {
